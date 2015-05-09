@@ -148,7 +148,7 @@ std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Polygon<T
     return std::make_unique<RandomPointPickerPreprocessedData>();
 }
 template <class T>
-Polyline<T> Polygon<T>::outline() const
+Polyline<T> Polygon<T>::asPolyline() const
 {
     Polyline<T> out(vertices);
     out.add(out.vertices[0]);

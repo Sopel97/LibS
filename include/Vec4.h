@@ -11,6 +11,7 @@ public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y, Z, W>::value;
 
     void fill(T value);
+    virtual ~Vec4Proxy(){}
 
     Vec4<T> operator+(const Vec4<T>& v1) const;
     Vec4<T> operator-(const Vec4<T>& v1) const;
@@ -420,6 +421,7 @@ public:
     void fill(T value);
 
     Vec4() = default;
+    virtual ~Vec4(){}
     Vec4(T _x, T _y, T _z, T _w);
     Vec4(const std::initializer_list<T>& list);
 

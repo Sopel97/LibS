@@ -42,7 +42,9 @@ public:
     Shape2& operator = (const Shape2&) = default;
     Shape2& operator = (Shape2 &&) = default;
 
-    virtual Polyline<T> outline() const;
+    virtual ~Shape2();
+
+    virtual Polyline<T> asPolyline() const;
 
     virtual void translate(const Vec2<T>& v) = 0;
     virtual void scale(const Vec2<T>& c, const Vec2<T>& s) = 0;
@@ -54,10 +56,22 @@ public:
     virtual std::pair<T, T> projectMinMax(const Vec2<T>& b) const; //min and max values after projecting onto line
 
     virtual std::unique_ptr<RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
+
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
     virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
+
+    virtual Triangle<T> pickRandomTriangle(Random::RandomEngineBase& randomEngine) const; //standard way requires the shape to be convex
+    virtual Triangle<T> pickRandomTriangle(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
+    virtual std::vector<Triangle<T>> pickRandomTriangles(size_t quantity, Random::RandomEngineBase& randomEngine) const;
+    virtual std::vector<Triangle<T>> pickRandomTriangles(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
+
+    virtual LineSegment<T> pickRandomLineSegment(Random::RandomEngineBase& randomEngine) const; //standard way requires the shape to be convex
+    virtual LineSegment<T> pickRandomLineSegment(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
+    virtual std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity, Random::RandomEngineBase& randomEngine) const;
+    virtual std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
+
     virtual Vec2<T> center() const;
     //virtual T area() const; //TODO: this
 

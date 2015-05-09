@@ -151,7 +151,7 @@ void Mesh<T>::scale(const T s)
 }
 
 template <class T>
-Polyline<T> Mesh<T>::outline() const //TODO: outline using convex hull
+Polyline<T> Mesh<T>::asPolyline() const //TODO: outline using convex hull
 {
     Polyline<T> outline;
     return outline;

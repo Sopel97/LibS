@@ -11,6 +11,7 @@ public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y>::value;
 
     void fill(T value);
+    virtual ~Vec2Proxy(){}
 
     template <class TSecond>
     Vec2<typename std::common_type<T, TSecond>::type> operator+(const Vec2<TSecond>& v1) const;
@@ -80,12 +81,10 @@ public:
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
     operator Vec2<T>() const;
@@ -147,6 +146,8 @@ public:
     Vec2(T _xy);
     Vec2(T _x, T _y);
     Vec2(const std::initializer_list<T>& list);
+
+    virtual ~Vec2(){}
 
     Vec2(const Vec2<T>& v);
     Vec2(Vec2<T>&& v);
@@ -221,12 +222,10 @@ public:
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
     static const Vec2<T> unitX;

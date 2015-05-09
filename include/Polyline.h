@@ -12,6 +12,7 @@ public:
     std::vector<Vec2<T>> vertices;
 
     Polyline() = default;
+    virtual ~Polyline(){}
     Polyline(const std::initializer_list<Vec2<T>>& list);
     Polyline(const std::vector<Vec2<T>>& v);
     Polyline(std::vector<Vec2<T>>&& v);
@@ -52,7 +53,7 @@ public:
     void transform(Transformation&& func);
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     size_t size() const;
 

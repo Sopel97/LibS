@@ -9,6 +9,7 @@ public:
     Vec2<T> direction; //must be normalized
 
     Ray() = default;
+    virtual ~Ray(){}
     Ray(const Vec2<T>& o, const Vec2<T>& d);
 
     Ray(const Ray<T>& r) = default;
@@ -38,7 +39,7 @@ public:
     template <class Transformation>
     void transform(Transformation&& func);
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;

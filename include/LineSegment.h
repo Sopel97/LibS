@@ -10,6 +10,7 @@ public:
 
     LineSegment() = default;
     LineSegment(const Vec2<T>& _begin, const Vec2<T>& _end);
+    virtual ~LineSegment(){}
 
     LineSegment(const LineSegment<T>& s) = default;
     LineSegment(LineSegment<T>&& s) = default;
@@ -38,12 +39,10 @@ public:
     template <class Transformation>
     void transform(Transformation&& func);
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
     //for double dispatch

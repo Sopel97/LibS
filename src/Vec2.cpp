@@ -314,7 +314,7 @@ bool Vec2Proxy<T, X, Y>::intersects(const Vec2<T>& other) const
 }
 
 template <class T, size_t X, size_t Y>
-Polyline<T> Vec2Proxy<T, X, Y>::outline() const
+Polyline<T> Vec2Proxy<T, X, Y>::asPolyline() const
 {
     return Polyline<T>({Vec2<T>(*this)});
 }
@@ -325,27 +325,10 @@ Vec2<T> Vec2Proxy<T, X, Y>::pickRandomPoint(Random::RandomEngineBase& randomEngi
     return Vec2<T>(*this);
 }
 template <class T, size_t X, size_t Y>
-std::vector<Vec2<T>> Vec2Proxy<T, X, Y>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
-{
-    std::vector<Vec2<T>> result;
-    result.reserve(quantity);
-    while(quantity--)
-    {
-        result.emplace_back(pickRandomPoint(randomEngine));
-    }
-    return result;
-}
-template <class T, size_t X, size_t Y>
 Vec2<T> Vec2Proxy<T, X, Y>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
 {
     return pickRandomPoint(randomEngine);
 }
-template <class T, size_t X, size_t Y>
-std::vector<Vec2<T>> Vec2Proxy<T, X, Y>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
-{
-    return pickRandomPoints(quantity, randomEngine);
-}
-
 template <class T, size_t X, size_t Y>
 Vec2<T> Vec2Proxy<T, X, Y>::center() const
 {
@@ -705,7 +688,7 @@ std::unique_ptr<Shape2<T>> Vec2<T>::clone() const
 }
 
 template <class T>
-Polyline<T> Vec2<T>::outline() const
+Polyline<T> Vec2<T>::asPolyline() const
 {
     return Polyline<T>({*this});
 }
@@ -715,25 +698,9 @@ Vec2<T> Vec2<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine) const
     return *this;
 }
 template <class T>
-std::vector<Vec2<T>> Vec2<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
-{
-    std::vector<Vec2<T>> result;
-    result.reserve(quantity);
-    while(quantity--)
-    {
-        result.emplace_back(pickRandomPoint(randomEngine));
-    }
-    return result;
-}
-template <class T>
 Vec2<T> Vec2<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
 {
     return pickRandomPoint(randomEngine);
-}
-template <class T>
-std::vector<Vec2<T>> Vec2<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
-{
-    return pickRandomPoints(quantity, randomEngine);
 }
 
 template <class T>

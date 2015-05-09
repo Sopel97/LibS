@@ -80,7 +80,7 @@ void LineSegment<T>::transform(Transformation&& func)
 }
 
 template <class T>
-Polyline<T> LineSegment<T>::outline() const
+Polyline<T> LineSegment<T>::asPolyline() const
 {
     return Polyline<T>({begin, end});
 }
@@ -92,25 +92,9 @@ Vec2<T> LineSegment<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine) 
     return begin + (end - begin) * t;
 }
 template <class T>
-std::vector<Vec2<T>> LineSegment<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
-{
-    std::vector<Vec2<T>> result;
-    result.reserve(quantity);
-    while(quantity--)
-    {
-        result.emplace_back(pickRandomPoint(randomEngine));
-    }
-    return result;
-}
-template <class T>
 Vec2<T> LineSegment<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
 {
     return pickRandomPoint(randomEngine);
-}
-template <class T>
-std::vector<Vec2<T>> LineSegment<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
-{
-    return pickRandomPoints(quantity, randomEngine);
 }
 template <class T>
 Vec2<T> LineSegment<T>::center() const

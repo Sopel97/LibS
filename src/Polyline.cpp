@@ -148,7 +148,7 @@ std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Polyline<
     return std::make_unique<RandomPointPickerPreprocessedData>();
 }
 template <class T>
-Polyline<T> Polyline<T>::outline() const
+Polyline<T> Polyline<T>::asPolyline() const
 {
     return *this;
 }

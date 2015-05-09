@@ -85,7 +85,7 @@ void Ray<T>::transform(Transformation&& func)
 }
 
 template <class T>
-Polyline<T> Ray<T>::outline() const
+Polyline<T> Ray<T>::asPolyline() const
 {
     //dont know
     return Polyline<T>({origin});

@@ -71,7 +71,7 @@ void Circle<T>::scale(const T s)
 }
 
 template <class T>
-Polyline<T> Circle<T>::outline() const
+Polyline<T> Circle<T>::asPolyline() const
 {
     const int segmentCount = 64;
     Polyline<T> out;
@@ -95,25 +95,9 @@ Vec2<T> Circle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine) const
     return origin + Vec2<T>(r * angle.cos(), r * angle.sin());
 }
 template <class T>
-std::vector<Vec2<T>> Circle<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
-{
-    std::vector<Vec2<T>> result;
-    result.reserve(quantity);
-    while(quantity--)
-    {
-        result.emplace_back(pickRandomPoint(randomEngine));
-    }
-    return result;
-}
-template <class T>
 Vec2<T> Circle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
 {
     return pickRandomPoint(randomEngine);
-}
-template <class T>
-std::vector<Vec2<T>> Circle<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
-{
-    return pickRandomPoints(quantity, randomEngine);
 }
 template <class T>
 Vec2<T> Circle<T>::center() const

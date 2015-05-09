@@ -80,7 +80,7 @@ void Triangle<T>::transform(Transformation&& func)
 }
 
 template <class T>
-Polyline<T> Triangle<T>::outline() const
+Polyline<T> Triangle<T>::asPolyline() const
 {
     return Polyline<T>(
     {
@@ -124,11 +124,6 @@ Vec2<T> Triangle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine) con
     }
     return point;
 }
-template <class T>
-std::vector<Vec2<T>> Triangle<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
-{
-    return pickRandomPoints(quantity, randomEngine, *(createPreprocessedDataForRandomPointPicker()));
-}
 
 template <class T>
 Vec2<T> Triangle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
@@ -151,17 +146,6 @@ Vec2<T> Triangle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typ
     }
     return point;
     return pickRandomPoint(randomEngine);
-}
-template <class T>
-std::vector<Vec2<T>> Triangle<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
-{
-    std::vector<Vec2<T>> result;
-    result.reserve(quantity);
-    while(quantity--)
-    {
-        result.emplace_back(pickRandomPoint(randomEngine, preprocessedData));
-    }
-    return result;
 }
 //for double dispatch
 template <class T>

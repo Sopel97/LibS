@@ -15,6 +15,16 @@ public:
     Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     std::vector<Vec2<T>> pickRandomPoints(size_t quantity);
     std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
+
+    Triangle<T> pickRandomTriangle();
+    Triangle<T> pickRandomTriangle(Random::RandomEngineBase& randomEngine) const;
+    std::vector<Triangle<T>> pickRandomTriangles(size_t quantity);
+    std::vector<Triangle<T>> pickRandomTriangles(size_t quantity, Random::RandomEngineBase& randomEngine) const;
+
+    LineSegment<T> pickRandomLineSegment();
+    LineSegment<T> pickRandomLineSegment(Random::RandomEngineBase& randomEngine) const;
+    std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity);
+    std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity, Random::RandomEngineBase& randomEngine) const;
 protected:
     std::unique_ptr<Shape2<T>> m_shape;
     std::unique_ptr<Random::RandomEngineBase> m_randomEngine; //may be nullptr. If it is, then it is required to be passed directly to generating method

@@ -88,7 +88,7 @@ void Rectangle<T>::transform(Transformation&& func)
 }
 
 template <class T>
-Polyline<T> Rectangle<T>::outline() const
+Polyline<T> Rectangle<T>::asPolyline() const
 {
     return Polyline<T>(
     {
@@ -109,25 +109,9 @@ Vec2<T> Rectangle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine) co
     return Vec2<T>(min + (max-min) * Vec2<T>(t1, t2));
 }
 template <class T>
-std::vector<Vec2<T>> Rectangle<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
-{
-    std::vector<Vec2<T>> result;
-    result.reserve(quantity);
-    while(quantity--)
-    {
-        result.emplace_back(pickRandomPoint(randomEngine));
-    }
-    return result;
-}
-template <class T>
 Vec2<T> Rectangle<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
 {
     return pickRandomPoint(randomEngine);
-}
-template <class T>
-std::vector<Vec2<T>> Rectangle<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
-{
-    return pickRandomPoints(quantity, randomEngine);
 }
 template <class T>
 Vec2<T> Rectangle<T>::center() const

@@ -11,6 +11,7 @@ public:
 
     Cylinder() = default;
     Cylinder(const Vec3<T>& p1, T r, T h);
+    virtual ~Cylinder(){}
 
     Cylinder(const Cylinder<T>& c) = default;
     Cylinder(Cylinder<T>&& c) = default;

@@ -10,6 +10,7 @@ public:
 
     Circle() = default;
     Circle(const Vec2<T>& p1, T r);
+    virtual ~Circle(){}
 
     Circle(const Circle<T>& c) = default;
     Circle(Circle<T>&& c) = default;
@@ -36,12 +37,10 @@ public:
     template <class Transformation>
     void transform(Transformation&& func);
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
     /* INTERSECTIONS */

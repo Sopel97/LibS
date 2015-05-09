@@ -6,7 +6,9 @@ class Rectangle : public Shape2<T>
 {
 public:
     Vec2<T> min, max;
+
     Rectangle() = default;
+    virtual ~Rectangle(){}
     Rectangle(const Vec2<T>& p1, const Vec2<T>& p2);
     Rectangle(const Vec2<T>& p1, const T width, const T height);
 
@@ -37,12 +39,10 @@ public:
     template <class Transformation>
     void transform(Transformation&& func);
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
-    virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
     /* INTERSECTIONS */

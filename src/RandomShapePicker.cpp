@@ -38,10 +38,52 @@ Vec2<T> RandomShapePicker<T>::pickRandomPoint(Random::RandomEngineBase& randomEn
 template <class T>
 std::vector<Vec2<T>> RandomShapePicker<T>::pickRandomPoints(size_t quantity)
 {
-    return m_shape->pickRandomPoint(quantity, *m_randomEngine, m_pointPickerPreprocessedData);
+    return m_shape->pickRandomPoints(quantity, *m_randomEngine, *m_pointPickerPreprocessedData);
 }
 template <class T>
 std::vector<Vec2<T>> RandomShapePicker<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const
 {
-    return m_shape->pickRandomPoint(quantity, randomEngine, m_pointPickerPreprocessedData);
+    return m_shape->pickRandomPoints(quantity, randomEngine, *m_pointPickerPreprocessedData);
+}
+
+template <class T>
+Triangle<T> RandomShapePicker<T>::pickRandomTriangle() //m_randomEngine must be set for this
+{
+    return m_shape->pickRandomTriangle(*m_randomEngine, *m_pointPickerPreprocessedData);
+}
+template <class T>
+Triangle<T> RandomShapePicker<T>::pickRandomTriangle(Random::RandomEngineBase& randomEngine) const
+{
+    return m_shape->pickRandomTriangle(randomEngine, *m_pointPickerPreprocessedData);
+}
+template <class T>
+std::vector<Triangle<T>> RandomShapePicker<T>::pickRandomTriangles(size_t quantity)
+{
+    return m_shape->pickRandomTriangles(quantity, *m_randomEngine, *m_pointPickerPreprocessedData);
+}
+template <class T>
+std::vector<Triangle<T>> RandomShapePicker<T>::pickRandomTriangles(size_t quantity, Random::RandomEngineBase& randomEngine) const
+{
+    return m_shape->pickRandomTriangles(quantity, randomEngine, *m_pointPickerPreprocessedData);
+}
+
+template <class T>
+LineSegment<T> RandomShapePicker<T>::pickRandomLineSegment() //m_randomEngine must be set for this
+{
+    return m_shape->pickRandomLineSegment(*m_randomEngine, *m_pointPickerPreprocessedData);
+}
+template <class T>
+LineSegment<T> RandomShapePicker<T>::pickRandomLineSegment(Random::RandomEngineBase& randomEngine) const
+{
+    return m_shape->pickRandomLineSegment(randomEngine, *m_pointPickerPreprocessedData);
+}
+template <class T>
+std::vector<LineSegment<T>> RandomShapePicker<T>::pickRandomLineSegments(size_t quantity)
+{
+    return m_shape->pickRandomLineSegments(quantity, *m_randomEngine, *m_pointPickerPreprocessedData);
+}
+template <class T>
+std::vector<LineSegment<T>> RandomShapePicker<T>::pickRandomLineSegments(size_t quantity, Random::RandomEngineBase& randomEngine) const
+{
+    return m_shape->pickRandomLineSegments(quantity, randomEngine, *m_pointPickerPreprocessedData);
 }

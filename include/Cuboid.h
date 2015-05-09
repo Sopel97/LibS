@@ -7,6 +7,7 @@ class Cuboid : public Shape<T>
 public:
     Vec3<T> min, max; //top has lower z
     Cuboid() = default;
+    virtual ~Cuboid(){}
     Cuboid(const Vec3<T>& p1, const Vec3<T>& p2);
     Cuboid(const Vec3<T>& p1, const T width, const T height, const T depth);
 

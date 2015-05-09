@@ -9,6 +9,7 @@ class Mesh : public Shape<T>
 public:
     std::vector<T> elements;
     Mesh();
+    virtual ~Mesh(){}
     Mesh(const std::vector<T>& e);
     Mesh(std::vector<T>&& e);
     Mesh(const std::initializer_list<T>& list);
@@ -46,7 +47,7 @@ public:
     template <class Transformation>
     void transform(Transformation&& func);
 
-    Polyline<T> outline() const;
+    Polyline<T> asPolyline() const;
 
     size_t size() const;
 
