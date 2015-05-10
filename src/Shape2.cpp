@@ -1,9 +1,4 @@
 template <class T>
-Shape2<T>::~Shape2()
-{
-
-}
-template <class T>
 Polyline<T> Shape2<T>::asPolyline() const
 {
     return Polyline<T>();

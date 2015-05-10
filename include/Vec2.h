@@ -11,7 +11,6 @@ public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y>::value;
 
     void fill(T value);
-    virtual ~Vec2Proxy(){}
 
     template <class TSecond>
     Vec2<typename std::common_type<T, TSecond>::type> operator+(const Vec2<TSecond>& v1) const;
@@ -64,8 +63,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Vec2<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Vec2<T> transformed(const Transformation2<T>& transformation) const;
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;
@@ -147,8 +148,6 @@ public:
     Vec2(T _x, T _y);
     Vec2(const std::initializer_list<T>& list);
 
-    virtual ~Vec2(){}
-
     Vec2(const Vec2<T>& v);
     Vec2(Vec2<T>&& v);
 
@@ -205,8 +204,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Vec2<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Vec2<T> transformed(const Transformation2<T>& transformation) const;
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;

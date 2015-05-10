@@ -7,7 +7,6 @@ class Shape3 : public Shape<T>
 public:
     using RespectiveVectorType = Vec3<T>;
     Shape3() = default;
-    virtual ~Shape3(){}
     Shape3(const Shape3&) = default;
     Shape3(Shape3&&) = default;
 

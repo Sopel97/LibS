@@ -73,10 +73,32 @@ void Triangle<T>::scale(const T s)
 
 }
 template <class T>
-template <class Transformation>
-void Triangle<T>::transform(Transformation&& func)
+void Triangle<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    transformationFunction(vertices[0]);
+    transformationFunction(vertices[1]);
+    transformationFunction(vertices[2]);
+}
+template <class T>
+void Triangle<T>::transform(const Transformation2<T>& transformation)
+{
+    transformation.transform(vertices[0]);
+    transformation.transform(vertices[1]);
+    transformation.transform(vertices[2]);
+}
+template <class T>
+Triangle<T> Triangle<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Triangle<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Triangle<T> Triangle<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Triangle<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 
 template <class T>

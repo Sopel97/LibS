@@ -135,6 +135,7 @@ void RapidlyExploringRandomTree<T>::addObstacle(const SomeShape& someShape)
 template <class T>
 void RapidlyExploringRandomTree<T>::generateNodes(size_t quantity)
 {
+    m_nodes.reserve(quantity + m_nodes.size());
     while(quantity--)
     {
         Vec2<T> sample;
@@ -209,7 +210,8 @@ typename RapidlyExploringRandomTree<T>::Node* RapidlyExploringRandomTree<T>::nea
 template <class T>
 typename RapidlyExploringRandomTree<T>::Edge RapidlyExploringRandomTree<T>::nearestEdge(const Vec2<T>& sample)
 {
-    Edge closestEdge {nullptr, nullptr, nullptr, Vec2<T>(), Vec2<T>(), Vec2<T>(), -1.0, std::numeric_limits<T>::max(), false};
+    Edge closestEdge {nullptr, nullptr, nullptr, Vec2<T>(), false};
+    T closestEdgeDistance = std::numeric_limits<T>::max();
     for(auto& beginNode : m_nodes)
     {
         Vec2<T> beginNodePosition = beginNode->position();
@@ -239,9 +241,10 @@ typename RapidlyExploringRandomTree<T>::Edge RapidlyExploringRandomTree<T>::near
             else vertexOnEdge = beginNodePosition + edge * t;  // Projection falls on the segment
             T distance = sample.distanceTo(vertexOnEdge);
 
-            if(distance < closestEdge.distance)
+            if(distance < closestEdgeDistance)
             {
-                closestEdge = Edge {beginNode, endNode, closestNode, beginNodePosition, endNodePosition, vertexOnEdge, t, distance, ((t > 0.0) && (t < 1.0))};
+                closestEdge = Edge {beginNode, endNode, closestNode, vertexOnEdge, ((t > 0.0) && (t < 1.0))};
+                closestEdgeDistance = distance;
             }
         }
     }
@@ -249,7 +252,7 @@ typename RapidlyExploringRandomTree<T>::Edge RapidlyExploringRandomTree<T>::near
     {
         Node* onlyNode = m_nodes.back();
         Vec2<T> onlyNodePosition = onlyNode->position();
-        closestEdge = Edge {onlyNode, onlyNode, onlyNode, onlyNodePosition, onlyNodePosition, onlyNodePosition, -1.0, sample.distanceTo(m_nodes.back()->position()), false};
+        closestEdge = Edge {onlyNode, onlyNode, onlyNode, onlyNodePosition, false};
     }
     return closestEdge;
 }

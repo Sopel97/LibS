@@ -5,7 +5,7 @@
 
 
 template <class T>
-class AffineTransformation
+class AffineTransformation : public Transformation2<T>
 {
 public:
     T a, b, c; //matrix {{a,b},{c,d}}+vector{c,f}
@@ -31,8 +31,8 @@ public:
     void reflectAboutXAxis();
     void reflectAboutYAxis();
 
-    void transform(Vec2<T>& point) const;
-    Vec2<T> transformed(const Vec2<T>& point) const;
+    virtual void transform(Vec2<T>& point) const;
+    virtual Vec2<T> transformed(const Vec2<T>& point) const;
 
     AffineTransformation<T> combined(const AffineTransformation<T>& transformation) const;
     void combine(const AffineTransformation<T>& transformation);

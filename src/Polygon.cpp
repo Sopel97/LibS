@@ -114,10 +114,34 @@ void Polygon<T>::scale(const T s)
 
 }
 template <class T>
-template <class Transformation>
-void Polygon<T>::transform(Transformation&& func)
+void Polygon<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    for(auto& v : vertices)
+    {
+        transformationFunction(v);
+    }
+}
+template <class T>
+void Polygon<T>::transform(const Transformation2<T>& transformation)
+{
+    for(auto& v : vertices)
+    {
+        transformation.transform(v);
+    }
+}
+template <class T>
+Polygon<T> Polygon<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Polygon<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Polygon<T> Polygon<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Polygon<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 
 template <class T>

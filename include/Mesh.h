@@ -2,14 +2,13 @@
 #define MESH_H_INCLUDED
 
 
-//TODO: may need a rewrite to separate 2d case from 3d case
+//TODO: rewrite to separate 2d case from 3d case
 template <class T>
 class Mesh : public Shape<T>
 {
 public:
     std::vector<T> elements;
     Mesh();
-    virtual ~Mesh(){}
     Mesh(const std::vector<T>& e);
     Mesh(std::vector<T>&& e);
     Mesh(const std::initializer_list<T>& list);

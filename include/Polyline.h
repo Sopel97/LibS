@@ -12,7 +12,6 @@ public:
     std::vector<Vec2<T>> vertices;
 
     Polyline() = default;
-    virtual ~Polyline(){}
     Polyline(const std::initializer_list<Vec2<T>>& list);
     Polyline(const std::vector<Vec2<T>>& v);
     Polyline(std::vector<Vec2<T>>&& v);
@@ -49,8 +48,10 @@ public:
     Vec2<T> project(const Vec2<T>& b) const;
     std::pair<T, T> projectMinMax(const Vec2<T>& b) const;
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Polyline<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Polyline<T> transformed(const Transformation2<T>& transformation) const;
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
     Polyline<T> asPolyline() const;

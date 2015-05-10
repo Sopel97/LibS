@@ -10,7 +10,6 @@ public:
 
     Circle() = default;
     Circle(const Vec2<T>& p1, T r);
-    virtual ~Circle(){}
 
     Circle(const Circle<T>& c) = default;
     Circle(Circle<T>&& c) = default;
@@ -34,8 +33,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Circle<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Circle<T> transformed(const Transformation2<T>& transformation) const;
 
     Polyline<T> asPolyline() const;
 

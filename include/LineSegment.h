@@ -10,7 +10,6 @@ public:
 
     LineSegment() = default;
     LineSegment(const Vec2<T>& _begin, const Vec2<T>& _end);
-    virtual ~LineSegment(){}
 
     LineSegment(const LineSegment<T>& s) = default;
     LineSegment(LineSegment<T>&& s) = default;
@@ -36,8 +35,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    LineSegment<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    LineSegment<T> transformed(const Transformation2<T>& transformation) const;
 
     Polyline<T> asPolyline() const;
 

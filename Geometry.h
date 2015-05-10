@@ -113,6 +113,7 @@ namespace Geo
 
     template <class T> class RandomShapePicker;
     template <class T> class ConvexHull;
+    template <class T> class Transformation2;
     template <class T> class AffineTransformation;
     template <class T> class BezierCurve;
     template <class T> class BezierPath;
@@ -147,6 +148,7 @@ namespace Geo
 
 #include "include/RandomShapePicker.h"
 #include "include/ConvexHull.h"
+#include "include/Transformation2.h"
 #include "include/AffineTransformation.h"
 #include "include/BezierCurve.h"
 #include "include/BezierPath.h"

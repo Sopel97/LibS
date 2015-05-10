@@ -7,7 +7,6 @@ class Shape4 : public Shape<T>
 public:
     using RespectiveVectorType = Vec4<T>;
     Shape4() = default;
-    virtual ~Shape4(){}
     Shape4(const Shape4&) = default;
     Shape4(Shape4&&) = default;
 

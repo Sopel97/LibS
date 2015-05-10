@@ -13,7 +13,6 @@ public:
 
     Shape& operator = (const Shape&) = default;
     Shape& operator = (Shape &&) = default;
-    virtual ~Shape(){}
 };
 
 typedef Shape<double> ShapeD;

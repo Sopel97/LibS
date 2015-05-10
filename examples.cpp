@@ -27,7 +27,7 @@ public:
     }
     void draw()
     {
-        Geo::Polyline<typename T::ValueType> outline = shape.outline();
+        Geo::Polyline<typename T::ValueType> outline = shape.asPolyline();
         int outlineSize = outline.size();
         ALLEGRO_VERTEX* vertices = new ALLEGRO_VERTEX[outlineSize + 1];
         int j = 0;

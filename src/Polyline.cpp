@@ -114,10 +114,34 @@ void Polyline<T>::scale(const T s)
 
 }
 template <class T>
-template <class Transformation>
-void Polyline<T>::transform(Transformation&& func)
+void Polyline<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    for(auto& v : vertices)
+    {
+        transformationFunction(v);
+    }
+}
+template <class T>
+void Polyline<T>::transform(const Transformation2<T>& transformation)
+{
+    for(auto& v : vertices)
+    {
+        transformation.transform(v);
+    }
+}
+template <class T>
+Polyline<T> Polyline<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Polyline<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Polyline<T> Polyline<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Polyline<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 
 template <class T>

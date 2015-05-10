@@ -21,7 +21,6 @@ public:
     };
     Vec2<T> vertices[3];
     Triangle() = default;
-    virtual ~Triangle(){}
     Triangle(const Vec2<T>& p1, const Vec2<T>& p2, const Vec2<T>& p3);
     Triangle(const Vec2<T>* p);
 
@@ -46,8 +45,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Triangle<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Triangle<T> transformed(const Transformation2<T>& transformation) const;
 
     Polyline<T> asPolyline() const;
 

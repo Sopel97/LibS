@@ -81,10 +81,30 @@ void Rectangle<T>::scale(const T s)
 
 }
 template <class T>
-template <class Transformation>
-void Rectangle<T>::transform(Transformation&& func)
+void Rectangle<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    transformationFunction(min);
+    transformationFunction(max);
+}
+template <class T>
+void Rectangle<T>::transform(const Transformation2<T>& transformation)
+{
+    transformation.transform(min);
+    transformation.transform(max);
+}
+template <class T>
+Rectangle<T> Rectangle<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Rectangle<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Rectangle<T> Rectangle<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Rectangle<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 
 template <class T>

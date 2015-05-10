@@ -73,12 +73,31 @@ void LineSegment<T>::scale(const T s)
 
 }
 template <class T>
-template <class Transformation>
-void LineSegment<T>::transform(Transformation&& func)
+void LineSegment<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    transformationFunction(begin);
+    transformationFunction(end);
 }
-
+template <class T>
+void LineSegment<T>::transform(const Transformation2<T>& transformation)
+{
+    transformation.transform(begin);
+    transformation.transform(end);
+}
+template <class T>
+LineSegment<T> LineSegment<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    LineSegment<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+LineSegment<T> LineSegment<T>::transformed(const Transformation2<T>& transformation) const
+{
+    LineSegment<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
+}
 template <class T>
 Polyline<T> LineSegment<T>::asPolyline() const
 {

@@ -59,11 +59,7 @@ protected:
         Node* beginNode;
         Node* endNode;
         Node* closestEndNode;
-        Vec2<T> beginNodePosition;
-        Vec2<T> endNodePosition;
         Vec2<T> targetVertex;
-        T t; //scalar, position between beginNode and endNode
-        T distance;
         bool isNewNodeRequired;
     };
 

@@ -9,7 +9,6 @@ public:
     Vec2<T> direction; //must be normalized
 
     Ray() = default;
-    virtual ~Ray(){}
     Ray(const Vec2<T>& o, const Vec2<T>& d);
 
     Ray(const Ray<T>& r) = default;
@@ -36,8 +35,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Ray<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Ray<T> transformed(const Transformation2<T>& transformation) const;
 
     Polyline<T> asPolyline() const;
 

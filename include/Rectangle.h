@@ -8,7 +8,6 @@ public:
     Vec2<T> min, max;
 
     Rectangle() = default;
-    virtual ~Rectangle(){}
     Rectangle(const Vec2<T>& p1, const Vec2<T>& p2);
     Rectangle(const Vec2<T>& p1, const T width, const T height);
 
@@ -36,8 +35,10 @@ public:
     void scale(const Vec2<T>& s);
     void scale(const T s);
 
-    template <class Transformation>
-    void transform(Transformation&& func);
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
+    virtual void transform(const Transformation2<T>& transformation);
+    Rectangle<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
+    Rectangle<T> transformed(const Transformation2<T>& transformation) const;
 
     Polyline<T> asPolyline() const;
 

@@ -78,10 +78,36 @@ void Ray<T>::scale(const T s)
 }
 
 template <class T>
-template <class Transformation>
-void Ray<T>::transform(Transformation&& func)
+void Ray<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
+    Vec2<T> somePointOnRay = origin + direction;
+    transformationFunction(somePointOnRay);
 
+    transformationFunction(origin);
+    direction = somePointOnRay - origin;
+}
+template <class T>
+void Ray<T>::transform(const Transformation2<T>& transformation)
+{
+    Vec2<T> somePointOnRay = origin + direction;
+    transformation.transform(somePointOnRay);
+
+    transformation.transform(origin);
+    direction = somePointOnRay - origin;
+}
+template <class T>
+Ray<T> Ray<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Ray<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Ray<T> Ray<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Ray<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 
 template <class T>

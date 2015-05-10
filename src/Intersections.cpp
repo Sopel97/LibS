@@ -359,7 +359,11 @@ bool Intersections::intersection(const Triangle<T>& a, const Rectangle<T>& b)
 template <class T>
 bool Intersections::intersection(const Rectangle<T>& a, const Polyline<T>& b)
 {
-    return intersection(a.asPolyline(), b);
+    if(intersection(a.asPolyline(), b)) return true;
+
+    if(intersection(a, b.vertices.back())) return true; //only one check is needed because the polyline is either intersecting edge of the rectangle or is enclosed by it
+
+    return false;
 }
 template <class T>
 bool Intersections::intersection(const Polyline<T>& a, const Rectangle<T>& b)
@@ -369,7 +373,11 @@ bool Intersections::intersection(const Polyline<T>& a, const Rectangle<T>& b)
 template <class T>
 bool Intersections::intersection(const Polyline<T>& a, const Triangle<T>& b)
 {
-    return intersection(a, b.asPolyline());
+    if(intersection(a, b.asPolyline())) return true;
+
+    if(intersection(a.vertices.back(), b)) return true;
+
+    return false;
 }
 template <class T>
 bool Intersections::intersection(const Triangle<T>& a, const Polyline<T>& b)
@@ -413,6 +421,36 @@ bool Intersections::intersection(const Polyline<T>& a, const Polyline<T>& b)
         if(intersection(LineSegment<T>(thisVertex, nextVertex), b)) return true;
     }
     return false;
+}
+
+template <class T>
+bool Intersections::intersection(const LineSegment<T>& a, const Triangle<T>& b)
+{
+    return intersection(a.asPolyline(), b);
+}
+template <class T>
+bool Intersections::intersection(const Triangle<T>& a, const LineSegment<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Polyline<T>& a, const Polygon<T>& b)
+{
+    size_t polySizeA = a.size();
+    for(int i = 0; i < polySizeA - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = a.vertices[i];
+        const Vec2<T>& nextVertex = a.vertices[i + 1];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), b)) return true;
+    }
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Polygon<T>& a, const Polyline<T>& b)
+{
+    return intersection(b, a);
 }
 //meshes
 

@@ -39,10 +39,8 @@ public:
     Shape2(const Shape2&) = default;
     Shape2(Shape2&&) = default;
 
-    Shape2& operator = (const Shape2&) = default;
-    Shape2& operator = (Shape2 &&) = default;
-
-    virtual ~Shape2();
+    Shape2<T>& operator = (const Shape2&) = default;
+    Shape2<T>& operator = (Shape2 &&) = default;
 
     virtual Polyline<T> asPolyline() const;
 
@@ -54,6 +52,10 @@ public:
 
     virtual Vec2<T> project(const Vec2<T>& b) const;
     virtual std::pair<T, T> projectMinMax(const Vec2<T>& b) const; //min and max values after projecting onto line
+
+    //transformations work pointwise. So a circle won't change into ellipse, rectangle won't rotate and such. Though it could change size even though it's not determined by any vector.
+    virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction) = 0;
+    virtual void transform(const Transformation2<T>& transformation) = 0;
 
     virtual std::unique_ptr<RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
 

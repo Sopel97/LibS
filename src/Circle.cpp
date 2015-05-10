@@ -59,10 +59,36 @@ void Circle<T>::scale(const Vec2<T>& s)
 
 }
 template <class T>
-template <class Transformation>
-void Circle<T>::transform(Transformation&& func)
+void Circle<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    Vec2<T> somePointOnCircle = origin + Vec2<T>(radius, 0);
+    transformationFunction(somePointOnCircle);
+
+    transformationFunction(origin);
+    radius = origin.distanceTo(somePointOnCircle);
+}
+template <class T>
+void Circle<T>::transform(const Transformation2<T>& transformation)
+{
+    Vec2<T> somePointOnCircle = origin + Vec2<T>(radius, 0);
+    transformation.transform(somePointOnCircle);
+
+    transformation.transform(origin);
+    radius = origin.distanceTo(somePointOnCircle);
+}
+template <class T>
+Circle<T> Circle<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Circle<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Circle<T> Circle<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Circle<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 template <class T>
 void Circle<T>::scale(const T s)

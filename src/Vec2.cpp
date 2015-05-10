@@ -258,11 +258,30 @@ void Vec2Proxy<T, X, Y>::scale(const T s)
 
 }
 template <class T, size_t X, size_t Y>
-template <class Transformation>
-void Vec2Proxy<T, X, Y>::transform(Transformation&& func)
+void Vec2Proxy<T, X, Y>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
     static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
-    func(Vec2<T>(getX(), getY()));
+    transformationFunction(Vec2<T>(*this));
+}
+template <class T, size_t X, size_t Y>
+void Vec2Proxy<T, X, Y>::transform(const Transformation2<T>& transformation)
+{
+    static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
+    transformation.transform(Vec2<T>(*this));
+}
+template <class T, size_t X, size_t Y>
+Vec2<T> Vec2Proxy<T, X, Y>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Vec2<T> copy(Vec2<T>(*this));
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T, size_t X, size_t Y>
+Vec2<T> Vec2Proxy<T, X, Y>::transformed(const Transformation2<T>& transformation) const
+{
+    Vec2<T> copy(Vec2<T>(*this));
+    copy.transform(transformation);
+    return copy;
 }
 
 //for double dispatch
@@ -628,10 +647,28 @@ void Vec2<T>::scale(const T s)
 
 }
 template <class T>
-template <class Transformation>
-void Vec2<T>::transform(Transformation&& func)
+void Vec2<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {
-    func(*this);
+    transformationFunction(*this);
+}
+template <class T>
+void Vec2<T>::transform(const Transformation2<T>& transformation)
+{
+    transformation.transform(*this);
+}
+template <class T>
+Vec2<T> Vec2<T>::transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const
+{
+    Vec2<T> copy(*this);
+    copy.transform(transformationFunction);
+    return copy;
+}
+template <class T>
+Vec2<T> Vec2<T>::transformed(const Transformation2<T>& transformation) const
+{
+    Vec2<T> copy(*this);
+    copy.transform(transformation);
+    return copy;
 }
 
 //for double dispatch

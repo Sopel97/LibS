@@ -10,7 +10,6 @@ class Vec3Proxy : public Shape3<T>
 public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y, Z>::value;
 
-    virtual ~Vec3Proxy(){}
     void fill(T value);
 
     Vec3<T> operator+(const Vec3<T>& v1) const;
@@ -202,7 +201,6 @@ public:
     Vec3() = default;
     Vec3(T _x, T _y, T _z);
     Vec3(const std::initializer_list<T>& list);
-    virtual ~Vec3(){}
 
     Vec3(const Vec3<T>& v) = default;
     Vec3(Vec3<T>&& v) = default;
