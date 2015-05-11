@@ -36,6 +36,8 @@ public:
     /* INTERSECTIONS */
     template<class S>
     bool intersects(const S& b) const;
+
+    virtual ~Cuboid(){}
 };
 
 typedef Cuboid<double> CuboidD;

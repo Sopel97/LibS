@@ -18,6 +18,8 @@ public:
     virtual void scale(const Vec4<T>& c, const T s) = 0;
     virtual void scale(const Vec4<T>& s) = 0;
     virtual void scale(const T s) = 0;
+
+    virtual ~Shape4(){}
 };
 
 typedef Shape4<double> Shape4D;

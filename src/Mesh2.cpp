@@ -185,6 +185,11 @@ size_t Mesh2<ShapeType>::size() const
 }
 
 template <class ShapeType>
+bool Mesh2<ShapeType>::isConvex() const
+{
+    return false;
+}
+template <class ShapeType>
 std::unique_ptr<typename Shape2<typename Mesh2<ShapeType>::T>::RandomPointPickerPreprocessedData> Mesh2<ShapeType>::createPreprocessedDataForRandomPointPicker() const
 {
     return std::make_unique<RandomPointPickerPreprocessedData>(*this);

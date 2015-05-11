@@ -8,16 +8,20 @@ template <class T>
 class ConvexHull
 {
 public:
-    std::vector<Vec2<T>> points;
-    Polygon<T> convexHull;
 
     ConvexHull(const std::vector<Vec2<T>>& p);
     ConvexHull(std::vector<Vec2<T>>&& p);
 
     void calculate();
     void sortPoints();
+
+    const Polygon<T>& convexHull();
+    const std::vector<Vec2<T>>& points();
 private:
-    bool sorted;
+    std::vector<Vec2<T>> m_points;
+    Polygon<T> m_convexHull;
+    bool m_sorted;
+
     T cross(const Vec2<T>& o, const Vec2<T>& a, const Vec2<T>& b);
 };
 

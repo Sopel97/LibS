@@ -219,6 +219,29 @@ Vec2<T> Polygon<T>::center() const
 
     return Vec2D {centMassX, centMassY};
 }
+template <class T>
+bool Polygon<T>::isConvex() const
+{
+    size_t numberOfVertices = vertices.size();
+    T lastCross = 0.0; //will be initialized by correct cross when i equals 0 in the loop
+    for(size_t i = 0; i < numberOfVertices; ++i)
+    {
+        const Vec2<T>& v0 = vertices[i];
+        const Vec2<T>& v1 = vertices[(i+1)&numberOfVertices];
+        const Vec2<T>& v2 = vertices[(i+2)&numberOfVertices];
+
+        Vec2<T> e0 = v1-v0;
+        Vec2<T> e1 = v2-v1;
+
+        T cross = e0.cross(e1);
+        if(i != 0)
+        {
+            if(cross * lastCross < 0.0) return false; //if cross and last cross have different signs
+        }
+        lastCross = cross;
+    }
+    return true;
+}
 
 template <class T>
 size_t Polygon<T>::size() const

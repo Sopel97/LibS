@@ -238,7 +238,7 @@ int main()
     al_install_mouse();
     al_install_keyboard();
     al_create_display(1280, 800);
-    ALLEGRO_COLOR colliding = al_map_rgb(255, 0, 0);
+    //ALLEGRO_COLOR colliding = al_map_rgb(255, 0, 0);
     ALLEGRO_COLOR notcolliding = al_map_rgb(0, 255, 0);
     Vec2D::VectorType vvv {22, 33};
     vvv = vvv.yx.normalized();
@@ -370,7 +370,7 @@ int main()
     int numberOfControlPoints = 29;
     for(int i = 0; i < numberOfControlPoints; ++i)
     {
-        Vec2D point {rand() % 1000, rand() % 700};
+        Vec2D point(rand() % 1000, rand() % 700);
         curvePoints.push_back(InteractiveShape<Vec2D>(point));
         path.add(point);
         std::cout << point.x << ' ' << point.y << '\n';
@@ -379,7 +379,7 @@ int main()
     std::vector<ALLEGRO_VERTEX> pathVertexData;
     for(const auto& p : pointsOnPath)
     {
-        pathVertexData.push_back(ALLEGRO_VERTEX {p.x, p.y, 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+        pathVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(p.x), static_cast<float>(p.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
     }
     std::vector<RigidBody> bodies;
     bodies.emplace_back(PolygonD({Vec2D{100, 100}, Vec2D{200, 100}, Vec2D{300, 200}, Vec2D{200, 400}, Vec2D{50, 190}}));
@@ -411,8 +411,8 @@ int main()
     edgesVertexData.reserve(edges.size()*2);
     for(const auto& edge : edges)
     {
-        edgesVertexData.push_back(ALLEGRO_VERTEX {edge.begin.x, edge.begin.y, 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
-        edgesVertexData.push_back(ALLEGRO_VERTEX {edge.end.x, edge.end.y, 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(edge.begin.x), static_cast<float>(edge.begin.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(edge.end.x), static_cast<float>(edge.end.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
     }
     for(;;)
     {
@@ -424,7 +424,7 @@ int main()
         auto pointsOnCurve = curve.evaluateAll(0.001);
         for(const auto& p : pointsOnCurve)
         {
-            curveVertexData.push_back(ALLEGRO_VERTEX {p.x, p.y, 0.0f, 0.0f, 0.0f, al_map_rgb(255, 255, 255)});
+            curveVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(p.x), static_cast<float>(p.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 255, 255)});
         }
 
         al_get_mouse_state(&now);
@@ -432,9 +432,9 @@ int main()
         for(int i = 0; i < numberOfControlPoints; ++i) curvePoints[i].move(prev, now);
         for(auto& body : bodies)
         {
-            if((prev.buttons & 1) && body.polygon.intersects(Vec2D {prev.x, prev.y}))
+            if((prev.buttons & 1) && body.polygon.intersects(Vec2D (prev.x, prev.y)))
             {
-                body.dragDrop(Vec2D {prev.x, prev.y}, Vec2D {now.x, now.y});
+                body.dragDrop(Vec2D (prev.x, prev.y), Vec2D (now.x, now.x));
             }
         }
         al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -452,7 +452,7 @@ int main()
 
         Geo::ConvexHull<double> ch(v);
         ch.calculate();
-        InteractiveShape<Geo::PolygonD> p(ch.convexHull);
+        InteractiveShape<Geo::PolygonD> p(ch.convexHull());
 
         for(int i = 0; i < shapeSize; ++i)
         {
@@ -471,10 +471,10 @@ int main()
         for(const auto& body : bodies)
         {
             std::vector<ALLEGRO_VERTEX> bodyVertexData;
-            for(int i = 0; i < body.polygon.size() + 1; ++i)
+            for(size_t i = 0; i < body.polygon.size() + 1; ++i)
             {
                 int j = i % body.polygon.size();
-                bodyVertexData.push_back(ALLEGRO_VERTEX {body.polygon.vertices[j].x, body.polygon.vertices[j].y, 0.0f, 0.0f, 0.0f, al_map_rgb(0, 255, 255)});
+                bodyVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(body.polygon.vertices[j].x), static_cast<float>(body.polygon.vertices[j].y), 0.0f, 0.0f, 0.0f, al_map_rgb(0, 255, 255)});
             }
             al_draw_prim(bodyVertexData.data(), nullptr, nullptr, 0, bodyVertexData.size(), ALLEGRO_PRIM_LINE_STRIP);
             al_draw_pixel(body.centerOfMass.x, body.centerOfMass.y, al_map_rgb(0, 255, 255));

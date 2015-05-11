@@ -63,6 +63,8 @@ protected:
     const T& getZ() const;
     T& getW();
     const T& getW() const;
+
+    virtual ~Vec4Proxy(){}
 };
 
 #include "Vec2.h"
@@ -468,6 +470,8 @@ public:
     static const Vec4<T> unitY;
     static const Vec4<T> unitZ;
     static const Vec4<T> unitW;
+
+    virtual ~Vec4(){}
 
 };
 

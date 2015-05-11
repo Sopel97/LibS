@@ -77,6 +77,8 @@ public:
     static Triangle<T> rightTriangle(const Vec2D& rightAngledVertex, const T width, const T height); //with 90 degree angle on the left
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
+
+    virtual ~Triangle(){}
 };
 
 typedef Triangle<double> TriangleD;

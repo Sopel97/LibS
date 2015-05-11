@@ -6,14 +6,15 @@ class PolygonTriangulation
 {
 public:
     PolygonTriangulation(const Polygon<T>& polygon);
+    PolygonTriangulation(Polygon<T>&& polygon);
+
     void calculate();
 
     const Mesh2<Triangle<T>>& result() const;
-    Mesh2<Triangle<T>>& result();
-    Mesh2<Triangle<T>>&& releaseResult();
+    const Polygon<T>& polygon() const;
 
 protected:
-    const Polygon<T>& m_polygon; //only a reference, may be changed later
+    Polygon<T> m_polygon;
     Mesh2<Triangle<T>> m_result;
 };
 

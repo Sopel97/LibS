@@ -75,6 +75,7 @@ public:
 
     Polyline<T> asPolyline() const;
     virtual Vec2<T> center() const;
+    virtual bool isConvex() const;
 
     //bool isConvex() const; //TODO: this
     //bool isConcave() const; //TODO: this
@@ -99,6 +100,8 @@ public:
     static Polygon<T> fromTriangle(const Triangle<T>& triangle);
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
+
+    virtual ~Polygon(){}
 };
 
 typedef Polygon<double> PolygonD;

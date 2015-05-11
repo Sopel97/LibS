@@ -61,6 +61,8 @@ public:
     bool intersects(const LineSegment<T>& lineSegment, Vec2<T>& intersectionPoint) const;
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
+
+    virtual ~LineSegment(){}
 };
 
 typedef LineSegment<double> LineSegmentD;

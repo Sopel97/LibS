@@ -61,6 +61,8 @@ protected:
     const T& getY() const;
     T& getZ();
     const T& getZ() const;
+
+    virtual ~Vec3Proxy(){}
 };
 
 #include "Vec2.h"
@@ -249,6 +251,8 @@ public:
     static const Vec3<T> unitX;
     static const Vec3<T> unitY;
     static const Vec3<T> unitZ;
+
+    virtual ~Vec3(){}
 };
 
 template <class T>

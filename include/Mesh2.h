@@ -67,6 +67,7 @@ public:
     Polyline<T> asPolyline() const;
 
     size_t size() const;
+    virtual bool isConvex() const; //this is problematic here. Will always return false, at least for now
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
 
@@ -86,6 +87,8 @@ public:
     virtual bool intersects(const Vec2<T>& other) const;
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
+
+    virtual ~Mesh2(){}
 };
 
 #include "../src/Mesh2.cpp"

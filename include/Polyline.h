@@ -74,6 +74,8 @@ public:
     static Polyline<T> fromTriangle(const Triangle<T>& triangle);
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
+
+    virtual ~Polyline(){}
 };
 
 typedef Polyline<double> PolylineD;

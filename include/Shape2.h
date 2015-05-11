@@ -76,6 +76,7 @@ public:
 
     virtual Vec2<T> center() const;
     virtual T area() const;
+    virtual bool isConvex() const;
     //virtual T area() const; //TODO: this
 
     //for double dispatch
@@ -91,6 +92,8 @@ public:
     virtual bool intersects(const Vec2<T>& other) const = 0;
 
     virtual std::unique_ptr<Shape2<T>> clone() const = 0;
+
+    virtual ~Shape2(){}
 };
 
 typedef Shape2<double> Shape2D;

@@ -112,3 +112,8 @@ T Shape2<T>::area() const
 {
     return 0.0;
 }
+template <class T>
+bool Shape2<T>::isConvex() const
+{
+    return true; //almost all shapes are convex
+}

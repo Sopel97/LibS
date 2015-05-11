@@ -94,6 +94,8 @@ public:
     const T& getX() const;
     T& getY();
     const T& getY() const;
+
+    virtual ~Vec2Proxy(){}
 };
 
 #include "Vec3.h"
@@ -232,6 +234,8 @@ public:
     static const Vec2<T> unitX;
     static const Vec2<T> unitY;
     static Vec2<T> direction(const Angle<T>& angle);
+
+    virtual ~Vec2(){}
 protected:
 };
 /* think of a way to make it so TFirst cannot be a vec2 type or remove these functions at all

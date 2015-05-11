@@ -319,7 +319,7 @@ bool Intersections::intersection(const LineSegment<T>& a, const Polygon<T>& b)
     if(intersection(a.begin, b)) return true;
     if(intersection(a.end, b)) return true;
     size_t polySize = b.size();
-    for(int i = 0; i < polySize; ++i)
+    for(size_t i = 0; i < polySize; ++i)
     {
         const Vec2<T>& thisVertex = b.vertices[i];
         const Vec2<T>& nextVertex = b.vertices[(i + 1) % polySize];
@@ -337,7 +337,7 @@ template <class T>
 bool Intersections::intersection(const LineSegment<T>& a, const Polyline<T>& b)
 {
     size_t polySize = b.size();
-    for(int i = 0; i < polySize - 1; ++i)
+    for(size_t i = 0; i < polySize - 1; ++i)
     {
         const Vec2<T>& thisVertex = b.vertices[i];
         const Vec2<T>& nextVertex = b.vertices[i + 1];
@@ -413,7 +413,7 @@ template <class T>
 bool Intersections::intersection(const Polyline<T>& a, const Polyline<T>& b)
 {
     size_t polySizeA = a.size();
-    for(int i = 0; i < polySizeA - 1; ++i)
+    for(size_t i = 0; i < polySizeA - 1; ++i)
     {
         const Vec2<T>& thisVertex = a.vertices[i];
         const Vec2<T>& nextVertex = a.vertices[i + 1];
@@ -437,7 +437,7 @@ template <class T>
 bool Intersections::intersection(const Polyline<T>& a, const Polygon<T>& b)
 {
     size_t polySizeA = a.size();
-    for(int i = 0; i < polySizeA - 1; ++i)
+    for(size_t i = 0; i < polySizeA - 1; ++i)
     {
         const Vec2<T>& thisVertex = a.vertices[i];
         const Vec2<T>& nextVertex = a.vertices[i + 1];

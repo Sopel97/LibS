@@ -63,6 +63,8 @@ public:
     virtual std::unique_ptr<Shape2<T>> clone() const;
 
     static Rectangle<T> unitRectangle();
+
+    virtual ~Rectangle(){}
 };
 
 typedef Rectangle<double> RectangleD;

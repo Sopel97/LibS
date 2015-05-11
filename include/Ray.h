@@ -55,6 +55,8 @@ public:
     virtual bool intersects(const Vec2<T>& other) const;
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
+
+    virtual ~Ray(){}
 };
 
 typedef Ray<double> RayD;

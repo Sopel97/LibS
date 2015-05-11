@@ -34,6 +34,8 @@ public:
     /* INTERSECTIONS */
     template<class S>
     bool intersects(const S& b) const;
+
+    virtual ~Cylinder(){}
 };
 
 typedef Cylinder<double> CylinderD;

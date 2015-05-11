@@ -18,6 +18,8 @@ public:
     virtual void scale(const Vec3<T>& c, const T s) = 0;
     virtual void scale(const Vec3<T>& s) = 0;
     virtual void scale(const T s) = 0;
+
+    virtual ~Shape3(){}
 };
 
 typedef Shape3<double> Shape3D;
