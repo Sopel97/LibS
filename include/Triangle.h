@@ -19,7 +19,9 @@ public:
         Vec2<T> edge01;
         Vec2<T> edge10;
     };
+
     Vec2<T> vertices[3];
+
     Triangle() = default;
     Triangle(const Vec2<T>& p1, const Vec2<T>& p2, const Vec2<T>& p3);
     Triangle(const Vec2<T>* p);
@@ -56,6 +58,7 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
+    virtual T area() const;
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;

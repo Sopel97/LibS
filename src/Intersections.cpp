@@ -455,7 +455,7 @@ bool Intersections::intersection(const Polygon<T>& a, const Polyline<T>& b)
 //meshes
 
 template <class T>
-bool Intersections::intersection(const Mesh<T>& a, const Mesh<T>& b)
+bool Intersections::intersection(const Mesh2<T>& a, const Mesh2<T>& b)
 {
     size_t sizeA = a.size();
     size_t sizeB = b.size();
@@ -469,7 +469,7 @@ bool Intersections::intersection(const Mesh<T>& a, const Mesh<T>& b)
     return false;
 }
 template <class T, class S>
-bool Intersections::intersection(const Mesh<T>& a, const S& b)
+bool Intersections::intersection(const Mesh2<T>& a, const S& b)
 {
     int size = a.size();
     for(int i = 0; i < size; ++i)
@@ -479,7 +479,7 @@ bool Intersections::intersection(const Mesh<T>& a, const S& b)
     return false;
 }
 template <class T, class S>
-bool Intersections::intersection(const S& a, const Mesh<T>& b)
+bool Intersections::intersection(const S& a, const Mesh2<T>& b)
 {
     return intersection(b, a);
 }

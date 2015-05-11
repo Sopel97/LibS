@@ -244,3 +244,11 @@ std::unique_ptr<Shape2<T>> Triangle<T>::clone() const
 {
     return std::make_unique<Triangle<T>>(*this);
 }
+template <class T>
+T Triangle<T>::area() const
+{
+    const Vec2<T>& a = vertices[0];
+    const Vec2<T>& b = vertices[1];
+    const Vec2<T>& c = vertices[2];
+    return std::abs(a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) / 2.0);
+}

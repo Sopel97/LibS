@@ -75,6 +75,7 @@ public:
     virtual std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
 
     virtual Vec2<T> center() const;
+    virtual T area() const;
     //virtual T area() const; //TODO: this
 
     //for double dispatch

@@ -35,7 +35,7 @@ std::vector<Vec2<T>> Shape2<T>::pickRandomPoints(size_t quantity, Random::Random
 template <class T>
 Vec2<T> Shape2<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
 {
-    return Vec2<T>{0.0, 0.0};
+    return Vec2<T> {0.0, 0.0};
 }
 template <class T>
 std::vector<Vec2<T>> Shape2<T>::pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
@@ -106,4 +106,9 @@ template <class T>
 Vec2<T> Shape2<T>::center() const
 {
     return Vec2<T> {0.0, 0.0};
+}
+template <class T>
+T Shape2<T>::area() const
+{
+    return 0.0;
 }

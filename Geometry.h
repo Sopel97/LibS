@@ -105,7 +105,7 @@ namespace Geo
     template <class T> class Triangle;
     template <class T> class Polygon;
     template <class T> class Polyline;
-    template <class T> class Mesh;
+    template <class ShapeType> class Mesh2;
 
     class Intersections;
     template <class T> class Raycast;
@@ -113,6 +113,7 @@ namespace Geo
 
     template <class T> class RandomShapePicker;
     template <class T> class ConvexHull;
+    template <class T> class PolygonTriangulation;
     template <class T> class Transformation2;
     template <class T> class AffineTransformation;
     template <class T> class BezierCurve;
@@ -140,7 +141,7 @@ namespace Geo
 #include "include/Triangle.h"
 #include "include/Polygon.h"
 #include "include/Polyline.h"
-#include "include/Mesh.h"
+#include "include/Mesh2.h"
 
 #include "include/Intersections.h"
 #include "include/Raycast.h"
@@ -148,6 +149,7 @@ namespace Geo
 
 #include "include/RandomShapePicker.h"
 #include "include/ConvexHull.h"
+#include "include/PolygonTriangulation.h"
 #include "include/Transformation2.h"
 #include "include/AffineTransformation.h"
 #include "include/BezierCurve.h"

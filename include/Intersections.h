@@ -214,11 +214,11 @@ public:
 
     //Meshes
     template <class T>
-    static bool intersection(const Mesh<T>& a, const Mesh<T>& b);
+    static bool intersection(const Mesh2<T>& a, const Mesh2<T>& b);
     template <class T, class S>
-    static bool intersection(const Mesh<T>& a, const S& b);
+    static bool intersection(const Mesh2<T>& a, const S& b);
     template <class T, class S>
-    static bool intersection(const S& a, const Mesh<T>& b);
+    static bool intersection(const S& a, const Mesh2<T>& b);
 
 private:
     Intersections() {}

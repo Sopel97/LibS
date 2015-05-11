@@ -155,7 +155,7 @@ public:
 };
 
 
-void next(int counter, const RayD& ray, const Mesh<CircleD>& mesh, const std::vector<RigidBody>& bodies)
+void next(int counter, const RayD& ray, const Mesh2<CircleD>& mesh, const std::vector<RigidBody>& bodies)
 {
     if(counter < 0) return; //max recursion depth
     ALLEGRO_COLOR rayColor = al_map_rgb(255, 0, 0);
@@ -327,7 +327,7 @@ int main()
     */
     const int shapeSize = 133;
     std::vector<InteractiveShape<Geo::Vec2D>> points;
-    Mesh<CircleD> c {{{200.0, 200.0}, 150.0}, {{200.0, 300.0}, 50.0}, {{200.0, 400.0}, 10.0}, {{200.0, 500.0}, 90.0}};
+    Mesh2<CircleD> c {{{200.0, 200.0}, 150.0}, {{200.0, 300.0}, 50.0}, {{200.0, 400.0}, 10.0}, {{200.0, 500.0}, 90.0}};
     RayD r {{500.0, 500.0}, {300, 400}};
     //Random::Xorshift32Engine engine;
     //Random::Xorshift64Engine engine;
@@ -401,9 +401,10 @@ int main()
     }
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(RectangleD(Vec2D{100.0, 100.0f}, 400.0, 400.0));
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(CircleD(Vec2D{300.0, 300.0f}, 200.0));
-    RapidlyExploringRandomTreeD rapidlyExploringRandomTree(TriangleD(Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{200.0, 600.0f}));
+    //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(TriangleD(Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{200.0, 600.0f}));
+    RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{700.0, 600.0f}, Vec2D{50.0, 600.0f}, Vec2D{50.0, 300.0f}}));
     rapidlyExploringRandomTree.addObstacle(LineSegmentD(Vec2D{140, 140},Vec2D{450, 300}));
-    rapidlyExploringRandomTree.addObstacle(RectangleD(Vec2D{200.0, 330.0f}, 200.0, 100.0));
+    rapidlyExploringRandomTree.addObstacle(RectangleD(Vec2D{200.0, 430.0f}, 200.0, 100.0));
     rapidlyExploringRandomTree.generateNodes(2000);
     auto edges = rapidlyExploringRandomTree.edges();
     std::vector<ALLEGRO_VERTEX> edgesVertexData;

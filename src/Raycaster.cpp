@@ -36,7 +36,7 @@ Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Circle<T>& circle)
     return Raycast<T>(ray, std::move(hits));
 }
 template <class T>
-Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Mesh<Circle<T>>& circleMesh)
+Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Mesh2<Circle<T>>& circleMesh)
 {
     std::vector<typename Raycast<T>::Hit> hits;
     for(const auto& circle : circleMesh.elements)

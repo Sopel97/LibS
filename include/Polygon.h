@@ -7,7 +7,22 @@ class Polygon : public Shape2<T> //Supports convex and concave polygons. Does no
 public:
     struct RandomPointPickerPreprocessedData : public Shape2<T>::RandomPointPickerPreprocessedData
     {
-        //currently empty but will be used later
+        RandomPointPickerPreprocessedData(PolygonTriangulation<T>&& triang) :
+            triangulation(std::move(triang))
+        {
+            trianglesByArea.reserve(triangulation.result().size());
+            for(auto& triangle : triangulation.result().elements)
+            {
+                trianglesByArea.push_back(std::make_pair(&triangle, triangle.area()));
+            }
+            size_t numberOfTriangles = trianglesByArea.size();
+            for(size_t i = 1; i < numberOfTriangles; ++i)
+            {
+                trianglesByArea[i].second += trianglesByArea[i-1].second; //so the area is cumulative
+            }
+        }
+        PolygonTriangulation<T> triangulation;
+        std::vector<std::pair<const Triangle<T>*, T>> trianglesByArea; //<triangle ptr to triangulation result, CUMULATIVE area> - cumulative area so binary searching is possible without sorting
     };
     std::vector<Vec2<T>> vertices;
 
@@ -54,6 +69,10 @@ public:
     Polygon<T> transformed(const Transformation2<T>& transformation) const;
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
+
+    virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
+    virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
+
     Polyline<T> asPolyline() const;
     virtual Vec2<T> center() const;
 

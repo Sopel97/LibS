@@ -169,7 +169,24 @@ std::pair<T, T> Polygon<T>::projectMinMax(const Vec2<T>& b) const
 template <class T>
 std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Polygon<T>::createPreprocessedDataForRandomPointPicker() const
 {
-    return std::make_unique<RandomPointPickerPreprocessedData>();
+    PolygonTriangulation<T> triangulation(*this);
+    triangulation.calculate();
+    return std::make_unique<RandomPointPickerPreprocessedData>(std::move(triangulation));
+}
+template <class T>
+Vec2<T> Polygon<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine) const
+{
+    return pickRandomPoint(randomEngine, *createPreprocessedDataForRandomPointPicker());
+}
+template <class T>
+Vec2<T> Polygon<T>::pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const
+{
+    Polygon<T>::RandomPointPickerPreprocessedData& polygonPreprocessedData = static_cast<Polygon<T>::RandomPointPickerPreprocessedData&>(preprocessedData);
+    T sumOfAreas = polygonPreprocessedData.trianglesByArea.back().second;
+    T randomArea = randomEngine.nextDouble(0.0, sumOfAreas);
+    auto chosenTriangleIter = std::upper_bound(polygonPreprocessedData.trianglesByArea.begin(), polygonPreprocessedData.trianglesByArea.end(), randomArea, [](const T& lhs, const std::pair<const Triangle<T>*, T>& rhs)->bool{return lhs < rhs.second;});
+    if(chosenTriangleIter == polygonPreprocessedData.trianglesByArea.end()) chosenTriangleIter = polygonPreprocessedData.trianglesByArea.begin();
+    return chosenTriangleIter->first->pickRandomPoint(randomEngine);
 }
 template <class T>
 Polyline<T> Polygon<T>::asPolyline() const

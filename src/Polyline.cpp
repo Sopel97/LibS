@@ -17,7 +17,7 @@ Polyline<T>::Polyline(Vec2<T>* v, size_t count)
 }
 template <class T>
 template <class X>
-Polyline<T>::Polyline(const Polyline<X>& p) : vertices(p.vertives)
+Polyline<T>::Polyline(const Polyline<X>& p) : vertices(p.vertices)
 {
 }
 template <class T>
