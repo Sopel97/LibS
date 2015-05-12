@@ -29,11 +29,8 @@ public:
     T width() const;
     T height() const;
 
-    void translate(const Vec2<T>& v);
-    void scale(const Vec2<T>& c, const Vec2<T>& s);
-    void scale(const Vec2<T>& c, const T s);
-    void scale(const Vec2<T>& s);
-    void scale(const T s);
+    virtual void translate(const Vec2<T>& v);
+    virtual void scale(const Vec2<T>& s);
 
     virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
     virtual void transform(const Transformation2<T>& transformation);
@@ -45,6 +42,7 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
+    virtual T area() const;
 
     /* INTERSECTIONS */
 

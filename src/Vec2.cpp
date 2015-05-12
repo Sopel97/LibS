@@ -231,31 +231,40 @@ template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::translate(const Vec2<T>& v)
 {
     static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
+    getX() += v.x;
+    getY() += v.y;
 
 }
 template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::scale(const Vec2<T>& c, const Vec2<T>& s)
 {
     static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
+    getX() = (getX() - c.x)*s.x+c.x;
+    getY() = (getY() - c.y)*s.y+c.y;
 
 }
 template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::scale(const Vec2<T>& c, const T s)
 {
     static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
+    getX() = (getX() - c.x)*s+c.x;
+    getY() = (getY() - c.y)*s+c.y;
 
 }
 template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::scale(const Vec2<T>& s)
 {
     static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
+    getX() *= s.x;
+    getY() *= s.y;
 
 }
 template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::scale(const T s)
 {
     static_assert(isWritable, "Can't perform modifying operation on vector through proxy with ununique references.");
-
+    getX() *= s;
+    getY() *= s;
 }
 template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
@@ -624,27 +633,32 @@ const T& Vec2<T>::operator[](size_t index) const
 template <class T>
 void Vec2<T>::translate(const Vec2<T>& v)
 {
-
+    x += v.x;
+    y += v.y;
 }
 template <class T>
 void Vec2<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
 {
-
+    x = (x-c.x)*s.x+c.x;
+    y = (y-c.y)*s.y+c.y;
 }
 template <class T>
 void Vec2<T>::scale(const Vec2<T>& c, const T s)
 {
-
+    x = (x-c.x)*s+c.x;
+    y = (y-c.y)*s+c.y;
 }
 template <class T>
 void Vec2<T>::scale(const Vec2<T>& s)
 {
-
+    x *= s.x;
+    y *= s.y;
 }
 template <class T>
 void Vec2<T>::scale(const T s)
 {
-
+    x *= s;
+    y *= s;
 }
 template <class T>
 void Vec2<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)

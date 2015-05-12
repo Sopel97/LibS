@@ -18,6 +18,23 @@ std::pair<T, T> Shape2<T>::projectMinMax(const Vec2<T>& b) const
     return std::make_pair(T(), T());
 }
 template <class T>
+void Shape2<T>::scale(const T s)
+{
+    scale(Vec2<T>(s));
+}
+template <class T>
+void Shape2<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
+{
+    translate(-c);
+    scale(s);
+    translate(c);
+}
+template <class T>
+void Shape2<T>::scale(const Vec2<T>& c, const T s)
+{
+    scale(c, Vec2<T>(s));
+}
+template <class T>
 std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Shape2<T>::createPreprocessedDataForRandomPointPicker() const
 {
     return std::make_unique<RandomPointPickerPreprocessedData>();
@@ -109,6 +126,11 @@ Vec2<T> Shape2<T>::center() const
 }
 template <class T>
 T Shape2<T>::area() const
+{
+    return 0.0;
+}
+template <class T>
+T Shape2<T>::signedArea() const
 {
     return 0.0;
 }

@@ -91,27 +91,18 @@ void Polyline<T>::add(std::vector<T>&& v)
 template <class T>
 void Polyline<T>::translate(const Vec2<T>& v)
 {
-
-}
-template <class T>
-void Polyline<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class T>
-void Polyline<T>::scale(const Vec2<T>& c, const T s)
-{
-
+    for(auto& vert : vertices)
+    {
+        vert.translate(v);
+    }
 }
 template <class T>
 void Polyline<T>::scale(const Vec2<T>& s)
 {
-
-}
-template <class T>
-void Polyline<T>::scale(const T s)
-{
-
+    for(auto& vert : vertices)
+    {
+        vert.scale(s);
+    }
 }
 template <class T>
 void Polyline<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)

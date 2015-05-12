@@ -61,6 +61,7 @@ namespace Geo
     }
     /*   UTILITY   */
     constexpr double PI = 3.14159265359;
+    constexpr double EPSILON = 0.000000001;
 
     inline double radiansToDegrees(const double radians)
     {
@@ -70,21 +71,9 @@ namespace Geo
     {
         return degrees * (PI / 180.0);
     }
-    template<class T>
-    T min(const T& a, const T& b)
-    {
-        if(a < b) return a;
-        return b;
-    }
-    template<class T>
-    T max(const T& a, const T& b)
-    {
-        if(a > b) return a;
-        return b;
-    }
     inline double clamp(int a, int mi, int ma)
     {
-        return max(min(a, ma), mi);
+        return std::max(std::min(a, ma), mi);
     }
     /*   UTILITY END  */
     template <class T> class Angle;

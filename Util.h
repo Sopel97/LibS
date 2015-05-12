@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include "../LibS/Geometry.h"
+#include "Geometry.h"
 
 using namespace Geo;
 

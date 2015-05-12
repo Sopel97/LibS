@@ -16,7 +16,7 @@ Mesh2<ShapeType>::Mesh2(const std::initializer_list<ShapeType>& list) : elements
 {
 }
 template <class ShapeType>
-Mesh2<ShapeType>::Mesh2(T* e, size_t count)
+Mesh2<ShapeType>::Mesh2(ShapeType* e, size_t count)
 {
     elements.assign(e, e + count);
 }
@@ -117,22 +117,18 @@ void Mesh2<ShapeType>::add(Mesh2<ShapeType>&& m)
 template <class ShapeType>
 void Mesh2<ShapeType>::translate(const Vec2<T>& v)
 {
-
-}
-template <class ShapeType>
-void Mesh2<ShapeType>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class ShapeType>
-void Mesh2<ShapeType>::scale(const Vec2<T>& c, const T s)
-{
-
+    for(auto& shape : elements)
+    {
+        shape.translate(v);
+    }
 }
 template <class ShapeType>
 void Mesh2<ShapeType>::scale(const Vec2<T>& s)
 {
-
+    for(auto& shape : elements)
+    {
+        shape.scale(s);
+    }
 }
 template <class ShapeType>
 void Mesh2<ShapeType>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
@@ -164,12 +160,6 @@ Mesh2<typename Mesh2<ShapeType>::T> Mesh2<ShapeType>::transformed(const Transfor
     copy.transform(transformation);
     return copy;
 }
-template <class ShapeType>
-void Mesh2<ShapeType>::scale(const T s)
-{
-
-}
-
 template <class ShapeType>
 Polyline<typename Mesh2<ShapeType>::T> Mesh2<ShapeType>::asPolyline() const //TODO: outline using convex hull
 {

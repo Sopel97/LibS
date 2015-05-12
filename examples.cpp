@@ -434,7 +434,7 @@ int main()
         {
             if((prev.buttons & 1) && body.polygon.intersects(Vec2D (prev.x, prev.y)))
             {
-                body.dragDrop(Vec2D (prev.x, prev.y), Vec2D (now.x, now.x));
+                body.dragDrop(Vec2D (prev.x, prev.y), Vec2D (now.x, now.y));
             }
         }
         al_clear_to_color(al_map_rgb(0, 0, 0));

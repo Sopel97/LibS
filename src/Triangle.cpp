@@ -50,27 +50,16 @@ Triangle<T>& Triangle<T>::operator -=(const Vec2<T>& p)
 template <class T>
 void Triangle<T>::translate(const Vec2<T>& v)
 {
-
-}
-template <class T>
-void Triangle<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class T>
-void Triangle<T>::scale(const Vec2<T>& c, const T s)
-{
-
+    vertices[0].translate(v);
+    vertices[1].translate(v);
+    vertices[2].translate(v);
 }
 template <class T>
 void Triangle<T>::scale(const Vec2<T>& s)
 {
-
-}
-template <class T>
-void Triangle<T>::scale(const T s)
-{
-
+    vertices[0].scale(s);
+    vertices[1].scale(s);
+    vertices[2].scale(s);
 }
 template <class T>
 void Triangle<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)

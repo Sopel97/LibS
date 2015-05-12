@@ -32,7 +32,7 @@ public:
     Mesh2(const std::vector<ShapeType>& e);
     Mesh2(std::vector<ShapeType>&& e);
     Mesh2(const std::initializer_list<ShapeType>& list);
-    Mesh2(T* e, size_t count);
+    Mesh2(ShapeType* e, size_t count);
     Mesh2(const Mesh2<ShapeType>& m);
     Mesh2(Mesh2<ShapeType>&& m);
 
@@ -58,11 +58,8 @@ public:
     Mesh2<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Mesh2<T> transformed(const Transformation2<T>& transformation) const;
 
-    void translate(const Vec2<T>& v);
-    void scale(const Vec2<T>& c, const Vec2<T>& s);
-    void scale(const Vec2<T>& c, const T s);
-    void scale(const Vec2<T>& s);
-    void scale(const T s);
+    virtual void translate(const Vec2<T>& v);
+    virtual void scale(const Vec2<T>& s);
 
     Polyline<T> asPolyline() const;
 

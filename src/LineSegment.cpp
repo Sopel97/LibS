@@ -50,27 +50,14 @@ T LineSegment<T>::length() const
 template <class T>
 void LineSegment<T>::translate(const Vec2<T>& v)
 {
-
-}
-template <class T>
-void LineSegment<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class T>
-void LineSegment<T>::scale(const Vec2<T>& c, const T s)
-{
-
+    begin.translate(v);
+    end.translate(v);
 }
 template <class T>
 void LineSegment<T>::scale(const Vec2<T>& s)
 {
-
-}
-template <class T>
-void LineSegment<T>::scale(const T s)
-{
-
+    begin.scale(s);
+    end.scale(s);
 }
 template <class T>
 void LineSegment<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)

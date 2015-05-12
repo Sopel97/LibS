@@ -29,11 +29,8 @@ public:
 
     void setDirection(const Vec2<T>& d);
 
-    void translate(const Vec2<T>& v);
-    void scale(const Vec2<T>& c, const Vec2<T>& s);
-    void scale(const Vec2<T>& c, const T s);
-    void scale(const Vec2<T>& s);
-    void scale(const T s);
+    virtual void translate(const Vec2<T>& v);
+    virtual void scale(const Vec2<T>& s);
 
     virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
     virtual void transform(const Transformation2<T>& transformation);

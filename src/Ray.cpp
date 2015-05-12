@@ -54,29 +54,15 @@ void Ray<T>::setDirection(const Vec2<T>& d)
 template <class T>
 void Ray<T>::translate(const Vec2<T>& v)
 {
-    origin += v;
-}
-template <class T>
-void Ray<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class T>
-void Ray<T>::scale(const Vec2<T>& c, const T s)
-{
-
+    origin.translate(v);
 }
 template <class T>
 void Ray<T>::scale(const Vec2<T>& s)
 {
-
+    origin.scale(s);
+    direction.scale(s);
+    direction.normalize();
 }
-template <class T>
-void Ray<T>::scale(const T s)
-{
-
-}
-
 template <class T>
 void Ray<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
 {

@@ -45,10 +45,10 @@ public:
     virtual Polyline<T> asPolyline() const;
 
     virtual void translate(const Vec2<T>& v) = 0;
-    virtual void scale(const Vec2<T>& c, const Vec2<T>& s) = 0;
-    virtual void scale(const Vec2<T>& c, const T s) = 0;
+    virtual void scale(const Vec2<T>& c, const Vec2<T>& s);
+    virtual void scale(const Vec2<T>& c, const T s);
     virtual void scale(const Vec2<T>& s) = 0;
-    virtual void scale(const T s) = 0;
+    virtual void scale(const T s);
 
     virtual Vec2<T> project(const Vec2<T>& b) const;
     virtual std::pair<T, T> projectMinMax(const Vec2<T>& b) const; //min and max values after projecting onto line
@@ -76,8 +76,8 @@ public:
 
     virtual Vec2<T> center() const;
     virtual T area() const;
+    virtual T signedArea() const;
     virtual bool isConvex() const;
-    //virtual T area() const; //TODO: this
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const = 0;

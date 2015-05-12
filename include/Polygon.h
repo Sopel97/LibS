@@ -54,11 +54,8 @@ public:
     void add(Vec2<T>&& v);
     void add(std::vector<T>&& v);
 
-    void translate(const Vec2<T>& v);
-    void scale(const Vec2<T>& c, const Vec2<T>& s);
-    void scale(const Vec2<T>& c, const T s);
-    void scale(const Vec2<T>& s);
-    void scale(const T s);
+    virtual void translate(const Vec2<T>& v);
+    virtual void scale(const Vec2<T>& s);
 
     Vec2<T> project(const Vec2<T>& b) const;
     std::pair<T, T> projectMinMax(const Vec2<T>& b) const;
@@ -76,6 +73,7 @@ public:
     Polyline<T> asPolyline() const;
     virtual Vec2<T> center() const;
     virtual bool isConvex() const;
+    virtual T area() const;
 
     //bool isConvex() const; //TODO: this
     //bool isConcave() const; //TODO: this

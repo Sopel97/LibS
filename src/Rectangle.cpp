@@ -58,27 +58,14 @@ T Rectangle<T>::height() const
 template <class T>
 void Rectangle<T>::translate(const Vec2<T>& v)
 {
-
-}
-template <class T>
-void Rectangle<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class T>
-void Rectangle<T>::scale(const Vec2<T>& c, const T s)
-{
-
+    min.translate(v);
+    max.translate(v);
 }
 template <class T>
 void Rectangle<T>::scale(const Vec2<T>& s)
 {
-
-}
-template <class T>
-void Rectangle<T>::scale(const T s)
-{
-
+    min.scale(s);
+    max.scale(s);
 }
 template <class T>
 void Rectangle<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
@@ -137,6 +124,11 @@ template <class T>
 Vec2<T> Rectangle<T>::center() const
 {
     return (min + max) / 2.0;
+}
+template <class T>
+T Rectangle<T>::area() const
+{
+    return (max.x-min.x)*(max.y-min.y);
 }
 
 /* INTERSECTIONS */

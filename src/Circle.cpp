@@ -41,22 +41,13 @@ Circle<T>& Circle<T>::operator -=(const Vec2<T>& v)
 template <class T>
 void Circle<T>::translate(const Vec2<T>& v)
 {
-
+    origin.translate(v);
 }
 template <class T>
-void Circle<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
+void Circle<T>::scale(const Vec2<T>& s) //undefined when s.x != s.y
 {
-
-}
-template <class T>
-void Circle<T>::scale(const Vec2<T>& c, const T s)
-{
-
-}
-template <class T>
-void Circle<T>::scale(const Vec2<T>& s)
-{
-
+    radius *= s.x;
+    origin.scale(s);
 }
 template <class T>
 void Circle<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
@@ -90,12 +81,6 @@ Circle<T> Circle<T>::transformed(const Transformation2<T>& transformation) const
     copy.transform(transformation);
     return copy;
 }
-template <class T>
-void Circle<T>::scale(const T s)
-{
-
-}
-
 template <class T>
 Polyline<T> Circle<T>::asPolyline() const
 {
@@ -131,6 +116,11 @@ Vec2<T> Circle<T>::center() const
     return origin;
 }
 
+template <class T>
+T Circle<T>::area() const
+{
+    return PI*radius*radius;
+}
 /* INTERSECTIONS */
 
 //for double dispatch

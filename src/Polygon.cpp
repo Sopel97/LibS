@@ -91,27 +91,18 @@ void Polygon<T>::add(std::vector<T>&& v)
 template <class T>
 void Polygon<T>::translate(const Vec2<T>& v)
 {
-
-}
-template <class T>
-void Polygon<T>::scale(const Vec2<T>& c, const Vec2<T>& s)
-{
-
-}
-template <class T>
-void Polygon<T>::scale(const Vec2<T>& c, const T s)
-{
-
+    for(auto& vert : vertices)
+    {
+        vert.translate(v);
+    }
 }
 template <class T>
 void Polygon<T>::scale(const Vec2<T>& s)
 {
-
-}
-template <class T>
-void Polygon<T>::scale(const T s)
-{
-
+    for(auto& vert : vertices)
+    {
+        vert.scale(s);
+    }
 }
 template <class T>
 void Polygon<T>::transform(const std::function<void(Vec2<T>&)>& transformationFunction)
@@ -223,7 +214,7 @@ template <class T>
 bool Polygon<T>::isConvex() const
 {
     size_t numberOfVertices = vertices.size();
-    T lastCross = 0.0; //will be initialized by correct cross when i equals 0 in the loop
+    T prevCross = 0.0; //will be initialized by correct cross when i equals 0 in the loop
     for(size_t i = 0; i < numberOfVertices; ++i)
     {
         const Vec2<T>& v0 = vertices[i];
@@ -236,11 +227,24 @@ bool Polygon<T>::isConvex() const
         T cross = e0.cross(e1);
         if(i != 0)
         {
-            if(cross * lastCross < 0.0) return false; //if cross and last cross have different signs
+            if(cross * prevCross < 0.0) return false; //if cross and prev cross have different signs
         }
-        lastCross = cross;
+        prevCross = cross;
     }
     return true;
+}
+template <class T>
+T Polygon<T>::area() const
+{
+    double area = 0.0;
+    for(size_t i = 0; i < size(); ++i)
+    {
+        const Vec2D& p0 = vertices[i];
+        const Vec2D& p1 = vertices[(i + 1) % size()];
+
+        area += (p0.x * p1.y) - (p1.x * p0.y);
+    }
+    return std::abs(area / 2.0);
 }
 
 template <class T>
