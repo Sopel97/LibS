@@ -126,7 +126,7 @@ Vec2<T> Rectangle<T>::center() const
     return (min + max) / 2.0;
 }
 template <class T>
-T Rectangle<T>::area() const
+T Rectangle<T>::signedArea() const
 {
     return (max.x-min.x)*(max.y-min.y);
 }
@@ -180,6 +180,50 @@ bool Rectangle<T>::intersects(const Vec2<T>& other) const
 {
     return Intersections::intersection(other, *this);
 }
+
+
+//specifications fo double dispatch
+template <class T>
+bool Rectangle<T>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Rectangle<T>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+
 
 template <class T>
 Rectangle<T> Rectangle<T>::unitRectangle()

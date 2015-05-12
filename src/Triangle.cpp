@@ -206,6 +206,50 @@ bool Triangle<T>::intersects(const Vec2<T>& other) const
     return Intersections::intersection(other, *this);
 }
 
+
+//specifications fo double dispatch
+template <class T>
+bool Triangle<T>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Triangle<T>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+
+
 template <class T>
 Triangle<T> Triangle<T>::equilateral(const Vec2D& center, const T base)
 {
@@ -234,10 +278,10 @@ std::unique_ptr<Shape2<T>> Triangle<T>::clone() const
     return std::make_unique<Triangle<T>>(*this);
 }
 template <class T>
-T Triangle<T>::area() const
+T Triangle<T>::signedArea() const //TODO: either this or polygon's poing picking function is wrong because the point distibution is not uniform in triangulated polygons
 {
     const Vec2<T>& a = vertices[0];
     const Vec2<T>& b = vertices[1];
     const Vec2<T>& c = vertices[2];
-    return std::abs(a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) / 2.0);
+    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) / 2.0;
 }

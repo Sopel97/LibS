@@ -150,6 +150,51 @@ bool Ray<T>::intersects(const Vec2<T>& other) const
 {
     return Intersections::intersection(other, *this);
 }
+
+
+//specifications fo double dispatch
+template <class T>
+bool Ray<T>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Ray<T>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+
+
 template <class T>
 std::unique_ptr<Shape2<T>> Ray<T>::clone() const
 {

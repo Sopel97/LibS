@@ -341,6 +341,50 @@ bool Vec2Proxy<T, X, Y>::intersects(const Vec2<T>& other) const
     return Intersections::intersection(other, Vec2<T>(*this));
 }
 
+
+//specifications fo double dispatch
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+template <class T, size_t X, size_t Y>
+bool Vec2Proxy<T, X, Y>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(Vec2<T>(*this), other);
+}
+
+
 template <class T, size_t X, size_t Y>
 Polyline<T> Vec2Proxy<T, X, Y>::asPolyline() const
 {
@@ -732,6 +776,51 @@ bool Vec2<T>::intersects(const Vec2<T>& other) const
 {
     return Intersections::intersection(other, *this);
 }
+
+
+//specifications fo double dispatch
+template <class T>
+bool Vec2<T>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Vec2<T>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+
+
 template <class T>
 std::unique_ptr<Shape2<T>> Vec2<T>::clone() const
 {

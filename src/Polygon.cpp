@@ -234,7 +234,7 @@ bool Polygon<T>::isConvex() const
     return true;
 }
 template <class T>
-T Polygon<T>::area() const
+T Polygon<T>::signedArea() const
 {
     double area = 0.0;
     for(size_t i = 0; i < size(); ++i)
@@ -244,7 +244,7 @@ T Polygon<T>::area() const
 
         area += (p0.x * p1.y) - (p1.x * p0.y);
     }
-    return std::abs(area / 2.0);
+    return area / 2.0;
 }
 
 template <class T>
@@ -299,6 +299,48 @@ template <class T>
 bool Polygon<T>::intersects(const Vec2<T>& other) const
 {
     return Intersections::intersection(other, *this);
+}
+
+//specifications fo double dispatch
+template <class T>
+bool Polygon<T>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Polygon<T>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
 }
 
 template <class T>

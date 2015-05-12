@@ -25,6 +25,10 @@ protected:
     bool snip(size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V);
 };
 
+typedef PolygonTriangulation<double> PolygonTriangulationD;
+typedef PolygonTriangulation<float> PolygonTriangulationF;
+typedef PolygonTriangulation<int> PolygonTriangulationI;
+
 #include "../src/PolygonTriangulation.cpp"
 
 #endif // POLYGONTRIANGULATION_H

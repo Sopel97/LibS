@@ -117,7 +117,7 @@ Vec2<T> Circle<T>::center() const
 }
 
 template <class T>
-T Circle<T>::area() const
+T Circle<T>::signedArea() const
 {
     return PI*radius*radius;
 }
@@ -169,6 +169,49 @@ template <class T>
 bool Circle<T>::intersects(const Vec2<T>& other) const
 {
     return Intersections::intersection(other, *this);
+}
+
+
+//specifications fo double dispatch
+template <class T>
+bool Circle<T>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class T>
+bool Circle<T>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
 }
 
 template <class T>

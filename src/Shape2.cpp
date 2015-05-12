@@ -127,7 +127,7 @@ Vec2<T> Shape2<T>::center() const
 template <class T>
 T Shape2<T>::area() const
 {
-    return 0.0;
+    return std::abs(signedArea());
 }
 template <class T>
 T Shape2<T>::signedArea() const

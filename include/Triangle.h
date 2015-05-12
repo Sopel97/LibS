@@ -55,11 +55,11 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
-    virtual T area() const;
+    virtual T signedArea() const;
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;
-    //specifications fo double dispatch
+    //specifications for double dispatch
     virtual bool intersects(const Circle<T>& other) const;
     virtual bool intersects(const LineSegment<T>& other) const;
     virtual bool intersects(const Polygon<T>& other) const;
@@ -68,6 +68,17 @@ public:
     virtual bool intersects(const Rectangle<T>& other) const;
     virtual bool intersects(const Triangle<T>& other) const;
     virtual bool intersects(const Vec2<T>& other) const;
+
+
+    //specifications for double dispatch
+    virtual bool contains(const Circle<T>& other) const;
+    virtual bool contains(const LineSegment<T>& other) const;
+    virtual bool contains(const Polygon<T>& other) const;
+    virtual bool contains(const Polyline<T>& other) const;
+    virtual bool contains(const Ray<T>& other) const;
+    virtual bool contains(const Rectangle<T>& other) const;
+    virtual bool contains(const Triangle<T>& other) const;
+    virtual bool contains(const Vec2<T>& other) const;
 
     static Triangle<T> equilateral(const Vec2D& center, const T base);
     static Triangle<T> isosceles(const Vec2D& center, const T base, const T height);

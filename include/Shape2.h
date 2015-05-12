@@ -91,6 +91,19 @@ public:
     virtual bool intersects(const Triangle<T>& other) const = 0;
     virtual bool intersects(const Vec2<T>& other) const = 0;
 
+
+    //for double dispatch
+    //virtual bool contains(const Shape2<T>* other) const = 0; this will require inversed function in other. I.e   inContained
+    //specifications fo double dispatch
+    virtual bool contains(const Circle<T>& other) const = 0;
+    virtual bool contains(const LineSegment<T>& other) const = 0;
+    virtual bool contains(const Polygon<T>& other) const = 0;
+    virtual bool contains(const Polyline<T>& other) const = 0;
+    virtual bool contains(const Ray<T>& other) const = 0;
+    virtual bool contains(const Rectangle<T>& other) const = 0;
+    virtual bool contains(const Triangle<T>& other) const = 0;
+    virtual bool contains(const Vec2<T>& other) const = 0;
+
     virtual std::unique_ptr<Shape2<T>> clone() const = 0;
 
     virtual ~Shape2(){}

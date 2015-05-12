@@ -47,6 +47,7 @@ public:
     Vec2<T> generateRandomSample() const;
 
     bool isWayClear(const Vec2<T>& begin, const Vec2<T>& end) const;
+    bool isWayInsideShape(const Vec2<T>& begin, const Vec2<T>& end) const;
 
     std::vector<LineSegment<T>> edges() const;
 

@@ -31,7 +31,7 @@ void PolygonTriangulation<T>::calculate()
 
         size_t n = m_polygon.size();
         if(n < 3) return;
-        std::vector<size_t> V;
+        std::vector<size_t> V(n);
 
         /* we want a counter-clockwise polygon in V */
 
@@ -55,7 +55,7 @@ void PolygonTriangulation<T>::calculate()
             }
 
             /* three consecutive vertices in current polygon, <u,v,w> */
-            size_t u = v  ;
+            size_t u = v;
             if (nv <= u) u = 0;     /* previous */
             v = u + 1;
             if (nv <= v) v = 0;     /* new v    */
@@ -81,7 +81,6 @@ void PolygonTriangulation<T>::calculate()
                 count = 2 * nv;
             }
         }
-
     }
 }
 
@@ -99,9 +98,12 @@ const Polygon<T>& PolygonTriangulation<T>::polygon() const
 template <class T>
 bool PolygonTriangulation<T>::snip(size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
 {
-    Triangle<T> triangle(m_polygon.vertices[V[u]], m_polygon.vertices[V[v]], m_polygon.vertices[V[w]]);
+    const Vec2<T>& a = m_polygon.vertices[V[u]];
+    const Vec2<T>& b = m_polygon.vertices[V[v]];
+    const Vec2<T>& c = m_polygon.vertices[V[w]];
+    Triangle<T> triangle(a, b, c);
 
-    if(EPSILON > triangle.area()) return false; //(((Bx - Ax) * (Cy - Ay)) - ((By - Ay) * (Cx - Ax))) ) return false;
+    if(EPSILON > (((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x)))) return false; // i misinterpreted it as an area function earlier
 
     for (size_t p = 0; p < n; p++)
     {

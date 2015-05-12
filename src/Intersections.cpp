@@ -484,6 +484,44 @@ bool Intersections::intersection(const S& a, const Mesh2<T>& b)
     return intersection(b, a);
 }
 
+
+//meshes
+
+template <class T>
+bool Intersections::contains(const Mesh2<T>& a, const Mesh2<T>& b)
+{
+    size_t sizeA = a.size();
+    size_t sizeB = b.size();
+    for(int i = 0; i < sizeA; ++i)
+    {
+        for(int j = 0; j < sizeB; ++j)
+        {
+            if(!contains(a.elements[i], a.elements[j])) return false;
+        }
+    }
+    return true;
+}
+template <class T, class S>
+bool Intersections::contains(const Mesh2<T>& a, const S& b)
+{
+    int size = a.size();
+    for(int i = 0; i < size; ++i)
+    {
+        if(!contains(a.elements[i], b)) return false;
+    }
+    return true;
+}
+template <class T, class S>
+bool Intersections::contains(const S& a, const Mesh2<T>& b)
+{
+    int size = b.size();
+    for(int i = 0; i < size; ++i)
+    {
+        if(!contains(a, b.elements[i])) return false;
+    }
+    return true;
+}
+
 //temporary
 template <class T>
 bool Intersections::intersection(const Vec2<T>& a, const Vec2<T>& b)

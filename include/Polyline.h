@@ -57,7 +57,7 @@ public:
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;
-    //specifications fo double dispatch
+    //specifications for double dispatch
     virtual bool intersects(const Circle<T>& other) const;
     virtual bool intersects(const LineSegment<T>& other) const;
     virtual bool intersects(const Polygon<T>& other) const;
@@ -66,6 +66,17 @@ public:
     virtual bool intersects(const Rectangle<T>& other) const;
     virtual bool intersects(const Triangle<T>& other) const;
     virtual bool intersects(const Vec2<T>& other) const;
+
+
+    //specifications for double dispatch
+    virtual bool contains(const Circle<T>& other) const;
+    virtual bool contains(const LineSegment<T>& other) const;
+    virtual bool contains(const Polygon<T>& other) const;
+    virtual bool contains(const Polyline<T>& other) const;
+    virtual bool contains(const Ray<T>& other) const;
+    virtual bool contains(const Rectangle<T>& other) const;
+    virtual bool contains(const Triangle<T>& other) const;
+    virtual bool contains(const Vec2<T>& other) const;
 
     static Polyline<T> fromRectangle(const Rectangle<T>& rectangle);
     static Polyline<T> fromTriangle(const Triangle<T>& triangle);

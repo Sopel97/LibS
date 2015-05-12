@@ -266,6 +266,7 @@ template <class T>
 bool RapidlyExploringRandomTree<T>::isWayClear(const Vec2<T>& begin, const Vec2<T>& end) const
 {
     LineSegment<T> edge(begin, end);
+    if(!isWayInsideShape(begin, end)) return false;
     for(const auto& obstacle : m_obstacles)
     {
         if(obstacle->intersects(edge))
@@ -276,6 +277,12 @@ bool RapidlyExploringRandomTree<T>::isWayClear(const Vec2<T>& begin, const Vec2<
     return true;
 }
 
+template <class T>
+bool RapidlyExploringRandomTree<T>::isWayInsideShape(const Vec2<T>& begin, const Vec2<T>& end) const
+{
+    //return m_space->contains(LineSegment<T>(begin, end)); //this will be enabled when the containment methods get implemented
+    return true; //temporary
+}
 template <class T>
 std::vector<LineSegment<T>> RapidlyExploringRandomTree<T>::edges() const
 {

@@ -73,7 +73,7 @@ public:
     Polyline<T> asPolyline() const;
     virtual Vec2<T> center() const;
     virtual bool isConvex() const;
-    virtual T area() const;
+    virtual T signedArea() const;
 
     //bool isConvex() const; //TODO: this
     //bool isConcave() const; //TODO: this
@@ -82,7 +82,7 @@ public:
 
     //for double dispatch
     virtual bool intersects(const Shape2<T>* other) const;
-    //specifications fo double dispatch
+    //specifications for double dispatch
     virtual bool intersects(const Circle<T>& other) const;
     virtual bool intersects(const LineSegment<T>& other) const;
     virtual bool intersects(const Polygon<T>& other) const;
@@ -91,6 +91,17 @@ public:
     virtual bool intersects(const Rectangle<T>& other) const;
     virtual bool intersects(const Triangle<T>& other) const;
     virtual bool intersects(const Vec2<T>& other) const;
+
+
+    //specifications for double dispatch
+    virtual bool contains(const Circle<T>& other) const;
+    virtual bool contains(const LineSegment<T>& other) const;
+    virtual bool contains(const Polygon<T>& other) const;
+    virtual bool contains(const Polyline<T>& other) const;
+    virtual bool contains(const Ray<T>& other) const;
+    virtual bool contains(const Rectangle<T>& other) const;
+    virtual bool contains(const Triangle<T>& other) const;
+    virtual bool contains(const Vec2<T>& other) const;
 
     //static Polygon<T> randomInscribedInCircle(const Circle<T>& circle, int edges); later, when using Random.h will be somehow standarized
     static Polygon<T> regular(const Vec2D& center, int sides, int radius);

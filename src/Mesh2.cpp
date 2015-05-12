@@ -250,6 +250,51 @@ bool Mesh2<ShapeType>::intersects(const Vec2<T>& other) const
 {
     return Intersections::intersection(other, *this);
 }
+
+
+//specifications fo double dispatch
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Circle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const LineSegment<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Polygon<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Polyline<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Ray<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Rectangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Triangle<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+template <class ShapeType>
+bool Mesh2<ShapeType>::contains(const Vec2<T>& other) const
+{
+    return Intersections::contains(*this, other);
+}
+
+
 template <class ShapeType>
 std::unique_ptr<Shape2<typename Mesh2<ShapeType>::T>> Mesh2<ShapeType>::clone() const
 {

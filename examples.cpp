@@ -402,7 +402,8 @@ int main()
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(RectangleD(Vec2D{100.0, 100.0f}, 400.0, 400.0));
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(CircleD(Vec2D{300.0, 300.0f}, 200.0));
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(TriangleD(Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{200.0, 600.0f}));
-    RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{700.0, 600.0f}, Vec2D{50.0, 600.0f}, Vec2D{50.0, 300.0f}}));
+    //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{700.0, 600.0f}, Vec2D{50.0, 600.0f}, Vec2D{50.0, 300.0f}}));
+    RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D(700, 100),Vec2D(900, 100),Vec2D(820, 200),Vec2D(900, 300),Vec2D(800, 400),Vec2D(700, 300),Vec2D(780, 200)}));
     rapidlyExploringRandomTree.addObstacle(LineSegmentD(Vec2D{140, 140},Vec2D{450, 300}));
     rapidlyExploringRandomTree.addObstacle(RectangleD(Vec2D{200.0, 430.0f}, 200.0, 100.0));
     rapidlyExploringRandomTree.generateNodes(2000);
@@ -414,6 +415,22 @@ int main()
         edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(edge.begin.x), static_cast<float>(edge.begin.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
         edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(edge.end.x), static_cast<float>(edge.end.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
     }
+    PolygonD polygon({Vec2D(700, 100),Vec2D(900, 100),Vec2D(820, 200),Vec2D(900, 300),Vec2D(800, 400),Vec2D(700, 300),Vec2D(780, 200)});
+    PolygonTriangulationD triangulation(polygon);
+    triangulation.calculate();
+    /*for(const auto& triangle : triangulation.result().elements)
+    {
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[0].x), static_cast<float>(triangle.vertices[0].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[1].x), static_cast<float>(triangle.vertices[1].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[1].x), static_cast<float>(triangle.vertices[1].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[2].x), static_cast<float>(triangle.vertices[2].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[2].x), static_cast<float>(triangle.vertices[2].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+        edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[0].x), static_cast<float>(triangle.vertices[0].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
+    }*/
+
+
     for(;;)
     {
         al_get_keyboard_state(&keyboardState);
