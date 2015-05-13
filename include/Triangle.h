@@ -57,28 +57,10 @@ public:
     virtual Vec2<T> center() const;
     virtual T signedArea() const;
 
-    //for double dispatch
-    virtual bool intersects(const Shape2<T>* other) const;
-    //specifications for double dispatch
-    virtual bool intersects(const Circle<T>& other) const;
-    virtual bool intersects(const LineSegment<T>& other) const;
-    virtual bool intersects(const Polygon<T>& other) const;
-    virtual bool intersects(const Polyline<T>& other) const;
-    virtual bool intersects(const Ray<T>& other) const;
-    virtual bool intersects(const Rectangle<T>& other) const;
-    virtual bool intersects(const Triangle<T>& other) const;
-    virtual bool intersects(const Vec2<T>& other) const;
-
-
-    //specifications for double dispatch
-    virtual bool contains(const Circle<T>& other) const;
-    virtual bool contains(const LineSegment<T>& other) const;
-    virtual bool contains(const Polygon<T>& other) const;
-    virtual bool contains(const Polyline<T>& other) const;
-    virtual bool contains(const Ray<T>& other) const;
-    virtual bool contains(const Rectangle<T>& other) const;
-    virtual bool contains(const Triangle<T>& other) const;
-    virtual bool contains(const Vec2<T>& other) const;
+    virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
+    virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
+    virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+    SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     static Triangle<T> equilateral(const Vec2D& center, const T base);
     static Triangle<T> isosceles(const Vec2D& center, const T base, const T height);

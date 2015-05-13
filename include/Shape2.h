@@ -53,7 +53,7 @@ public:
     virtual Vec2<T> project(const Vec2<T>& b) const;
     virtual std::pair<T, T> projectMinMax(const Vec2<T>& b) const; //min and max values after projecting onto line
 
-    //transformations work pointwise. So a circle won't change into ellipse, rectangle won't rotate and such. Though it could change size even though it's not determined by any vector.
+    //transformations work pointwise for shape defining points. So a circle won't change into ellipse, rectangle won't rotate and such. Though it could change size even though it's not determined by any vector.
     virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction) = 0;
     virtual void transform(const Transformation2<T>& transformation) = 0;
 
@@ -79,30 +79,7 @@ public:
     virtual T signedArea() const;
     virtual bool isConvex() const;
 
-    //for double dispatch
-    virtual bool intersects(const Shape2<T>* other) const = 0;
-    //specifications fo double dispatch
-    virtual bool intersects(const Circle<T>& other) const = 0;
-    virtual bool intersects(const LineSegment<T>& other) const = 0;
-    virtual bool intersects(const Polygon<T>& other) const = 0;
-    virtual bool intersects(const Polyline<T>& other) const = 0;
-    virtual bool intersects(const Ray<T>& other) const = 0;
-    virtual bool intersects(const Rectangle<T>& other) const = 0;
-    virtual bool intersects(const Triangle<T>& other) const = 0;
-    virtual bool intersects(const Vec2<T>& other) const = 0;
-
-
-    //for double dispatch
-    //virtual bool contains(const Shape2<T>* other) const = 0; this will require inversed function in other. I.e   inContained
-    //specifications fo double dispatch
-    virtual bool contains(const Circle<T>& other) const = 0;
-    virtual bool contains(const LineSegment<T>& other) const = 0;
-    virtual bool contains(const Polygon<T>& other) const = 0;
-    virtual bool contains(const Polyline<T>& other) const = 0;
-    virtual bool contains(const Ray<T>& other) const = 0;
-    virtual bool contains(const Rectangle<T>& other) const = 0;
-    virtual bool contains(const Triangle<T>& other) const = 0;
-    virtual bool contains(const Vec2<T>& other) const = 0;
+    SHAPE2_PURE_VIRTUAL_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const = 0;
 

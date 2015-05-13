@@ -213,16 +213,20 @@ public:
 
 
     //Meshes
-    template <class T>
-    static bool intersection(const Mesh2<T>& a, const Mesh2<T>& b);
+    template <class T, class V>
+    static bool intersection(const Mesh2<T>& a, const Mesh2<V>& b);
     template <class T, class S>
     static bool intersection(const Mesh2<T>& a, const S& b);
     template <class T, class S>
     static bool intersection(const S& a, const Mesh2<T>& b);
 
-
-
-
+    //Polymorphic
+    template <class T>
+    static bool intersection(const Shape2<T>& a, const Shape2<T>& b);
+    template <class T, class S>
+    static bool intersection(const Shape2<T>& a, const S& b);
+    template <class T, class S>
+    static bool intersection(const S& a, const Shape2<T>& b);
 
 
     /*
@@ -234,7 +238,7 @@ public:
     */
 
 
-    //WARNING: Some contains are not defined. Those will always return false!!!
+    //WARNING: Some contains are not defined. They will always return false!!!
 
     //2D shapes
     //Vec2
@@ -275,21 +279,21 @@ public:
 
     //Rectangle
     template <class T>
-    static bool contains(const Rectangle<T>& a, const Circle<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const Circle<T>& b);
     template <class T>
-    static bool contains(const Rectangle<T>& a, const LineSegment<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const LineSegment<T>& b);
     template <class T>
-    static bool contains(const Rectangle<T>& a, const Polygon<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const Polygon<T>& b);
     template <class T>
-    static bool contains(const Rectangle<T>& a, const Polyline<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const Polyline<T>& b);
     template <class T>
     static bool contains(const Rectangle<T>& a, const Ray<T>& b){return false;}
     template <class T>
-    static bool contains(const Rectangle<T>& a, const Rectangle<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const Rectangle<T>& b);
     template <class T>
-    static bool contains(const Rectangle<T>& a, const Triangle<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const Triangle<T>& b);
     template <class T>
-    static bool contains(const Rectangle<T>& a, const Vec2<T>& b){return false;}
+    static bool contains(const Rectangle<T>& a, const Vec2<T>& b);
 
     //Circle
     template <class T>
@@ -313,19 +317,19 @@ public:
     template <class T>
     static bool contains(const Triangle<T>& a, const Circle<T>& b){return false;}
     template <class T>
-    static bool contains(const Triangle<T>& a, const LineSegment<T>& b){return false;}
+    static bool contains(const Triangle<T>& a, const LineSegment<T>& b);
     template <class T>
-    static bool contains(const Triangle<T>& a, const Polygon<T>& b){return false;}
+    static bool contains(const Triangle<T>& a, const Polygon<T>& b);
     template <class T>
-    static bool contains(const Triangle<T>& a, const Polyline<T>& b){return false;}
+    static bool contains(const Triangle<T>& a, const Polyline<T>& b);
     template <class T>
     static bool contains(const Triangle<T>& a, const Ray<T>& b){return false;}
     template <class T>
-    static bool contains(const Triangle<T>& a, const Rectangle<T>& b){return false;}
+    static bool contains(const Triangle<T>& a, const Rectangle<T>& b);
     template <class T>
-    static bool contains(const Triangle<T>& a, const Triangle<T>& b){return false;}
+    static bool contains(const Triangle<T>& a, const Triangle<T>& b);
     template <class T>
-    static bool contains(const Triangle<T>& a, const Vec2<T>& b){return false;}
+    static bool contains(const Triangle<T>& a, const Vec2<T>& b);
 
     //Polygon
     template <class T>
@@ -382,12 +386,24 @@ public:
     static bool contains(const Ray<T>& a, const Vec2<T>& b){return false;}
 
     //Meshes
-    template <class T>
-    static bool contains(const Mesh2<T>& a, const Mesh2<T>& b);
+    template <class T, class V>
+    static bool contains(const Mesh2<T>& a, const Mesh2<V>& b);
     template <class T, class S>
     static bool contains(const Mesh2<T>& a, const S& b);
     template <class T, class S>
     static bool contains(const S& a, const Mesh2<T>& b);
+
+    //Polymorphic
+    template <class T>
+    static bool contains(const Shape2<T>& a, const Shape2<T>& b);
+    template <class T, class S>
+    static bool contains(const Shape2<T>& a, const S& b);
+    template <class T, class S>
+    static bool contains(const S& a, const Shape2<T>& b);
+
+    // Inverse
+    template <class A, class B>
+    static bool isContained(const A& a, const B& b){return contains(a,b);} //one is sufficient because it's just an inverse
 
 private:
     Intersections() {}

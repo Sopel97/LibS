@@ -43,28 +43,10 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
-    //for double dispatch
-    virtual bool intersects(const Shape2<T>* other) const;
-    //specifications for double dispatch
-    virtual bool intersects(const Circle<T>& other) const;
-    virtual bool intersects(const LineSegment<T>& other) const;
-    virtual bool intersects(const Polygon<T>& other) const;
-    virtual bool intersects(const Polyline<T>& other) const;
-    virtual bool intersects(const Ray<T>& other) const;
-    virtual bool intersects(const Rectangle<T>& other) const;
-    virtual bool intersects(const Triangle<T>& other) const;
-    virtual bool intersects(const Vec2<T>& other) const;
-
-
-    //specifications for double dispatch
-    virtual bool contains(const Circle<T>& other) const;
-    virtual bool contains(const LineSegment<T>& other) const;
-    virtual bool contains(const Polygon<T>& other) const;
-    virtual bool contains(const Polyline<T>& other) const;
-    virtual bool contains(const Ray<T>& other) const;
-    virtual bool contains(const Rectangle<T>& other) const;
-    virtual bool contains(const Triangle<T>& other) const;
-    virtual bool contains(const Vec2<T>& other) const;
+    virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
+    virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
+    virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+    SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     bool intersects(const LineSegment<T>& lineSegment, Vec2<T>& intersectionPoint) const;
 

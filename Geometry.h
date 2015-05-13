@@ -12,6 +12,125 @@
 //maybe will be renamed to Shapes and some functions will be extracted to other files
 namespace Geo
 {
+
+//for double dispatch of some shape2 functions
+
+#define SHAPE2_PURE_VIRTUAL_DOUBLE_DISPATCHING_METHODS \
+    virtual bool intersects(const Shape2<T>* other) const                = 0;\
+\
+    virtual bool intersects(const Circle<T>& other) const                = 0;\
+    virtual bool intersects(const LineSegment<T>& other) const           = 0;\
+    virtual bool intersects(const Polygon<T>& other) const               = 0;\
+    virtual bool intersects(const Polyline<T>& other) const              = 0;\
+    virtual bool intersects(const Ray<T>& other) const                   = 0;\
+    virtual bool intersects(const Rectangle<T>& other) const             = 0;\
+    virtual bool intersects(const Triangle<T>& other) const              = 0;\
+    virtual bool intersects(const Vec2<T>& other) const                  = 0;\
+\
+    virtual bool intersects(const Mesh2<Circle<T>>& other) const         = 0;\
+    virtual bool intersects(const Mesh2<LineSegment<T>>& other) const    = 0;\
+    virtual bool intersects(const Mesh2<Polygon<T>>& other) const        = 0;\
+    virtual bool intersects(const Mesh2<Polyline<T>>& other) const       = 0;\
+    virtual bool intersects(const Mesh2<Ray<T>>& other) const            = 0;\
+    virtual bool intersects(const Mesh2<Rectangle<T>>& other) const      = 0;\
+    virtual bool intersects(const Mesh2<Triangle<T>>& other) const       = 0;\
+    virtual bool intersects(const Mesh2<Vec2<T>>& other) const           = 0;\
+\
+    virtual bool contains(const Shape2<T>* other) const                  = 0;\
+\
+    virtual bool contains(const Circle<T>& other) const                  = 0;\
+    virtual bool contains(const LineSegment<T>& other) const             = 0;\
+    virtual bool contains(const Polygon<T>& other) const                 = 0;\
+    virtual bool contains(const Polyline<T>& other) const                = 0;\
+    virtual bool contains(const Ray<T>& other) const                     = 0;\
+    virtual bool contains(const Rectangle<T>& other) const               = 0;\
+    virtual bool contains(const Triangle<T>& other) const                = 0;\
+    virtual bool contains(const Vec2<T>& other) const                    = 0;\
+\
+    virtual bool contains(const Mesh2<Circle<T>>& other) const           = 0;\
+    virtual bool contains(const Mesh2<LineSegment<T>>& other) const      = 0;\
+    virtual bool contains(const Mesh2<Polygon<T>>& other) const          = 0;\
+    virtual bool contains(const Mesh2<Polyline<T>>& other) const         = 0;\
+    virtual bool contains(const Mesh2<Ray<T>>& other) const              = 0;\
+    virtual bool contains(const Mesh2<Rectangle<T>>& other) const        = 0;\
+    virtual bool contains(const Mesh2<Triangle<T>>& other) const         = 0;\
+    virtual bool contains(const Mesh2<Vec2<T>>& other) const             = 0;\
+\
+    virtual bool isContained(const Shape2<T>* other) const               = 0;\
+\
+    virtual bool isContained(const Circle<T>& other) const               = 0;\
+    virtual bool isContained(const LineSegment<T>& other) const          = 0;\
+    virtual bool isContained(const Polygon<T>& other) const              = 0;\
+    virtual bool isContained(const Polyline<T>& other) const             = 0;\
+    virtual bool isContained(const Ray<T>& other) const                  = 0;\
+    virtual bool isContained(const Rectangle<T>& other) const            = 0;\
+    virtual bool isContained(const Triangle<T>& other) const             = 0;\
+    virtual bool isContained(const Vec2<T>& other) const                 = 0;\
+\
+    virtual bool isContained(const Mesh2<Circle<T>>& other) const        = 0;\
+    virtual bool isContained(const Mesh2<LineSegment<T>>& other) const   = 0;\
+    virtual bool isContained(const Mesh2<Polygon<T>>& other) const       = 0;\
+    virtual bool isContained(const Mesh2<Polyline<T>>& other) const      = 0;\
+    virtual bool isContained(const Mesh2<Ray<T>>& other) const           = 0;\
+    virtual bool isContained(const Mesh2<Rectangle<T>>& other) const     = 0;\
+    virtual bool isContained(const Mesh2<Triangle<T>>& other) const      = 0;\
+    virtual bool isContained(const Mesh2<Vec2<T>>& other) const          = 0;
+
+#define SHAPE2_DOUBLE_DISPATCHING_METHODS \
+    virtual bool intersects(const Circle<T>& other) const                {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const LineSegment<T>& other) const           {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Polygon<T>& other) const               {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Polyline<T>& other) const              {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Ray<T>& other) const                   {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Rectangle<T>& other) const             {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Triangle<T>& other) const              {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Vec2<T>& other) const                  {return Intersections::intersection(other, *this);}\
+\
+    virtual bool intersects(const Mesh2<Circle<T>>& other) const         {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<LineSegment<T>>& other) const    {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<Polygon<T>>& other) const        {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<Polyline<T>>& other) const       {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<Ray<T>>& other) const            {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<Rectangle<T>>& other) const      {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<Triangle<T>>& other) const       {return Intersections::intersection(other, *this);}\
+    virtual bool intersects(const Mesh2<Vec2<T>>& other) const           {return Intersections::intersection(other, *this);}\
+\
+    virtual bool contains(const Circle<T>& other) const                  {return Intersections::contains(*this, other);}\
+    virtual bool contains(const LineSegment<T>& other) const             {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Polygon<T>& other) const                 {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Polyline<T>& other) const                {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Ray<T>& other) const                     {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Rectangle<T>& other) const               {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Triangle<T>& other) const                {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Vec2<T>& other) const                    {return Intersections::contains(*this, other);}\
+\
+    virtual bool contains(const Mesh2<Circle<T>>& other) const           {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<LineSegment<T>>& other) const      {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<Polygon<T>>& other) const          {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<Polyline<T>>& other) const         {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<Ray<T>>& other) const              {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<Rectangle<T>>& other) const        {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<Triangle<T>>& other) const         {return Intersections::contains(*this, other);}\
+    virtual bool contains(const Mesh2<Vec2<T>>& other) const             {return Intersections::contains(*this, other);}\
+\
+    virtual bool isContained(const Circle<T>& other) const               {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const LineSegment<T>& other) const          {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Polygon<T>& other) const              {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Polyline<T>& other) const             {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Ray<T>& other) const                  {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Rectangle<T>& other) const            {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Triangle<T>& other) const             {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Vec2<T>& other) const                 {return Intersections::isContained(*this, other);}\
+\
+    virtual bool isContained(const Mesh2<Circle<T>>& other) const        {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<LineSegment<T>>& other) const   {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<Polygon<T>>& other) const       {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<Polyline<T>>& other) const      {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<Ray<T>>& other) const           {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<Rectangle<T>>& other) const     {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<Triangle<T>>& other) const      {return Intersections::isContained(*this, other);}\
+    virtual bool isContained(const Mesh2<Vec2<T>>& other) const          {return Intersections::isContained(*this, other);}
+
     namespace ___internal
     {
         template <class Type, Type...>
@@ -112,6 +231,8 @@ namespace Geo
 
     /*         HEADERS         */
 
+#include "include/Intersections.h"
+
 #include "include/Angle.h"
 #include "include/Shape.h"
 #include "include/Shape2.h"
@@ -132,7 +253,6 @@ namespace Geo
 #include "include/Polyline.h"
 #include "include/Mesh2.h"
 
-#include "include/Intersections.h"
 #include "include/Raycast.h"
 #include "include/Raycaster.h"
 
@@ -146,5 +266,7 @@ namespace Geo
 #include "include/Matrix3x3.h"
 #include "include/RapidlyExploringRandomTree.h"
 
+
+#undef SHAPE2_DOUBLE_DISPATCHING_METHODS
 }
 #endif // GEOMETRY_H_INCLUDED
