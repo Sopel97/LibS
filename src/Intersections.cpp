@@ -482,6 +482,165 @@ bool Intersections::intersection(const Ray<T>& a, const Circle<T>& b)
 {
     return intersection(b, a);
 }
+template <class T>
+bool Intersections::intersection(const LineSegment<T>& a, const Ray<T>& b)
+{
+    const T& rdx = b.direction.x;
+    const T& rdy = b.direction.y;
+    const T& rox = b.origin.x;
+    const T& roy = b.origin.y;
+
+    const T& sbx = a.begin.x;
+    const T& sby = a.begin.y;
+
+    Vec2<T> sd = (a.end - a.begin);
+    const T& sdx = sd.x;
+    const T& sdy = sd.y;
+
+    /*
+        v1 = ray.origin - lineSegment.begin
+        v2 = lineSegment.end - lineSegment.begin
+        v3 = ray.direction.normal() //perpendicular
+        t1 = (v1 . v3) / (v2 . v3)
+    */
+    T t1 = (rdx * (sby - roy) + rdy * (rox - sbx)) / (sdx * rdy - sdy * rdx);
+    T t0 = (sbx + sdx * t1 - rox) / rdx;
+    return (t0 >= 0.0 && t1 >= 0.0 && t1 <= 1.0);
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const LineSegment<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Rectangle<T>& a, const Ray<T>& b)
+{
+    if(intersection(b.origin, a)) return true;
+
+    if(intersection(LineSegment<T>(a.min, Vec2<T>(a.min.x, a.max.y)), b)) return true;
+    if(intersection(LineSegment<T>(a.min, Vec2<T>(a.max.x, a.min.y)), b)) return true;
+    if(intersection(LineSegment<T>(a.max, Vec2<T>(a.min.x, a.max.y)), b)) return true;
+    if(intersection(LineSegment<T>(a.max, Vec2<T>(a.max.x, a.min.y)), b)) return true;
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Rectangle<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Circle<T>& a, const Polygon<T>& b)
+{
+    if(intersection(a.origin, b)) return true;
+
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[(i + 1) % polySize];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), a)) return true;
+    }
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Polygon<T>& a, const Circle<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Circle<T>& a, const Polyline<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[i + 1];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), a)) return true;
+    }
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Polyline<T>& a, const Circle<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Circle<T>& a, const Triangle<T>& b)
+{
+    if(intersection(a.origin, b)) return true;
+
+    if(intersection(LineSegment<T>(b.vertices[0], b.vertices[1]), b)) return true;
+    if(intersection(LineSegment<T>(b.vertices[1], b.vertices[2]), b)) return true;
+    if(intersection(LineSegment<T>(b.vertices[2], b.vertices[0]), b)) return true;
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Triangle<T>& a, const Circle<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Triangle<T>& b)
+{
+    if(intersection(a.origin, b)) return true;
+
+    if(intersection(LineSegment<T>(b.vertices[0], b.vertices[1]), b)) return true;
+    if(intersection(LineSegment<T>(b.vertices[1], b.vertices[2]), b)) return true;
+    if(intersection(LineSegment<T>(b.vertices[2], b.vertices[0]), b)) return true;
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Triangle<T>& a, const Ray<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Polyline<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[i + 1];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), a)) return true;
+    }
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Polyline<T>& a, const Ray<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Polygon<T>& b)
+{
+    if(intersection(a.origin, b)) return true;
+
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[(i + 1) % polySize];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), a)) return true;
+    }
+
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Polygon<T>& a, const Ray<T>& b)
+{
+    return intersection(b, a);
+}
 //meshes
 
 template <class T, class V>
