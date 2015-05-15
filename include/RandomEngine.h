@@ -1,6 +1,11 @@
 #ifndef RandomEngineT_H_INCLUDED
 #define RandomEngineT_H_INCLUDED
 
+// TODO: Rewrite all Random:: classes so they are not polymorphic
+//       Because it's not a needed feature and makes the maintanance
+//       Every place where it it's polymorphism is used can be rewritten to use templates.
+//       Places when polymorphism is required is very rarely seen with Random:: classes
+
 template <typename IntType>
 class RandomEngineT : public RandomEngineBase
 {

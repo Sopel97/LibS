@@ -69,6 +69,11 @@ T Vec2Proxy<T, X, Y>::distanceTo(const Vec2<T>& v1) const
     return std::sqrt(dx * dx + dy * dy);
 }
 template <class T, size_t X, size_t Y>
+T Vec2Proxy<T, X, Y>::distanceTo(const LineSegment<T>& lineSegment) const
+{
+    return distanceTo(lineSegment.nearestPointTo(Vec2<T>(*this)));
+}
+template <class T, size_t X, size_t Y>
 void Vec2Proxy<T, X, Y>::normalize()
 {
     T invertedSquareRoot = 1. / std::sqrt(getX() * getX() + getY() * getY());
@@ -414,6 +419,11 @@ T Vec2<T>::distanceTo(const Vec2<T>& v1) const
     T dx = x - v1.x;
     T dy = y - v1.y;
     return std::sqrt(dx * dx + dy * dy);
+}
+template <class T>
+T Vec2<T>::distanceTo(const LineSegment<T>& lineSegment) const
+{
+    return distanceTo(lineSegment.nearestPointTo(*this));
 }
 template <class T>
 void Vec2<T>::normalize()

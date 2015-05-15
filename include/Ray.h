@@ -27,6 +27,9 @@ public:
     Ray<T> operator-(const Vec2<T>& v) const;
     Ray<T>& operator-=(const Vec2<T>& v);
 
+    T distanceTo(const Vec2<T>& point) const;
+    Vec2<T> nearestPointTo(const Vec2<T>& point) const; //TODO: maybe make this a virtual function and write it for all shape2s?
+
     void setDirection(const Vec2<T>& d);
 
     virtual void translate(const Vec2<T>& v);

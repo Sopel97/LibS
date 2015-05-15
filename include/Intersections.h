@@ -58,13 +58,13 @@ public:
     template <class T>
     static bool intersection(const Vec2<T>& a, const Circle<T>& b);
     template <class T>
-    static bool intersection(const Vec2<T>& a, const LineSegment<T>& b){return false;}
+    static bool intersection(const Vec2<T>& a, const LineSegment<T>& b);
     template <class T>
     static bool intersection(const Vec2<T>& a, const Polygon<T>& b);
     template <class T>
-    static bool intersection(const Vec2<T>& a, const Polyline<T>& b){return false;}
+    static bool intersection(const Vec2<T>& a, const Polyline<T>& b);
     template <class T>
-    static bool intersection(const Vec2<T>& a, const Ray<T>& b){return false;}
+    static bool intersection(const Vec2<T>& a, const Ray<T>& b);
     template <class T>
     static bool intersection(const Vec2<T>& a, const Rectangle<T>& b);
     template <class T>
@@ -90,7 +90,7 @@ public:
     template <class T>
     static bool intersection(const LineSegment<T>& a, const Triangle<T>& b);
     template <class T>
-    static bool intersection(const LineSegment<T>& a, const Vec2<T>& b){return false;}
+    static bool intersection(const LineSegment<T>& a, const Vec2<T>& b);
 
     //Rectangle
     template <class T>
@@ -180,7 +180,7 @@ public:
     template <class T>
     static bool intersection(const Polyline<T>& a, const Triangle<T>& b);
     template <class T>
-    static bool intersection(const Polyline<T>& a, const Vec2<T>& b){return false;}
+    static bool intersection(const Polyline<T>& a, const Vec2<T>& b);
 
     //Ray
     template <class T>
@@ -192,13 +192,13 @@ public:
     template <class T>
     static bool intersection(const Ray<T>& a, const Polyline<T>& b);
     template <class T>
-    static bool intersection(const Ray<T>& a, const Ray<T>& b){return false;}
+    static bool intersection(const Ray<T>& a, const Ray<T>& b);
     template <class T>
     static bool intersection(const Ray<T>& a, const Rectangle<T>& b);
     template <class T>
     static bool intersection(const Ray<T>& a, const Triangle<T>& b);
     template <class T>
-    static bool intersection(const Ray<T>& a, const Vec2<T>& b){return false;}
+    static bool intersection(const Ray<T>& a, const Vec2<T>& b);
 
     //3D shapes
     //Vec3

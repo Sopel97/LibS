@@ -30,6 +30,7 @@ public:
     T magnitude() const;
     T quadrance() const;
     T distanceTo(const Vec2<T>& v1) const;
+    T distanceTo(const LineSegment<T>& lineSegment) const;
     void normalize();
     Vec2<T> normalized() const;
     Vec2<T> normalLeft() const;
@@ -179,6 +180,7 @@ public:
     T magnitude() const;
     T quadrance() const;
     T distanceTo(const Vec2<T>& v1) const;
+    T distanceTo(const LineSegment<T>& lineSegment) const;
     void normalize();
     Vec2<T> normalized() const;
     Vec2<T> normalLeft() const;

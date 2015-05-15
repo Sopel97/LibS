@@ -28,6 +28,8 @@ public:
     LineSegment<T>& operator-=(const Vec2<T>& v);
 
     T length() const;
+    T distanceTo(const Vec2<T>& point) const;
+    Vec2<T> nearestPointTo(const Vec2<T>& point) const; //TODO: maybe make this a virtual function and write it for all shape2s?
 
     virtual void translate(const Vec2<T>& v);
     virtual void scale(const Vec2<T>& s);

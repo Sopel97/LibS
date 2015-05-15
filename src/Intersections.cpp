@@ -38,6 +38,54 @@ bool Intersections::intersection(const Circle<T>& a, const Vec2<T>& b)
 }
 
 template <class T>
+bool Intersections::intersection(const Vec2<T>& a, const LineSegment<T>& b)
+{
+    Vec2<T> t = (b.end - b.begin) / (a - b.begin);
+    if(std::abs(t.x - t.y) < EPSILON)
+    {
+        if(t.x >= 0.0 && t.x < 1.0) return true;
+    }
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const LineSegment<T>& a, const Vec2<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Vec2<T>& a, const Ray<T>& b)
+{
+    Vec2<T> t = (b.direction - b.origin) / (a - b.origin);
+    if(std::abs(t.x - t.y) < EPSILON)
+    {
+        if(t.x >= 0.0) return true;
+    }
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Vec2<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Vec2<T>& a, const Polyline<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[i + 1];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), a)) return true;
+    }
+    return false;
+}
+template <class T>
+bool Intersections::intersection(const Polyline<T>& a, const Vec2<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
 bool Intersections::intersection(const Circle<T>& a, const Circle<T>& b)
 {
     double x = fabs(a.origin.x - b.origin.x);
@@ -455,12 +503,7 @@ bool Intersections::intersection(const Polygon<T>& a, const Polyline<T>& b)
 template <class T>
 bool Intersections::intersection(const Circle<T>& a, const LineSegment<T>& b)
 {
-    Vec2<T> AO = a.origin - b.begin;
-    Vec2<T> AB = b.end - b.begin;
-    T t = AO.dot(AB) / AB.quadrance();
-    t = clamp(t, T(0.0), T(1.0));
-    Vec2<T> closestPoint = b.begin + AB * t;
-    return intersection(a, closestPoint);
+    return intersection(a, b.nearestPointTo(a.origin));
 }
 template <class T>
 bool Intersections::intersection(const LineSegment<T>& a, const Circle<T>& b)
@@ -470,12 +513,7 @@ bool Intersections::intersection(const LineSegment<T>& a, const Circle<T>& b)
 template <class T>
 bool Intersections::intersection(const Circle<T>& a, const Ray<T>& b)
 {
-    Vec2<T> AO = a.origin - b.origin;
-    Vec2<T> AB = b.direction - b.origin;
-    T t = AO.dot(AB) / AB.quadrance();
-    t = std::min(T(0.0), t);
-    Vec2<T> closestPoint = b.origin + AB * t;
-    return intersection(a, closestPoint);
+    return intersection(a, b.nearestPointTo(a.origin));
 }
 template <class T>
 bool Intersections::intersection(const Ray<T>& a, const Circle<T>& b)
@@ -550,6 +588,26 @@ bool Intersections::intersection(const Polygon<T>& a, const Circle<T>& b)
 {
     return intersection(b, a);
 }
+
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Ray<T>& b)
+{
+    T d1x = a.direction.x;
+    T d1y = a.direction.y;
+    T o1x = a.origin.x;
+    T o1y = a.origin.y;
+
+    T d2x = b.direction.x;
+    T d2y = b.direction.y;
+    T o2x = b.origin.x;
+    T o2y = b.origin.y;
+
+    T t1 = (d1x * o2y - d1y * o2x + o1x * d1y - o1y * d1y) / (d1y * d2x - d1x * d2y);
+    T t2 = (o2x + d2x * t1 - o1x) / d1x;
+
+    return (t1 >= 0.0 && t2 >= 0.0);
+}
+
 template <class T>
 bool Intersections::intersection(const Circle<T>& a, const Polyline<T>& b)
 {
