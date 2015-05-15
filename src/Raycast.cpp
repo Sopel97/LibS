@@ -19,3 +19,9 @@ void Raycast<T>::sortHitPointsByDistance()
 {
     std::sort(hits.begin(), hits.end(), [](const Hit & lhs, const Hit & rhs)->bool {return lhs.distance < rhs.distance;});
 }
+
+template <class T>
+Raycast<T> Raycast<T>::empty(const Ray<T>& r)
+{
+    return Raycast<T>(r, std::vector<Raycast<T>::Hit>{});
+}

@@ -452,6 +452,36 @@ bool Intersections::intersection(const Polygon<T>& a, const Polyline<T>& b)
 {
     return intersection(b, a);
 }
+template <class T>
+bool Intersections::intersection(const Circle<T>& a, const LineSegment<T>& b)
+{
+    Vec2<T> AO = a.origin - b.begin;
+    Vec2<T> AB = b.end - b.begin;
+    T t = AO.dot(AB) / AB.quadrance();
+    t = clamp(t, T(0.0), T(1.0));
+    Vec2<T> closestPoint = b.begin + AB * t;
+    return intersection(a, closestPoint);
+}
+template <class T>
+bool Intersections::intersection(const LineSegment<T>& a, const Circle<T>& b)
+{
+    return intersection(b, a);
+}
+template <class T>
+bool Intersections::intersection(const Circle<T>& a, const Ray<T>& b)
+{
+    Vec2<T> AO = a.origin - b.origin;
+    Vec2<T> AB = b.direction - b.origin;
+    T t = AO.dot(AB) / AB.quadrance();
+    t = std::min(T(0.0), t);
+    Vec2<T> closestPoint = b.origin + AB * t;
+    return intersection(a, closestPoint);
+}
+template <class T>
+bool Intersections::intersection(const Ray<T>& a, const Circle<T>& b)
+{
+    return intersection(b, a);
+}
 //meshes
 
 template <class T, class V>
@@ -492,14 +522,15 @@ bool Intersections::contains(const Mesh2<T>& a, const Mesh2<V>& b)
 {
     size_t sizeA = a.size();
     size_t sizeB = b.size();
+    std::vector<int> contained(false, sizeB);
     for(size_t i = 0; i < sizeA; ++i)
     {
         for(size_t j = 0; j < sizeB; ++j)
         {
-            if(!contains(a.elements[i], a.elements[j])) return false;
+            if(contains(a.elements[i], b.elements[j])) contained[j] = true;
         }
     }
-    return true;
+    return std::find(contained.begin(), contained.end(), false) == contained.end();
 }
 template <class T, class S>
 bool Intersections::contains(const Mesh2<T>& a, const S& b)
@@ -507,9 +538,9 @@ bool Intersections::contains(const Mesh2<T>& a, const S& b)
     size_t size = a.size();
     for(size_t i = 0; i < size; ++i)
     {
-        if(!contains(a.elements[i], b)) return false;
+        if(contains(a.elements[i], b)) return true;
     }
-    return true;
+    return false;
 }
 template <class T, class S>
 bool Intersections::contains(const S& a, const Mesh2<T>& b)

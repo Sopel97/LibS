@@ -74,7 +74,7 @@ public:
 
     //LineSegment
     template <class T>
-    static bool intersection(const LineSegment<T>& a, const Circle<T>& b){return false;}
+    static bool intersection(const LineSegment<T>& a, const Circle<T>& b);
     template <class T>
     static bool intersection(const LineSegment<T>& a, const LineSegment<T>& b);
     template <class T>
@@ -114,13 +114,13 @@ public:
     template <class T>
     static bool intersection(const Circle<T>& a, const Circle<T>& b);
     template <class T>
-    static bool intersection(const Circle<T>& a, const LineSegment<T>& b){return false;}
+    static bool intersection(const Circle<T>& a, const LineSegment<T>& b);
     template <class T>
     static bool intersection(const Circle<T>& a, const Polygon<T>& b){return false;}
     template <class T>
     static bool intersection(const Circle<T>& a, const Polyline<T>& b){return false;}
     template <class T>
-    static bool intersection(const Circle<T>& a, const Ray<T>& b){return false;}
+    static bool intersection(const Circle<T>& a, const Ray<T>& b);
     template <class T>
     static bool intersection(const Circle<T>& a, const Rectangle<T>& b);
     template <class T>
@@ -184,7 +184,7 @@ public:
 
     //Ray
     template <class T>
-    static bool intersection(const Ray<T>& a, const Circle<T>& b){return false;}
+    static bool intersection(const Ray<T>& a, const Circle<T>& b);
     template <class T>
     static bool intersection(const Ray<T>& a, const LineSegment<T>& b){return false;}
     template <class T>

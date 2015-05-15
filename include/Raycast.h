@@ -28,6 +28,8 @@ public:
     size_t hitCount() const;
 
     void sortHitPointsByDistance();
+
+    static Raycast<T> empty(const Ray<T>& r);
 };
 
 typedef Raycast<double> RaycastD;

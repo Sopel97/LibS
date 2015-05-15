@@ -13,7 +13,7 @@ Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Circle<T>& circle)
     double b = 2.0 * px * dx - 2.0 * cx * dx + 2.0 * py * dy - 2.0 * cy * dy;
     double c = -(r * r - px * px - cx * cx - py * py - cy * cy + 2.0 * py * cy + 2.0 * px * cx);
     double delta = b * b - 4.0 * a * c;
-    if(delta < 0.0) Raycast<T>(ray, std::vector<typename Raycast<T>::Hit> {});
+    if(delta < 0.0) Raycast<T>::empty(ray);
 
     double sqrtDelta = sqrt(delta);
     double t1 = (-b - sqrtDelta) / (2.0 * a);
@@ -23,14 +23,14 @@ Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Circle<T>& circle)
     if(t1 < t2) std::swap(t1, t2);
     if(t1 >= 0.0)
     {
-        Vec2D collisionPoint = ray.origin + ray.direction * t1;
-        Vec2D n = ((circle.origin - collisionPoint) * -1.0).normalized();
+        Vec2<T> collisionPoint = ray.origin + ray.direction * t1;
+        Vec2<T> n = ((circle.origin - collisionPoint) * -1.0).normalized();
         hits.push_back(typename Raycast<T>::Hit {t1, n, collisionPoint});
     }
     if(t2 >= 0.0)
     {
-        Vec2D collisionPoint = ray.origin + ray.direction * t2;
-        Vec2D n = ((circle.origin - collisionPoint) * -1.0).normalized();
+        Vec2<T> collisionPoint = ray.origin + ray.direction * t2;
+        Vec2<T> n = ((circle.origin - collisionPoint) * -1.0).normalized();
         hits.push_back(typename Raycast<T>::Hit {t2, n, collisionPoint});
     }
     return Raycast<T>(ray, std::move(hits));
@@ -61,14 +61,14 @@ Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Mesh2<Circle<T>>& circleM
 
         if(t1 >= 0.0)
         {
-            Vec2D collisionPoint = ray.origin + ray.direction * t1;
-            Vec2D n = ((circle.origin - collisionPoint) * -1.0).normalized();
+            Vec2<T> collisionPoint = ray.origin + ray.direction * t1;
+            Vec2<T> n = ((circle.origin - collisionPoint) * -1.0).normalized();
             hits.push_back(typename Raycast<T>::Hit {t1, n, collisionPoint});
         }
         if(t2 >= 0.0)
         {
-            Vec2D collisionPoint = ray.origin + ray.direction * t2;
-            Vec2D n = ((circle.origin - collisionPoint) * -1.0).normalized();
+            Vec2<T> collisionPoint = ray.origin + ray.direction * t2;
+            Vec2<T> n = ((circle.origin - collisionPoint) * -1.0).normalized();
             hits.push_back(typename Raycast<T>::Hit {t2, n, collisionPoint});
         }
     }
@@ -81,18 +81,26 @@ Raycast<T> Raycaster::raycast(const Ray<T>& ray, const LineSegment<T>& lineSegme
 {
     double rdx = ray.direction.x;
     double rdy = ray.direction.y;
-    double spx = lineSegment.begin.x;
-    double spy = lineSegment.begin.y;
-    Vec2D sd = (lineSegment.end - lineSegment.begin);
+    double rox = ray.origin.x;
+    double roy = ray.origin.y;
+
+    double sbx = lineSegment.begin.x;
+    double sby = lineSegment.begin.y;
+
+    Vec2<T> sd = (lineSegment.end - lineSegment.begin);
     double sdx = sd.x;
     double sdy = sd.y;
-    double rpx = ray.origin.x;
-    double rpy = ray.origin.y;
 
-    double t1 = (rdx * (spy - rpy) + rdy * (rpx - spx)) / (sdx * rdy - sdy * rdx);
-    double t0 = (spx + sdx * t1 - rpx) / rdx;
-    if(t0 < 0.0 || t1 < 0.0 || t1 > 1.0) return Raycast<T>(ray, std::vector<typename Raycast<T>::Hit> {});
-    Vec2D collisionPoint = ray.origin + ray.direction * t0;
+    /*
+        v1 = ray.origin - lineSegment.begin
+        v2 = lineSegment.end - lineSegment.begin
+        v3 = ray.direction.normal() //perpendicular
+        t1 = (v1 . v3) / (v2 . v3)
+    */
+    double t1 = (rdx * (sby - roy) + rdy * (rox - sbx)) / (sdx * rdy - sdy * rdx);
+    double t0 = (sbx + sdx * t1 - rox) / rdx;
+    if(t0 < 0.0 || t1 < 0.0 || t1 > 1.0) return Raycast<T>::empty(ray);
+    Vec2<T> collisionPoint = ray.origin + ray.direction * t0;
     return Raycast<T>(ray, std::vector<typename Raycast<T>::Hit> {t0, (lineSegment.end - lineSegment.begin).normalRight(), collisionPoint});
 }
 template <class T>
@@ -107,18 +115,20 @@ Raycast<T> Raycaster::raycast(const Ray<T>& ray, const Polygon<T>& polygon)
         //LineSegment raycast
         double rdx = ray.direction.x;
         double rdy = ray.direction.y;
-        double spx = edge.begin.x;
-        double spy = edge.begin.y;
-        Vec2D sd = (edge.end - edge.begin);
+        double rox = ray.origin.x;
+        double roy = ray.origin.y;
+
+        double sbx = edge.begin.x;
+        double sby = edge.begin.y;
+
+        Vec2<T> sd = (edge.end - edge.begin);
         double sdx = sd.x;
         double sdy = sd.y;
-        double rpx = ray.origin.x;
-        double rpy = ray.origin.y;
 
-        double t1 = (rdx * (spy - rpy) + rdy * (rpx - spx)) / (sdx * rdy - sdy * rdx);
-        double t0 = (spx + sdx * t1 - rpx) / rdx;
+        double t1 = (rdx * (sby - roy) + rdy * (rox - sbx)) / (sdx * rdy - sdy * rdx);
+        double t0 = (sbx + sdx * t1 - rox) / rdx;
         if(t0 < 0.0 || t1 < 0.0 || t1 > 1.0) continue;
-        Vec2D collisionPoint = ray.origin + ray.direction * t0;
+        Vec2<T> collisionPoint = ray.origin + ray.direction * t0;
         hits.push_back(typename Raycast<T>::Hit {t0, (edge.end - edge.begin).normalRight(), collisionPoint});
     }
     Raycast<T> cast(ray, std::move(hits));
