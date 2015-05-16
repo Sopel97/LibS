@@ -11,9 +11,9 @@ public:
         Vec2D normal;
         Vec2D hitPoint;
     };
+
     Ray<T> ray; //read-only, will debate whether it should be a reference
     std::vector<Hit> hits; //distances
-
 
     Raycast() = default;
     Raycast(const Ray<T>& _ray, const std::vector<Hit>& _hits);

@@ -12,19 +12,21 @@ public:
     Circle(const Vec2<T>& p1, T r);
 
     Circle(const Circle<T>& c) = default;
+    template<class X>
+    Circle(const Circle<X>& c);
     Circle(Circle<T>&& c) = default;
+
+    virtual ~Circle(){}
 
     Circle& operator =(Circle<T> && c) = default;
     Circle& operator =(const Circle<T>& c) = default;
-
-    template<class X>
-    Circle(const Circle<X>& c);
     template<class X>
     Circle& operator =(const Circle<X>& c);
 
     Circle<T> operator +(const Vec2<T>& v) const;
-    Circle<T>& operator +=(const Vec2<T>& v);
     Circle<T> operator -(const Vec2<T>& v) const;
+
+    Circle<T>& operator +=(const Vec2<T>& v);
     Circle<T>& operator -=(const Vec2<T>& v);
 
     virtual void translate(const Vec2<T>& v);
@@ -48,8 +50,6 @@ public:
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~Circle(){}
 };
 
 typedef Circle<double> CircleD;

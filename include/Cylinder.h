@@ -12,20 +12,24 @@ public:
     Cylinder() = default;
     Cylinder(const Vec3<T>& p1, T r, T h);
 
-    Cylinder(const Cylinder<T>& c) = default;
-    Cylinder(Cylinder<T>&& c) = default;
-    Cylinder<T>& operator =(const Cylinder<T>& c) = default;
-    Cylinder<T>& operator =(Cylinder<T> && c) = default;
+    virtual ~Cylinder(){}
 
+    Cylinder(const Cylinder<T>& c) = default;
     template <class X>
     Cylinder(const Cylinder<X>& c);
+    Cylinder(Cylinder<T>&& c) = default;
+
+    Cylinder<T>& operator =(const Cylinder<T>& c) = default;
     template <class X>
     Cylinder<T>& operator =(const Cylinder<X>& c);
+    Cylinder<T>& operator =(Cylinder<T> && c) = default;
 
     Cylinder<T> operator +(const Vec3<T>& v) const;
-    Cylinder<T>& operator +=(const Vec3<T>& v);
     Cylinder<T> operator -(const Vec3<T>& v) const;
+
+    Cylinder<T>& operator +=(const Vec3<T>& v);
     Cylinder<T>& operator -=(const Vec3<T>& v);
+
     Circle<T> base() const;
 
     template <class Transformation>
@@ -34,8 +38,6 @@ public:
     /* INTERSECTIONS */
     template<class S>
     bool intersects(const S& b) const;
-
-    virtual ~Cylinder(){}
 };
 
 typedef Cylinder<double> CylinderD;

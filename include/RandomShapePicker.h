@@ -25,6 +25,7 @@ public:
     LineSegment<T> pickRandomLineSegment(Random::RandomEngineBase& randomEngine) const;
     std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity);
     std::vector<LineSegment<T>> pickRandomLineSegments(size_t quantity, Random::RandomEngineBase& randomEngine) const;
+
 protected:
     std::unique_ptr<Shape2<T>> m_shape;
     std::unique_ptr<Random::RandomEngineBase> m_randomEngine; //may be nullptr. If it is, then it is required to be passed directly to generating method

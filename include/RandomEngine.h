@@ -15,9 +15,12 @@ class RandomEngineT : public RandomEngineBase
 {
 public:
     typedef IntType GeneratedValuesType;
+
     RandomEngineT();
     RandomEngineT(IntType seed, IntType max);
+
     ~RandomEngineT();
+
     virtual IntType nextRaw() = 0;
 
     virtual IntType next(IntType rangeFirst, IntType rangeLast);

@@ -16,6 +16,7 @@ public:
         Node(Node* parent, std::vector<Node*>&& children);
         Node(const Vec2<T>& position, Node* parent, const std::vector<Node*>& children);
         Node(const Vec2<T>& position, Node* parent, std::vector<Node*>&& children);
+
         Node(const Node& other);
         Node(Node&& other);
 
@@ -33,6 +34,8 @@ public:
     };
     RapidlyExploringRandomTree(const Shape2<T>& space);
     RapidlyExploringRandomTree(const Shape2<T>& space, const Random::RandomEngineBase& randomEngine);
+
+    ~RapidlyExploringRandomTree();
 
     template <class SomeShape>
     void addObstacle(const SomeShape& someShape);
@@ -53,7 +56,6 @@ public:
 
     const Shape2<T>& space() const;
 
-    ~RapidlyExploringRandomTree();
 protected:
     struct Edge
     {

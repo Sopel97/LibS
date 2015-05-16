@@ -10,7 +10,18 @@ class Vec3Proxy : public Shape3<T>
 public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y, Z>::value;
 
-    void fill(T value);
+    virtual ~Vec3Proxy(){}
+
+    template <class U>
+    Vec3Proxy<T, X, Y, Z>& operator=(const Vec3<U>& v1);
+
+    Vec3Proxy<T, X, Y, Z>& operator=(const Vec3<T>& v1);
+    Vec3Proxy<T, X, Y, Z>& operator=(Vec3<T> && v1);
+
+    operator Vec3<T>() const;
+
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
 
     Vec3<T> operator+(const Vec3<T>& v1) const;
     Vec3<T> operator-(const Vec3<T>& v1) const;
@@ -21,17 +32,6 @@ public:
 
     Vec3<T> operator-() const;
 
-    T magnitude() const;
-    T distanceTo(const Vec3<T>& v1) const;
-    void normalize();
-    Vec3<T> normalized() const;
-
-    template <class U>
-    Vec3Proxy<T, X, Y, Z>& operator=(const Vec3<U>& v1);
-
-    Vec3Proxy<T, X, Y, Z>& operator=(const Vec3<T>& v1);
-    Vec3Proxy<T, X, Y, Z>& operator=(Vec3<T> && v1);
-
     Vec3Proxy<T, X, Y, Z>& operator+=(const Vec3<T>& v1);
     Vec3Proxy<T, X, Y, Z>& operator-=(const Vec3<T>& v1);
     Vec3Proxy<T, X, Y, Z>& operator*=(const T scalar);
@@ -39,8 +39,12 @@ public:
     Vec3Proxy<T, X, Y, Z>& operator/=(const T scalar);
     Vec3Proxy<T, X, Y, Z>& operator/=(const Vec3<T>& v1);
 
-    T& operator[](size_t index);
-    const T& operator[](size_t index) const;
+    T magnitude() const;
+    T distanceTo(const Vec3<T>& v1) const;
+    void normalize();
+    Vec3<T> normalized() const;
+
+    void fill(T value);
 
     virtual void translate(const Vec3<T>& v) {};
     virtual void scale(const Vec3<T>& c, const Vec3<T>& s) {};
@@ -52,8 +56,6 @@ public:
     void transform(Transformation&& func);
     template<class S>
     bool intersects(const S& b) const;
-
-    operator Vec3<T>() const;
 protected:
     T& getX();
     const T& getX() const;
@@ -61,8 +63,6 @@ protected:
     const T& getY() const;
     T& getZ();
     const T& getZ() const;
-
-    virtual ~Vec3Proxy(){}
 };
 
 #include "Vec2.h"
@@ -198,21 +198,28 @@ public:
         Vec4Proxy<T, 2, 2, 2, 2> zzzz;
     };
 
-    void fill(T value);
+    static const Vec3<T> unitX;
+    static const Vec3<T> unitY;
+    static const Vec3<T> unitZ;
 
     Vec3() = default;
     Vec3(T _x, T _y, T _z);
     Vec3(const std::initializer_list<T>& list);
 
     Vec3(const Vec3<T>& v) = default;
-    Vec3(Vec3<T>&& v) = default;
-    Vec3<T>& operator=(const Vec3<T>& v1) = default;
-    Vec3<T>& operator=(Vec3<T> && v1) = default;
-
     template <class X>
     Vec3(const Vec3<X>& v);
+    Vec3(Vec3<T>&& v) = default;
+
+    virtual ~Vec3(){}
+
+    Vec3<T>& operator=(const Vec3<T>& v1) = default;
     template <class X>
     Vec3<T>& operator=(const Vec3<X>& v1);
+    Vec3<T>& operator=(Vec3<T> && v1) = default;
+
+    inline T& operator [](int i);
+    inline const T& operator [](int i) const;
 
     Vec3<T> operator+(const Vec3<T>& v1) const;
     Vec3<T> operator-(const Vec3<T>& v1) const;
@@ -228,13 +235,12 @@ public:
     Vec3<T>& operator*=(const Vec3<T>& v1);
     Vec3<T>& operator/=(const T scalar);
 
-    inline T& operator [](int i);
-    inline const T& operator [](int i) const;
-
     T magnitude();
     T distance(const Vec3<T>& v);
     void normalize();
     Vec3<T> normalized();
+
+    void fill(T value);
 
     virtual void translate(const Vec3<T>& v) {};
     virtual void scale(const Vec3<T>& c, const Vec3<T>& s) {};
@@ -247,12 +253,6 @@ public:
 
     template<class S>
     bool intersects(const S& b) const;
-
-    static const Vec3<T> unitX;
-    static const Vec3<T> unitY;
-    static const Vec3<T> unitZ;
-
-    virtual ~Vec3(){}
 };
 
 template <class T>

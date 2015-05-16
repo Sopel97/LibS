@@ -11,6 +11,7 @@ public:
     Matrix() = default;
     Matrix(T value);
     Matrix(std::initializer_list<VecTypeCol> cols);
+
     Matrix(const Matrix<T, C, R>& other) = default;
     Matrix(Matrix<T, C, R>&& other) = default;
 

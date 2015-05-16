@@ -16,20 +16,26 @@ public:
     Polyline(const std::vector<Vec2<T>>& v);
     Polyline(std::vector<Vec2<T>>&& v);
     Polyline(Vec2<T>* v, size_t count);
+
+    static Polyline<T> fromRectangle(const Rectangle<T>& rectangle);
+    static Polyline<T> fromTriangle(const Triangle<T>& triangle);
+
     Polyline(const Polyline<T>& p) = default;
-    Polyline(Polyline<T>&& p) = default;
-
-    Polyline<T>& operator=(const Polyline<T>& p) = default;
-    Polyline<T>& operator=(Polyline<T> && p) = default;
-
     template <class X>
     Polyline(const Polyline<X>& p);
+    Polyline(Polyline<T>&& p) = default;
+
+    virtual ~Polyline(){}
+
+    Polyline<T>& operator=(const Polyline<T>& p) = default;
     template <class X>
     Polyline<T>& operator=(const Polyline<X>& p);
+    Polyline<T>& operator=(Polyline<T> && p) = default;
 
     Polyline<T> operator+(const Vec2<T>& v) const;
-    Polyline<T>& operator+=(const Vec2<T>& v);
     Polyline<T> operator-(const Vec2<T>& v) const;
+
+    Polyline<T>& operator+=(const Vec2<T>& v);
     Polyline<T>& operator-=(const Vec2<T>& v);
 
     void add(const Vec2<T>& v);
@@ -51,6 +57,7 @@ public:
     Polyline<T> transformed(const Transformation2<T>& transformation) const;
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
+
     Polyline<T> asPolyline() const;
 
     size_t size() const;
@@ -60,12 +67,7 @@ public:
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
-    static Polyline<T> fromRectangle(const Rectangle<T>& rectangle);
-    static Polyline<T> fromTriangle(const Triangle<T>& triangle);
-
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~Polyline(){}
 };
 
 typedef Polyline<double> PolylineD;

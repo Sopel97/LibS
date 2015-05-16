@@ -4,13 +4,25 @@
 template <class T>
 class Vec2;
 
+//TODO: consider making operator always return values of type of the first operand
 template <class T, size_t X, size_t Y>
 class Vec2Proxy : public Shape2<T>
 {
 public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y>::value;
 
-    void fill(T value);
+    virtual ~Vec2Proxy(){}
+
+    template <class U>
+    Vec2Proxy<T, X, Y>& operator=(const Vec2<U>& v1);
+
+    Vec2Proxy<T, X, Y>& operator=(const Vec2<T>& v1);
+    Vec2Proxy<T, X, Y>& operator=(Vec2<T> && v1);
+
+    operator Vec2<T>() const;
+
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
 
     template <class TSecond>
     Vec2<typename std::common_type<T, TSecond>::type> operator+(const Vec2<TSecond>& v1) const;
@@ -27,6 +39,13 @@ public:
 
     Vec2<T> operator-() const;
 
+    Vec2Proxy<T, X, Y>& operator+=(const Vec2<T>& v1);
+    Vec2Proxy<T, X, Y>& operator-=(const Vec2<T>& v1);
+    Vec2Proxy<T, X, Y>& operator*=(const T scalar);
+    Vec2Proxy<T, X, Y>& operator*=(const Vec2<T>& v1);
+    Vec2Proxy<T, X, Y>& operator/=(const T scalar);
+    Vec2Proxy<T, X, Y>& operator/=(const Vec2<T>& v1);
+
     T magnitude() const;
     T quadrance() const;
     T distanceTo(const Vec2<T>& v1) const;
@@ -42,21 +61,7 @@ public:
     Angle<T> angle() const;
     Angle<T> angle(const Vec2<T>& other) const;
 
-    template <class U>
-    Vec2Proxy<T, X, Y>& operator=(const Vec2<U>& v1);
-
-    Vec2Proxy<T, X, Y>& operator=(const Vec2<T>& v1);
-    Vec2Proxy<T, X, Y>& operator=(Vec2<T> && v1);
-
-    Vec2Proxy<T, X, Y>& operator+=(const Vec2<T>& v1);
-    Vec2Proxy<T, X, Y>& operator-=(const Vec2<T>& v1);
-    Vec2Proxy<T, X, Y>& operator*=(const T scalar);
-    Vec2Proxy<T, X, Y>& operator*=(const Vec2<T>& v1);
-    Vec2Proxy<T, X, Y>& operator/=(const T scalar);
-    Vec2Proxy<T, X, Y>& operator/=(const Vec2<T>& v1);
-
-    T& operator[](size_t index);
-    const T& operator[](size_t index) const;
+    void fill(T value);
 
     virtual void translate(const Vec2<T>& v);
     virtual void scale(const Vec2<T>& c, const Vec2<T>& s);
@@ -82,14 +87,10 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
-    operator Vec2<T>() const;
-
     T& getX();
     const T& getX() const;
     T& getY();
     const T& getY() const;
-
-    virtual ~Vec2Proxy(){}
 };
 
 #include "Vec3.h"
@@ -137,30 +138,30 @@ public:
         Vec4Proxy<T, 1, 1, 1, 1> yyyy;
     };
 
-    void fill(T value);
+    static const Vec2<T> unitX;
+    static const Vec2<T> unitY;
 
     Vec2();
     Vec2(T _xy);
     Vec2(T _x, T _y);
     Vec2(const std::initializer_list<T>& list);
 
-    Vec2(const Vec2<T>& v);
-    Vec2(Vec2<T>&& v);
+    static Vec2<T> direction(const Angle<T>& angle);
 
+    Vec2(const Vec2<T>& v);
     template <class X>
     Vec2(const Vec2<X>& v);
-    template <class X>
-    Vec2<T>& operator=(const Vec2<X>& v1);
+    Vec2(Vec2<T>&& v);
 
     Vec2<T>& operator=(const Vec2<T>& v1);
+    template <class X>
+    Vec2<T>& operator=(const Vec2<X>& v1);
     Vec2<T>& operator=(Vec2<T> && v1);
 
-    Vec2<T>& operator+=(const Vec2<T>& v1);
-    Vec2<T>& operator-=(const Vec2<T>& v1);
-    Vec2<T>& operator*=(const T scalar);
-    Vec2<T>& operator*=(const Vec2<T>& v1);
-    Vec2<T>& operator/=(const T scalar);
-    Vec2<T>& operator/=(const Vec2<T>& v1);
+    virtual ~Vec2(){}
+
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
 
     template <class TSecond>
     Vec2<typename std::common_type<T, TSecond>::type> operator+(const Vec2<TSecond>& v1) const;
@@ -177,6 +178,13 @@ public:
 
     Vec2<T> operator-() const;
 
+    Vec2<T>& operator+=(const Vec2<T>& v1);
+    Vec2<T>& operator-=(const Vec2<T>& v1);
+    Vec2<T>& operator*=(const T scalar);
+    Vec2<T>& operator*=(const Vec2<T>& v1);
+    Vec2<T>& operator/=(const T scalar);
+    Vec2<T>& operator/=(const Vec2<T>& v1);
+
     T magnitude() const;
     T quadrance() const;
     T distanceTo(const Vec2<T>& v1) const;
@@ -192,8 +200,7 @@ public:
     Angle<T> angle() const;
     Angle<T> angle(const Vec2<T>& other) const;
 
-    T& operator[](size_t index);
-    const T& operator[](size_t index) const;
+    void fill(T value);
 
     virtual void translate(const Vec2<T>& v);
     virtual void scale(const Vec2<T>& c, const Vec2<T>& s);
@@ -218,12 +225,6 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
-
-    static const Vec2<T> unitX;
-    static const Vec2<T> unitY;
-    static Vec2<T> direction(const Angle<T>& angle);
-
-    virtual ~Vec2(){}
 protected:
 };
 /* think of a way to make it so TFirst cannot be a vec2 type or remove these functions at all

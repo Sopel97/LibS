@@ -10,7 +10,18 @@ class Vec4Proxy : public Shape4<T>
 public:
     static constexpr bool isWritable = ___internal::are_unique<size_t, X, Y, Z, W>::value;
 
-    void fill(T value);
+    virtual ~Vec4Proxy(){}
+
+    template <class U>
+    Vec4Proxy<T, X, Y, Z, W>& operator=(const Vec4<U>& v1);
+
+    Vec4Proxy<T, X, Y, Z, W>& operator=(const Vec4<T>& v1);
+    Vec4Proxy<T, X, Y, Z, W>& operator=(Vec4<T> && v1);
+
+    operator Vec4<T>() const;
+
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
 
     Vec4<T> operator+(const Vec4<T>& v1) const;
     Vec4<T> operator-(const Vec4<T>& v1) const;
@@ -21,17 +32,6 @@ public:
 
     Vec4<T> operator-() const;
 
-    T magnitude() const;
-    T distanceTo(const Vec4<T>& v1) const;
-    void normalize();
-    Vec4<T> normalized() const;
-
-    template <class U>
-    Vec4Proxy<T, X, Y, Z, W>& operator=(const Vec4<U>& v1);
-
-    Vec4Proxy<T, X, Y, Z, W>& operator=(const Vec4<T>& v1);
-    Vec4Proxy<T, X, Y, Z, W>& operator=(Vec4<T> && v1);
-
     Vec4Proxy<T, X, Y, Z, W>& operator+=(const Vec4<T>& v1);
     Vec4Proxy<T, X, Y, Z, W>& operator-=(const Vec4<T>& v1);
     Vec4Proxy<T, X, Y, Z, W>& operator*=(const T scalar);
@@ -39,8 +39,12 @@ public:
     Vec4Proxy<T, X, Y, Z, W>& operator/=(const T scalar);
     Vec4Proxy<T, X, Y, Z, W>& operator/=(const Vec4<T>& v1);
 
-    T& operator[](size_t index);
-    const T& operator[](size_t index) const;
+    T magnitude() const;
+    T distanceTo(const Vec4<T>& v1) const;
+    void normalize();
+    Vec4<T> normalized() const;
+
+    void fill(T value);
 
     virtual void translate(const Vec4<T>& v) {};
     virtual void scale(const Vec4<T>& c, const Vec4<T>& s) {};
@@ -52,8 +56,6 @@ public:
     void transform(Transformation&& func);
     template<class S>
     bool intersects(const S& b) const;
-
-    operator Vec4<T>() const;
 protected:
     T& getX();
     const T& getX() const;
@@ -63,8 +65,6 @@ protected:
     const T& getZ() const;
     T& getW();
     const T& getW() const;
-
-    virtual ~Vec4Proxy(){}
 };
 
 #include "Vec2.h"
@@ -419,21 +419,29 @@ public:
         Vec4Proxy<T, 3, 3, 3, 3> wwww;
     };
 
-    void fill(T value);
+    static const Vec4<T> unitX;
+    static const Vec4<T> unitY;
+    static const Vec4<T> unitZ;
+    static const Vec4<T> unitW;
 
     Vec4() = default;
     Vec4(T _x, T _y, T _z, T _w);
     Vec4(const std::initializer_list<T>& list);
 
-    Vec4(const Vec4<T>& v) = default;
-    Vec4(Vec4<T>&& v) = default;
-    Vec4<T>& operator=(const Vec4<T>& v1) = default;
-    Vec4<T>& operator=(Vec4<T> && v1) = default;
+    virtual ~Vec4(){}
 
+    Vec4(const Vec4<T>& v) = default;
     template <class X>
     Vec4(const Vec4<X>& v);
+    Vec4(Vec4<T>&& v) = default;
+
+    Vec4<T>& operator=(const Vec4<T>& v1) = default;
     template <class X>
     Vec4<T>& operator=(const Vec4<X>& v1);
+    Vec4<T>& operator=(Vec4<T> && v1) = default;
+
+    inline T& operator [](int i);
+    inline const T& operator [](int i) const;
 
     Vec4<T> operator+(const Vec4<T>& v1) const;
     Vec4<T> operator-(const Vec4<T>& v1) const;
@@ -449,13 +457,12 @@ public:
     Vec4<T>& operator*=(const Vec4<T>& v1);
     Vec4<T>& operator/=(const T scalar);
 
-    inline T& operator [](int i);
-    inline const T& operator [](int i) const;
-
     T magnitude();
     T distance(const Vec4<T>& v);
     void normalize();
     Vec4<T> normalized();
+
+    void fill(T value);
 
     virtual void translate(const Vec4<T>& v) {};
     virtual void scale(const Vec4<T>& c, const Vec4<T>& s) {};
@@ -465,14 +472,6 @@ public:
 
     template <class Transformation>
     void transform(Transformation&& func);
-
-    static const Vec4<T> unitX;
-    static const Vec4<T> unitY;
-    static const Vec4<T> unitZ;
-    static const Vec4<T> unitW;
-
-    virtual ~Vec4(){}
-
 };
 
 template <class T>

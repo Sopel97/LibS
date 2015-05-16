@@ -16,6 +16,9 @@ public:
     {
         Default
     };
+
+    int seed;
+
     CellNoise();
     ~CellNoise();
 
@@ -28,8 +31,9 @@ public:
     template <class CustomResultComputingFunction>
     void setResultComputingFunction(CustomResultComputingFunction resultComputingFunction);
 
-    int seed;
 private:
+    const unsigned int FNV_PRIME = 16777619u;
+    const unsigned int OFFSET_BASIS = 2166136261u;
 
     std::function<T(T, T, T, T)> distance2;
     std::function<T(T, T, T, T, T, T)> distance3;
@@ -38,13 +42,11 @@ private:
     unsigned int lcgRandom(unsigned int lastValue);
     unsigned int hash(unsigned int i, unsigned int j, unsigned int k);
     unsigned int probLookup(unsigned int value);
-
-    const unsigned int FNV_PRIME = 16777619u;
-    const unsigned int OFFSET_BASIS = 2166136261u;
 };
 
 typedef CellNoise<double> CellNoiseD;
 typedef CellNoise<float> CellNoiseF;
+typedef CellNoise<int> CellNoiseI;
 
 #include "../src/CellNoise.cpp"
 

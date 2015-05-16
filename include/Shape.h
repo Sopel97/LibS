@@ -8,13 +8,14 @@ public:
     using ValueType = T;
 
     Shape() = default;
+
     Shape(const Shape&) = default;
     Shape(Shape&&) = default;
 
+    virtual ~Shape(){}
+
     Shape& operator = (const Shape&) = default;
     Shape& operator = (Shape &&) = default;
-
-    virtual ~Shape(){}
 };
 
 typedef Shape<double> ShapeD;

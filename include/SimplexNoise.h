@@ -6,6 +6,7 @@ class SimplexNoise
 {
 public:
     SimplexNoise();
+
     ~SimplexNoise();
 
     //every rawNoise function returns values in range <-1, 1>
@@ -41,7 +42,6 @@ private:
     static int grad4[32][4];
     static int perm[512];
     static int simplex[64][4];
-
 };
 
 template<class T>

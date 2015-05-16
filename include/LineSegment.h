@@ -12,19 +12,21 @@ public:
     LineSegment(const Vec2<T>& _begin, const Vec2<T>& _end);
 
     LineSegment(const LineSegment<T>& s) = default;
-    LineSegment(LineSegment<T>&& s) = default;
-
-    LineSegment<T>& operator=(const LineSegment<T>& s) = default;
-    LineSegment<T>& operator=(LineSegment<T> && s) = default;
-
     template <class X>
     LineSegment(const LineSegment<X>& s);
+    LineSegment(LineSegment<T>&& s) = default;
+
+    virtual ~LineSegment(){}
+
+    LineSegment<T>& operator=(const LineSegment<T>& s) = default;
     template <class X>
     LineSegment<T>& operator=(const LineSegment<X>& s);
+    LineSegment<T>& operator=(LineSegment<T> && s) = default;
 
     LineSegment<T> operator+(const Vec2<T>& v) const;
-    LineSegment<T>& operator+=(const Vec2<T>& v);
     LineSegment<T> operator-(const Vec2<T>& v) const;
+
+    LineSegment<T>& operator+=(const Vec2<T>& v);
     LineSegment<T>& operator-=(const Vec2<T>& v);
 
     T length() const;
@@ -53,8 +55,6 @@ public:
     bool intersects(const LineSegment<T>& lineSegment, Vec2<T>& intersectionPoint) const;
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~LineSegment(){}
 };
 
 typedef LineSegment<double> LineSegmentD;

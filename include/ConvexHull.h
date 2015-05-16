@@ -8,7 +8,6 @@ template <class T>
 class ConvexHull
 {
 public:
-
     ConvexHull(const std::vector<Vec2<T>>& p);
     ConvexHull(std::vector<Vec2<T>>&& p);
 

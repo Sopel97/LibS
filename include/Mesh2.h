@@ -33,15 +33,19 @@ public:
     Mesh2(std::vector<ShapeType>&& e);
     Mesh2(const std::initializer_list<ShapeType>& list);
     Mesh2(ShapeType* e, size_t count);
+
     Mesh2(const Mesh2<ShapeType>& m);
     Mesh2(Mesh2<ShapeType>&& m);
+
+    virtual ~Mesh2(){}
 
     Mesh2<ShapeType>& operator=(const Mesh2<ShapeType>& m);
     Mesh2<ShapeType>& operator=(Mesh2<ShapeType> && m);
 
     Mesh2<ShapeType> operator+(const Vec2<T>& v) const;
-    Mesh2<ShapeType>& operator+=(const Vec2<T>& v);
     Mesh2<ShapeType> operator-(const Vec2<T>& v) const;
+
+    Mesh2<ShapeType>& operator+=(const Vec2<T>& v);
     Mesh2<ShapeType>& operator-=(const Vec2<T>& v);
 
     void add(const ShapeType& e);
@@ -61,10 +65,10 @@ public:
     virtual void translate(const Vec2<T>& v);
     virtual void scale(const Vec2<T>& s);
 
-    Polyline<T> asPolyline() const;
+    Polyline<T> asPolyline() const; //undefined for mesh2
 
     size_t size() const;
-    virtual bool isConvex() const; //this is problematic here. Will always return false, at least for now
+    virtual bool isConvex() const; //undefined for mesh2
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
 
@@ -77,8 +81,6 @@ public:
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~Mesh2(){}
 };
 
 #include "../src/Mesh2.cpp"

@@ -11,19 +11,24 @@ public:
     Rectangle(const Vec2<T>& p1, const Vec2<T>& p2);
     Rectangle(const Vec2<T>& p1, const T width, const T height);
 
-    Rectangle(const Rectangle<T>& r) = default;
-    Rectangle(Rectangle<T>&& r) = default;
-    Rectangle<T>& operator =(const Rectangle<T>& r) = default;
-    Rectangle<T>& operator =(Rectangle<T> && r) = default;
+    static Rectangle<T> unitRectangle();
 
+    Rectangle(const Rectangle<T>& r) = default;
     template <class X>
     Rectangle(const Rectangle<X>& r);
+    Rectangle(Rectangle<T>&& r) = default;
+
+    virtual ~Rectangle(){}
+
+    Rectangle<T>& operator =(const Rectangle<T>& r) = default;
     template <class X>
     Rectangle<T>& operator =(const Rectangle<X>& r);
+    Rectangle<T>& operator =(Rectangle<T> && r) = default;
 
     Rectangle<T> operator +(const Vec2<T>& v) const;
-    Rectangle<T>& operator +=(const Vec2<T>& v);
     Rectangle<T> operator -(const Vec2<T>& v) const;
+
+    Rectangle<T>& operator +=(const Vec2<T>& v);
     Rectangle<T>& operator -=(const Vec2<T>& v);
 
     T width() const;
@@ -50,10 +55,6 @@ public:
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    static Rectangle<T> unitRectangle();
-
-    virtual ~Rectangle(){}
 };
 
 typedef Rectangle<double> RectangleD;

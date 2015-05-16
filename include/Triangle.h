@@ -26,19 +26,26 @@ public:
     Triangle(const Vec2<T>& p1, const Vec2<T>& p2, const Vec2<T>& p3);
     Triangle(const Vec2<T>* p);
 
-    Triangle(const Triangle<T>& t) = default;
-    Triangle(Triangle<T>&& t) = default;
-    Triangle<T>& operator =(const Triangle<T>& t) = default;
-    Triangle<T>& operator =(Triangle<T> && t) = default;
+    static Triangle<T> equilateral(const Vec2D& center, const T base);
+    static Triangle<T> isosceles(const Vec2D& center, const T base, const T height);
+    static Triangle<T> rightTriangle(const Vec2D& rightAngledVertex, const T width, const T height); //with 90 degree angle on the left
 
+    Triangle(const Triangle<T>& t) = default;
     template <class X>
     Triangle(const Triangle<X>& t);
+    Triangle(Triangle<T>&& t) = default;
+
+    virtual ~Triangle(){}
+
+    Triangle<T>& operator =(const Triangle<T>& t) = default;
     template <class X>
     Triangle<T>& operator =(const Triangle<X>& t);
+    Triangle<T>& operator =(Triangle<T> && t) = default;
 
     Triangle<T> operator +(const Vec2<T>& p) const;
-    Triangle<T>& operator +=(const Vec2<T>& p);
     Triangle<T> operator -(const Vec2<T>& p) const;
+
+    Triangle<T>& operator +=(const Vec2<T>& p);
     Triangle<T>& operator -=(const Vec2<T>& p);
 
     virtual void translate(const Vec2<T>& v);
@@ -62,13 +69,7 @@ public:
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
-    static Triangle<T> equilateral(const Vec2D& center, const T base);
-    static Triangle<T> isosceles(const Vec2D& center, const T base, const T height);
-    static Triangle<T> rightTriangle(const Vec2D& rightAngledVertex, const T width, const T height); //with 90 degree angle on the left
-
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~Triangle(){}
 };
 
 typedef Triangle<double> TriangleD;

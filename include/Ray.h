@@ -6,25 +6,27 @@ class Ray : public Shape2<T>
 {
 public:
     Vec2<T> origin;
-    Vec2<T> direction; //must be normalized
+    Vec2<T> direction; //is expected to be normalized
 
     Ray() = default;
     Ray(const Vec2<T>& o, const Vec2<T>& d);
 
     Ray(const Ray<T>& r) = default;
-    Ray(Ray<T>&& r) = default;
-
-    Ray<T>& operator=(const Ray<T>& r) = default;
-    Ray<T>& operator=(Ray<T> && r) = default;
-
     template <class X>
     Ray(const Ray<X>& r);
+    Ray(Ray<T>&& r) = default;
+
+    virtual ~Ray(){}
+
+    Ray<T>& operator=(const Ray<T>& r) = default;
     template <class X>
     Ray<T>& operator=(const Ray<X>& r);
+    Ray<T>& operator=(Ray<T> && r) = default;
 
     Ray<T> operator+(const Vec2<T>& v) const;
-    Ray<T>& operator+=(const Vec2<T>& v);
     Ray<T> operator-(const Vec2<T>& v) const;
+
+    Ray<T>& operator+=(const Vec2<T>& v);
     Ray<T>& operator-=(const Vec2<T>& v);
 
     T distanceTo(const Vec2<T>& point) const;
@@ -48,8 +50,6 @@ public:
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~Ray(){}
 };
 
 typedef Ray<double> RayD;

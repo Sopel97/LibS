@@ -6,9 +6,13 @@ class Shape4 : public Shape<T>
 {
 public:
     using RespectiveVectorType = Vec4<T>;
+
     Shape4() = default;
+
     Shape4(const Shape4&) = default;
     Shape4(Shape4&&) = default;
+
+    virtual ~Shape4(){}
 
     Shape4& operator = (const Shape4&) = default;
     Shape4& operator = (Shape4 &&) = default;
@@ -18,8 +22,6 @@ public:
     virtual void scale(const Vec4<T>& c, const T s) = 0;
     virtual void scale(const Vec4<T>& s) = 0;
     virtual void scale(const T s) = 0;
-
-    virtual ~Shape4(){}
 };
 
 typedef Shape4<double> Shape4D;

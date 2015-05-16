@@ -10,6 +10,7 @@
 #include "Random.h"
 
 //maybe will be renamed to Shapes and some functions will be extracted to other files
+//NOTE: 3d shapes are leftover from early stages of the library and will be completly rewritten later.
 namespace Geo
 {
 
@@ -205,15 +206,15 @@ namespace Geo
     template <class T> class Vec4;
     template <class T, size_t C, size_t R> class Matrix;
     template <class T> class Rectangle;
-    template <class T> class Cuboid;
     template <class T> class Circle;
-    template <class T> class Cylinder;
     template <class T> class LineSegment;
     template <class T> class Ray;
     template <class T> class Triangle;
     template <class T> class Polygon;
     template <class T> class Polyline;
     template <class ShapeType> class Mesh2;
+    template <class T> class Cuboid;
+    template <class T> class Cylinder;
 
     class Intersections;
     template <class T> class Raycast;
@@ -243,15 +244,15 @@ namespace Geo
 #include "include/Vec4.h"
 #include "include/Matrix.h"
 #include "include/Rectangle.h"
-#include "include/Cuboid.h"
 #include "include/Circle.h"
-#include "include/Cylinder.h"
 #include "include/LineSegment.h"
 #include "include/Ray.h"
 #include "include/Triangle.h"
 #include "include/Polygon.h"
 #include "include/Polyline.h"
 #include "include/Mesh2.h"
+#include "include/Cuboid.h"
+#include "include/Cylinder.h"
 
 #include "include/Raycast.h"
 #include "include/Raycaster.h"

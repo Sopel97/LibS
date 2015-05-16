@@ -6,12 +6,17 @@ class WELL512EngineT : public RandomEngineT<uint32_t>
 {
 public:
     typedef uint32_t GeneratedValuesType;
+
     WELL512EngineT(uint64_t seed = 0xb5f3c6a7);
+
     WELL512EngineT(const WELL512EngineT<I>&) = default;
+
     ~WELL512EngineT();
+
     virtual uint32_t nextRaw(); /* generates 32 bit number */
 
     virtual std::unique_ptr<RandomEngineBase> clone() const;
+
 protected:
     uint32_t stateArray[16];
     uint32_t stateIndex;

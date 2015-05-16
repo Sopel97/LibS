@@ -50,8 +50,7 @@ public:
         double m_timeTillCollision; //storing all collisions may not be needed. This will the closest one in time
     };
 
-
-    //WARNING: Some intersections are not defined. Those will always return false!!!
+    Intersections() = delete;
 
     //2D shapes
     //Vec2
@@ -405,8 +404,6 @@ public:
     template <class A, class B>
     static bool isContained(const A& a, const B& b){return contains(a,b);} //one is sufficient because it's just an inverse
 
-private:
-    Intersections() {}
 };
 #include "../src/Intersections.cpp"
 

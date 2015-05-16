@@ -34,10 +34,15 @@ public:
     {
 
     };
+
     using VectorType = Vec2<T>;
+
     Shape2() = default;
+
     Shape2(const Shape2&) = default;
     Shape2(Shape2&&) = default;
+
+    virtual ~Shape2(){}
 
     Shape2<T>& operator = (const Shape2&) = default;
     Shape2<T>& operator = (Shape2 &&) = default;
@@ -82,8 +87,6 @@ public:
     SHAPE2_PURE_VIRTUAL_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const = 0;
-
-    virtual ~Shape2(){}
 };
 
 typedef Shape2<double> Shape2D;

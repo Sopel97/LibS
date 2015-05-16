@@ -24,6 +24,7 @@ public:
         PolygonTriangulation<T> triangulation;
         std::vector<std::pair<const Triangle<T>*, T>> trianglesByArea; //<triangle ptr to triangulation result, CUMULATIVE area> - cumulative area so binary searching is possible without sorting
     };
+
     std::vector<Vec2<T>> vertices;
 
     Polygon() = default;
@@ -31,20 +32,28 @@ public:
     Polygon(const std::vector<Vec2<T>>& v);
     Polygon(std::vector<Vec2<T>>&& v);
     Polygon(Vec2<T>* v, size_t count);
+
+    //static Polygon<T> randomInscribedInCircle(const Circle<T>& circle, int edges); later, when using Random.h will be somehow standarized
+    static Polygon<T> regular(const Vec2D& center, int sides, int radius);
+    static Polygon<T> fromRectangle(const Rectangle<T>& rectangle);
+    static Polygon<T> fromTriangle(const Triangle<T>& triangle);
+
     Polygon(const Polygon<T>& p) = default;
-    Polygon(Polygon<T>&& p) = default;
-
-    Polygon<T>& operator=(const Polygon<T>& p) = default;
-    Polygon<T>& operator=(Polygon<T> && p) = default;
-
     template <class X>
     Polygon(const Polygon<X>& p);
+    Polygon(Polygon<T>&& p) = default;
+
+    virtual ~Polygon(){}
+
+    Polygon<T>& operator=(const Polygon<T>& p) = default;
     template <class X>
     Polygon<T>& operator=(const Polygon<X>& p);
+    Polygon<T>& operator=(Polygon<T> && p) = default;
 
     Polygon<T> operator+(const Vec2<T>& v) const;
-    Polygon<T>& operator+=(const Vec2<T>& v);
     Polygon<T> operator-(const Vec2<T>& v) const;
+
+    Polygon<T>& operator+=(const Vec2<T>& v);
     Polygon<T>& operator-=(const Vec2<T>& v);
 
     void add(const Vec2<T>& v);
@@ -71,12 +80,10 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
 
     Polyline<T> asPolyline() const;
+
     virtual Vec2<T> center() const;
     virtual bool isConvex() const;
     virtual T signedArea() const;
-
-    //bool isConvex() const; //TODO: this
-    //bool isConcave() const; //TODO: this
 
     size_t size() const;
 
@@ -85,14 +92,7 @@ public:
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
-    //static Polygon<T> randomInscribedInCircle(const Circle<T>& circle, int edges); later, when using Random.h will be somehow standarized
-    static Polygon<T> regular(const Vec2D& center, int sides, int radius);
-    static Polygon<T> fromRectangle(const Rectangle<T>& rectangle);
-    static Polygon<T> fromTriangle(const Triangle<T>& triangle);
-
     virtual std::unique_ptr<Shape2<T>> clone() const;
-
-    virtual ~Polygon(){}
 };
 
 typedef Polygon<double> PolygonD;

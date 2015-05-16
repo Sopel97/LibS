@@ -1,6 +1,7 @@
 #ifndef MATRIX3X3_H
 #define MATRIX3X3_H
 
+//Will be removed soon
 template <class T>
 class Matrix3x3
 {

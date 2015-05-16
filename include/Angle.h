@@ -6,13 +6,17 @@ class Angle
 {
 public:
     Angle() = default;
-    Angle(const Angle<T>& a) = default;
-    Angle(Angle<T>&& a) = default;
-    Angle<T>& operator=(const Angle<T>& a) = default;
-    Angle<T>& operator=(Angle<T> && a) = default;
 
+    Angle(const Angle<T>& a) = default;
     template <class X>
     Angle(const Angle<X>& a);
+    Angle(Angle<T>&& a) = default;
+
+    static Angle<T> radians(T rad);
+    static Angle<T> degrees(T deg);
+
+    Angle<T>& operator=(const Angle<T>& a) = default;
+    Angle<T>& operator=(Angle<T> && a) = default;
     template <class X>
     Angle<T>& operator=(const Angle<X>& a);
 
@@ -48,13 +52,11 @@ public:
 
     T radians() const;
     T degrees() const;
-
-    static Angle<T> radians(T rad);
-    static Angle<T> degrees(T deg);
 protected:
 private:
-    Angle(T rad);
     T m_radians;
+
+    Angle(T rad);
 };
 
 typedef Angle<double> AngleD;
