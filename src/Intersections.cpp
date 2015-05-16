@@ -848,6 +848,15 @@ bool Intersections::contains(const Rectangle<T>& a, const Vec2<T>& b)
 
 //Triangle
 template <class T>
+bool Intersections::contains(const Triangle<T>& a, const Circle<T>& b)
+{
+    if(!contains(a, b.origin)) return false;
+    if(intersection(LineSegment<T>(a.vertices[0], a.vertices[1]), b)) return false;
+    if(intersection(LineSegment<T>(a.vertices[1], a.vertices[2]), b)) return false;
+    if(intersection(LineSegment<T>(a.vertices[2], a.vertices[0]), b)) return false;
+    return true;
+}
+template <class T>
 bool Intersections::contains(const Triangle<T>& a, const LineSegment<T>& b)
 {
     return (intersection(a, b.begin) && intersection(a, b.end));
@@ -890,6 +899,138 @@ bool Intersections::contains(const Triangle<T>& a, const Vec2<T>& b)
     return intersection(a, b);
 }
 
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const Circle<T>& b)
+{
+    return a.origin.distanceTo(b.origin) < a.radius - b.radius;
+}
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const LineSegment<T>& b)
+{
+    return contains(a, b.begin) && contains(a, b.end);
+}
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const Polygon<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[(i + 1) % polySize];
+
+        if(!contains(a, LineSegment<T>(thisVertex, nextVertex))) return false;
+    }
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const Polyline<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[i + 1];
+
+        if(!contains(a, LineSegment<T>(thisVertex, nextVertex))) return false;
+    }
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const Rectangle<T>& b)
+{
+    return contains(a, b.min) && contains(a, b.max);
+}
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const Triangle<T>& b)
+{
+    return contains(a, b.vertices[0]) && contains(a, b.vertices[1]) && contains(a, b.vertices[2]);
+}
+template <class T>
+bool Intersections::contains(const Circle<T>& a, const Vec2<T>& b)
+{
+    return intersection(a, b);
+}
+
+
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const Circle<T>& b)
+{
+    if(!contains(a, b.origin)) return false;
+
+    size_t polySize = a.size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = a.vertices[i];
+        const Vec2<T>& nextVertex = a.vertices[(i + 1) % polySize];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), b)) return false;
+    }
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const LineSegment<T>& b)
+{
+    if(!contains(a, b.begin) && !contains(a, b.end)) return false;
+
+    size_t polySize = a.size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = a.vertices[i];
+        const Vec2<T>& nextVertex = a.vertices[(i + 1) % polySize];
+
+        if(intersection(LineSegment<T>(thisVertex, nextVertex), b)) return false;
+    }
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const Polygon<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[(i + 1) % polySize];
+
+        if(!contains(a, LineSegment<T>(thisVertex, nextVertex))) return false;
+    }
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const Polyline<T>& b)
+{
+    size_t polySize = b.size();
+    for(size_t i = 0; i < polySize - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = b.vertices[i];
+        const Vec2<T>& nextVertex = b.vertices[i + 1];
+
+        if(!contains(a, LineSegment<T>(thisVertex, nextVertex))) return false;
+    }
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const Rectangle<T>& b)
+{
+    if(!contains(a, LineSegment<T>(b.min, Vec2<T>(b.min.x, b.max.y)))) return false;
+    if(!contains(a, LineSegment<T>(b.max, Vec2<T>(b.min.x, b.max.y)))) return false;
+    if(!contains(a, LineSegment<T>(b.min, Vec2<T>(b.max.x, b.min.y)))) return false;
+    if(!contains(a, LineSegment<T>(b.max, Vec2<T>(b.max.x, b.min.y)))) return false;
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const Triangle<T>& b)
+{
+    if(!contains(a, LineSegment<T>(b.vertices[0], b.vertices[1]))) return false;
+    if(!contains(a, LineSegment<T>(b.vertices[1], b.vertices[2]))) return false;
+    if(!contains(a, LineSegment<T>(b.vertices[2], b.vertices[0]))) return false;
+    return true;
+}
+template <class T>
+bool Intersections::contains(const Polygon<T>& a, const Vec2<T>& b)
+{
+    return intersection(a, b);
+}
+
 //Polymorphic
 template <class T>
 bool Intersections::contains(const Shape2<T>& a, const Shape2<T>& b)
@@ -904,6 +1045,6 @@ bool Intersections::contains(const Shape2<T>& a, const S& b)
 template <class T, class S>
 bool Intersections::contains(const S& a, const Shape2<T>& b)
 {
-    return b.contains(a);
+    return b.isContained(a);
 }
 

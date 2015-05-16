@@ -30,45 +30,15 @@ uint32_t RandomEngineT<IntType>::nextUint32(uint32_t rangeFirst, uint32_t rangeL
 {
     return next(rangeFirst, rangeLast);
 }
-/* TODO: find a way to make it (currently there is a problem that this is seen as not a template and make a multiple definition error) [same with the ones lower]
-template <>
-int64_t RandomEngine32::nextInt64(int64_t rangeFirst, int64_t rangeLast)
-{
-    int32_t rf1 = rangeFirst << 32ll;
-    int32_t rl1 = rangeLast << 32ll;
-    int32_t rf2 = rangeFirst;
-    int32_t rl2 = rangeLast;
-    return (static_cast<int64_t>(next(rf1, rl1)) << 32ll) + next(rf2, rl2);
-}
-template <>
-int64_t RandomEngine64::nextInt64(int64_t rangeFirst, int64_t rangeLast)
-{
-    return next(rangeFirst, rangeLast);
-}
-template <>
-uint64_t RandomEngine32::nextUint64(uint64_t rangeFirst, uint64_t rangeLast)
-{
-    uint32_t rf1 = rangeFirst << 32ull;
-    uint32_t rl1 = rangeLast << 32ull;
-    uint32_t rf2 = rangeFirst;
-    uint32_t rl2 = rangeLast;
-    return (static_cast<uint64_t>(next(rf1, rl1)) << 32ull) + next(rf2, rl2);
-}
-template <>
-uint64_t RandomEngine64::nextUint64(uint64_t rangeFirst, uint64_t rangeLast)
-{
-    return next(rangeFirst, rangeLast);
-}
-*/
 template <typename IntType>
 uint64_t RandomEngineT<IntType>::nextUint64(uint64_t rangeFirst, uint64_t rangeLast)
 {
-    return next(rangeFirst, rangeLast);
+    return nextUint64() % (rangeLast - rangeFirst) + rangeFirst;
 }
 template <typename IntType>
 int64_t RandomEngineT<IntType>::nextInt64(int64_t rangeFirst, int64_t rangeLast)
 {
-    return next(rangeFirst, rangeLast);
+    return nextInt64() % (rangeLast - rangeFirst) + rangeFirst;
 }
 template <typename IntType>
 float RandomEngineT<IntType>::nextFloat(float rangeFirst, float rangeLast) // <rangeFirst, rangeLast) (if m_max can't fit in int type used for nextRaw() then it's <rangeFirst, rangeLast>
@@ -96,37 +66,37 @@ uint32_t RandomEngineT<IntType>::nextUint32()
 {
     return nextRaw();
 }
-/*
-template <>
-int64_t RandomEngine32::nextInt64()
-{
-    return (static_cast<int64_t>(nextRaw()) << 32ll) + nextRaw();
-}
-template <>
-int64_t RandomEngine64::nextInt64()
-{
-    return nextRaw();
-}
-template <>
-uint64_t RandomEngine32::nextUint64()
-{
-    return (static_cast<uint64_t>(nextRaw()) << 32ull) + nextRaw();
-}
-template <>
-uint64_t RandomEngine64::nextUint64()
-{
-    return nextRaw();
-}
-*/
 template <typename IntType>
 int64_t RandomEngineT<IntType>::nextInt64()
 {
-    return nextRaw();
+    if(sizeof(IntType) < sizeof(int64_t))
+    {
+        int64_t result = 0;
+        size_t n = (sizeof(uint64_t) / sizeof(IntType)) + (sizeof(uint64_t) % sizeof(IntType) != 0);
+        for(size_t i = 0; i < n; ++i)
+        {
+            result <<= sizeof(IntType) * 8ull; //compiler warns about this, but this case is handled by a condition on top of the function
+            result |= next();
+        }
+        return result;
+    }
+    else return next();
 }
 template <typename IntType>
 uint64_t RandomEngineT<IntType>::nextUint64()
 {
-    return nextRaw();
+    if(sizeof(IntType) < sizeof(uint64_t))
+    {
+        uint64_t result = 0;
+        size_t n = (sizeof(uint64_t) / sizeof(IntType)) + (sizeof(uint64_t) % sizeof(IntType) != 0);
+        for(size_t i = 0; i < n; ++i)
+        {
+            result <<= sizeof(IntType) * 8ull; //compiler warns about this, but this case is handled by a condition on top of the function
+            result |= next();
+        }
+        return result;
+    }
+    else return next();
 }
 template <typename IntType>
 IntType RandomEngineT<IntType>::next() //range defined by IntType size and generator
