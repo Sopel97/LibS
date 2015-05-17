@@ -33,6 +33,7 @@ void ConvexHull<T>::calculate()
     }
     int n = m_points.size(), k = 0;
 
+    m_convexHull.vertices.clear();
     m_convexHull.vertices.resize(n * 2);
 
     // Build lower hull

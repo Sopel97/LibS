@@ -1,11 +1,13 @@
 template <class T>
 PolygonTriangulation<T>::PolygonTriangulation(const Polygon<T>& polygon) :
+    Triangulation<T>::Triangulation(),
     m_polygon(polygon)
 {
 
 }
 template <class T>
 PolygonTriangulation<T>::PolygonTriangulation(Polygon<T>&& polygon) :
+    Triangulation<T>::Triangulation(),
     m_polygon(std::move(polygon))
 {
 
@@ -14,15 +16,20 @@ template <class T>
 void PolygonTriangulation<T>::calculate()
 {
     //for convex shape
+    if(this->m_isCompleted) return;
+
+    this->m_triangles.elements.clear();
+    this->m_connections.clear();
+
     if(m_polygon.size() < 3) return;
     if(m_polygon.isConvex())
     {
         size_t numberOfVertices = m_polygon.size();
-        m_result.elements.reserve(numberOfVertices - 2);
+        this->m_triangles.elements.reserve(numberOfVertices - 2);
         const Vec2<T>& firstVertex = m_polygon.vertices[0];
         for(size_t i = 2; i < numberOfVertices; ++i)
         {
-            m_result.add(Triangle<T>(firstVertex, m_polygon.vertices[i - 1], m_polygon.vertices[i]));
+            this->m_triangles.add(Triangle<T>(firstVertex, m_polygon.vertices[i - 1], m_polygon.vertices[i]));
         }
     }
     else
@@ -35,7 +42,7 @@ void PolygonTriangulation<T>::calculate()
 
         /* we want a counter-clockwise polygon in V */
 
-        if (m_polygon.signedArea() > 0.0)
+        if(m_polygon.signedArea() > 0.0)
             for(size_t v = 0; v < n; ++v) V[v] = v;
         else
             for(size_t v = 0; v < n; ++v) V[v] = (n - 1) - v;
@@ -45,10 +52,10 @@ void PolygonTriangulation<T>::calculate()
         /*  remove nv-2 Vertices, creating 1 triangle every time */
         int count = 2 * nv; /* error detection */ //probably can be a size_t
 
-        for(size_t m = 0, v = nv - 1; nv > 2; )
+        for(size_t m = 0, v = nv - 1; nv > 2;)
         {
             /* if we loop, it is probably a non-simple polygon */
-            if (--count <= 0)
+            if(--count <= 0)
             {
                 //** Triangulate: ERROR - probable bad polygon!
                 return;
@@ -56,13 +63,13 @@ void PolygonTriangulation<T>::calculate()
 
             /* three consecutive vertices in current polygon, <u,v,w> */
             size_t u = v;
-            if (nv <= u) u = 0;     /* previous */
+            if(nv <= u) u = 0;      /* previous */
             v = u + 1;
-            if (nv <= v) v = 0;     /* new v    */
+            if(nv <= v) v = 0;      /* new v    */
             size_t w = v + 1;
-            if (nv <= w) w = 0;     /* next     */
+            if(nv <= w) w = 0;      /* next     */
 
-            if ( snip(u, v, w, nv, V) )
+            if(snip(u, v, w, nv, V))
             {
                 size_t a, b, c, s, t;
 
@@ -70,8 +77,10 @@ void PolygonTriangulation<T>::calculate()
                 a = V[u]; b = V[v]; c = V[w];
 
                 /* output Triangle */
-                m_result.add(Triangle<T>(m_polygon.vertices[a], m_polygon.vertices[b], m_polygon.vertices[c]));
-
+                this->m_triangles.add(Triangle<T>(m_polygon.vertices[a], m_polygon.vertices[b], m_polygon.vertices[c]));
+                this->m_connections.insert(typename Triangulation<T>::Edge{a, b});
+                this->m_connections.insert(typename Triangulation<T>::Edge{b, c});
+                this->m_connections.insert(typename Triangulation<T>::Edge{c, a});
                 ++m;
 
                 /* remove v from remaining polygon */
@@ -82,13 +91,10 @@ void PolygonTriangulation<T>::calculate()
             }
         }
     }
+
+    this->m_isCompleted = true;
 }
 
-template <class T>
-const Mesh2<Triangle<T>>& PolygonTriangulation<T>::result() const
-{
-    return m_result;
-}
 template <class T>
 const Polygon<T>& PolygonTriangulation<T>::polygon() const
 {
@@ -105,10 +111,10 @@ bool PolygonTriangulation<T>::snip(size_t u, size_t v, size_t w, size_t n, const
 
     if(EPSILON > (((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x)))) return false; // i misinterpreted it as an area function earlier
 
-    for (size_t p = 0; p < n; p++)
+    for(size_t p = 0; p < n; p++)
     {
-        if( (p == u) || (p == v) || (p == w) ) continue;
-        if (triangle.intersects(m_polygon.vertices[V[p]])) return false;
+        if((p == u) || (p == v) || (p == w)) continue;
+        if(triangle.intersects(m_polygon.vertices[V[p]])) return false;
     }
 
     return true;

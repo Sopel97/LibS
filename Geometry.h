@@ -2,6 +2,7 @@
 #define GEOMETRY_H_INCLUDED
 
 #include <vector>
+#include <set>
 #include <cmath>
 #include <utility>
 #include <functional>
@@ -220,6 +221,7 @@ namespace Geo
     template <class T> class Raycast;
     class Raycaster;
 
+    template <class T> class Triangulation;
     template <class T> class RandomShapePicker;
     template <class T> class ConvexHull;
     template <class T> class PolygonTriangulation;
@@ -259,6 +261,7 @@ namespace Geo
 
 #include "include/Node.h"
 
+#include "include/Triangulation.h"
 #include "include/RandomShapePicker.h"
 #include "include/ConvexHull.h"
 #include "include/PolygonTriangulation.h"
