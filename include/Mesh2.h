@@ -57,13 +57,16 @@ public:
     void add(std::vector<ShapeType>&& e);
     void add(Mesh2<ShapeType>&& m);
 
+    virtual void translate(const Vec2<T>& v);
+    virtual void scale(const Vec2<T>& s);
+
     virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
     virtual void transform(const Transformation2<T>& transformation);
     Mesh2<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Mesh2<T> transformed(const Transformation2<T>& transformation) const;
 
-    virtual void translate(const Vec2<T>& v);
-    virtual void scale(const Vec2<T>& s);
+    virtual T distanceTo(const Vec2<T>& v1) const;
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
     Polyline<T> asPolyline() const; //undefined for mesh2
 

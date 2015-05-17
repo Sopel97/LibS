@@ -161,6 +161,37 @@ Mesh2<typename Mesh2<ShapeType>::T> Mesh2<ShapeType>::transformed(const Transfor
     return copy;
 }
 template <class ShapeType>
+typename Mesh2<ShapeType>::T Mesh2<ShapeType>::distanceTo(const Vec2<T>& point) const
+{
+    if(point.intersects(*this)) return 0;
+
+    T minDistance = std::numeric_limits<T>::max();
+    for(const auto& shape : elements)
+    {
+        minDistance = std::min(minDistance, shape.distanceTo(point));
+    }
+    return minDistance;
+}
+template <class ShapeType>
+Vec2<typename Mesh2<ShapeType>::T> Mesh2<ShapeType>::nearestPointTo(const Vec2<T>& point) const
+{
+    if(point.intersects(*this)) return point;
+
+    T minDistance = std::numeric_limits<T>::max();
+    Vec2<T> nearestPoint(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+    for(const auto& shape : elements)
+    {
+        Vec2<T> nearPoint = shape.nearestPointTo(point);
+        T distance = nearPoint.distanceTo(point);
+        if(distance < minDistance)
+        {
+            minDistance = distance;
+            nearestPoint = nearPoint;
+        }
+    }
+    return nearestPoint;
+}
+template <class ShapeType>
 Polyline<typename Mesh2<ShapeType>::T> Mesh2<ShapeType>::asPolyline() const //TODO: outline using convex hull
 {
     Polyline<typename Mesh2<ShapeType>::T> outline;

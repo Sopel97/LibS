@@ -91,6 +91,35 @@ Triangle<T> Triangle<T>::transformed(const Transformation2<T>& transformation) c
 }
 
 template <class T>
+T Triangle<T>::distanceTo(const Vec2<T>& point) const
+{
+    return point.distanceTo(nearestPointTo(point));
+}
+template <class T>
+Vec2<T> Triangle<T>::nearestPointTo(const Vec2<T>& point) const
+{
+    if(point.intersects(*this)) return point;
+
+    T minDistance = std::numeric_limits<T>::max();
+    Vec2<T> nearestPoint(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+
+    size_t size = 3;
+    for(size_t i = 0; i < size; ++i)
+    {
+        const Vec2<T>& thisVertex = vertices[i];
+        const Vec2<T>& nextVertex = vertices[(i + 1) % size];
+
+        Vec2<T> nearPoint = LineSegment<T>(thisVertex, nextVertex).nearestPointTo(point);
+        T distance = nearPoint.distanceTo(point);
+        if(distance < minDistance)
+        {
+            minDistance = distance;
+            nearestPoint = nearPoint;
+        }
+    }
+    return nearestPoint;
+}
+template <class T>
 Polyline<T> Triangle<T>::asPolyline() const
 {
     return Polyline<T>(

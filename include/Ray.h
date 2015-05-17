@@ -29,9 +29,6 @@ public:
     Ray<T>& operator+=(const Vec2<T>& v);
     Ray<T>& operator-=(const Vec2<T>& v);
 
-    T distanceTo(const Vec2<T>& point) const;
-    Vec2<T> nearestPointTo(const Vec2<T>& point) const; //TODO: maybe make this a virtual function and write it for all shape2s?
-
     void setDirection(const Vec2<T>& d);
 
     virtual void translate(const Vec2<T>& v);
@@ -41,6 +38,9 @@ public:
     virtual void transform(const Transformation2<T>& transformation);
     Ray<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Ray<T> transformed(const Transformation2<T>& transformation) const;
+
+    virtual T distanceTo(const Vec2<T>& v1) const;
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
     Polyline<T> asPolyline() const;
 

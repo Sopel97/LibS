@@ -163,6 +163,32 @@ std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Polyline<
     return std::make_unique<RandomPointPickerPreprocessedData>();
 }
 template <class T>
+T Polyline<T>::distanceTo(const Vec2<T>& point) const
+{
+    return point.distanceTo(nearestPointTo(point));
+}
+template <class T>
+Vec2<T> Polyline<T>::nearestPointTo(const Vec2<T>& point) const
+{
+    T minDistance = std::numeric_limits<T>::max();
+    Vec2<T> nearestPoint(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+    size_t polySize = size();
+    for(size_t i = 0; i < polySize - 1; ++i)
+    {
+        const Vec2<T>& thisVertex = vertices[i];
+        const Vec2<T>& nextVertex = vertices[i + 1];
+
+        Vec2<T> nearPoint = LineSegment<T>(thisVertex, nextVertex).nearestPointTo(point);
+        T distance = nearPoint.distanceTo(point);
+        if(distance < minDistance)
+        {
+            minDistance = distance;
+            nearestPoint = nearPoint;
+        }
+    }
+    return nearestPoint;
+}
+template <class T>
 Polyline<T> Polyline<T>::asPolyline() const
 {
     return *this;

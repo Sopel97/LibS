@@ -58,6 +58,9 @@ public:
     virtual Vec2<T> project(const Vec2<T>& b) const;
     virtual std::pair<T, T> projectMinMax(const Vec2<T>& b) const; //min and max values after projecting onto line
 
+    virtual T distanceTo(const Vec2<T>& v1) const = 0;   //returns 0 if the point is inside the shape
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const = 0;   //returns point when points is inside the shape
+
     //transformations work pointwise for shape defining points. So a circle won't change into ellipse, rectangle won't rotate and such. Though it could change size even though it's not determined by any vector.
     virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction) = 0;
     virtual void transform(const Transformation2<T>& transformation) = 0;
@@ -69,6 +72,7 @@ public:
     virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine) const;
     virtual std::vector<Vec2<T>> pickRandomPoints(size_t quantity, Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
 
+    //TODO: Define following two types of methods for shapes that may be concave or have holes/gaps. Probably using randomized algorithm.
     virtual Triangle<T> pickRandomTriangle(Random::RandomEngineBase& randomEngine) const; //standard way requires the shape to be convex
     virtual Triangle<T> pickRandomTriangle(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual std::vector<Triangle<T>> pickRandomTriangles(size_t quantity, Random::RandomEngineBase& randomEngine) const;

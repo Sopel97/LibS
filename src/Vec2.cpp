@@ -62,13 +62,6 @@ T Vec2Proxy<T, X, Y>::quadrance() const
     return getX() * getX() + getY() * getY();
 }
 template <class T, size_t X, size_t Y>
-T Vec2Proxy<T, X, Y>::distanceTo(const Vec2<T>& v1) const
-{
-    T dx = getX() - v1.x;
-    T dy = getY() - v1.y;
-    return std::sqrt(dx * dx + dy * dy);
-}
-template <class T, size_t X, size_t Y>
 T Vec2Proxy<T, X, Y>::distanceTo(const LineSegment<T>& lineSegment) const
 {
     return distanceTo(lineSegment.nearestPointTo(Vec2<T>(*this)));
@@ -298,6 +291,18 @@ Vec2<T> Vec2Proxy<T, X, Y>::transformed(const Transformation2<T>& transformation
     return copy;
 }
 
+template <class T, size_t X, size_t Y>
+T Vec2Proxy<T, X, Y>::distanceTo(const Vec2<T>& v1) const
+{
+    T dx = getX() - v1.x;
+    T dy = getY() - v1.y;
+    return std::sqrt(dx * dx + dy * dy);
+}
+template <class T, size_t X, size_t Y>
+Vec2<T> Vec2Proxy<T, X, Y>::nearestPointTo(const Vec2<T>& v1) const
+{
+    return Vec2<T>(*this);
+}
 
 template <class T, size_t X, size_t Y>
 Polyline<T> Vec2Proxy<T, X, Y>::asPolyline() const
@@ -412,13 +417,6 @@ template <class T>
 T Vec2<T>::quadrance() const
 {
     return x * x + y * y;
-}
-template <class T>
-T Vec2<T>::distanceTo(const Vec2<T>& v1) const
-{
-    T dx = x - v1.x;
-    T dy = y - v1.y;
-    return std::sqrt(dx * dx + dy * dy);
 }
 template <class T>
 T Vec2<T>::distanceTo(const LineSegment<T>& lineSegment) const
@@ -648,12 +646,19 @@ Vec2<T> Vec2<T>::transformed(const Transformation2<T>& transformation) const
     return copy;
 }
 
-
 template <class T>
-std::unique_ptr<Shape2<T>> Vec2<T>::clone() const
+T Vec2<T>::distanceTo(const Vec2<T>& v1) const
 {
-    return std::make_unique<Vec2<T>>(*this);
+    T dx = x - v1.x;
+    T dy = y - v1.y;
+    return std::sqrt(dx * dx + dy * dy);
 }
+template <class T>
+Vec2<T> Vec2<T>::nearestPointTo(const Vec2<T>& v1) const
+{
+    return *this;
+}
+
 
 template <class T>
 Polyline<T> Vec2<T>::asPolyline() const
@@ -680,6 +685,12 @@ template <class T>
 Vec2<T> Vec2<T>::direction(const Angle<T>& angle)
 {
 
+}
+
+template <class T>
+std::unique_ptr<Shape2<T>> Vec2<T>::clone() const
+{
+    return std::make_unique<Vec2<T>>(*this);
 }
 
 /* non-member functions */

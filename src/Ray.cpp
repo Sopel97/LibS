@@ -46,20 +46,6 @@ Ray<T>& Ray<T>::operator-=(const Vec2<T>& v)
 }
 
 template <class T>
-T Ray<T>::distanceTo(const Vec2<T>& point) const
-{
-    return point.distanceTo(nearestPointTo(point));
-}
-template <class T>
-Vec2<T> Ray<T>::nearestPointTo(const Vec2<T>& point) const
-{
-    Vec2<T> AO = point - origin;
-    T t = AO.dot(direction) / direction.quadrance();
-    t = std::max(t, T(0.0));
-    return origin + direction * t;
-}
-
-template <class T>
 void Ray<T>::setDirection(const Vec2<T>& d)
 {
     direction = d.normalized();
@@ -108,6 +94,20 @@ Ray<T> Ray<T>::transformed(const Transformation2<T>& transformation) const
     Ray<T> copy(*this);
     copy.transform(transformation);
     return copy;
+}
+
+template <class T>
+T Ray<T>::distanceTo(const Vec2<T>& point) const
+{
+    return point.distanceTo(nearestPointTo(point));
+}
+template <class T>
+Vec2<T> Ray<T>::nearestPointTo(const Vec2<T>& point) const
+{
+    Vec2<T> AO = point - origin;
+    T t = AO.dot(direction) / direction.quadrance();
+    t = std::max(t, T(0.0));
+    return origin + direction * t;
 }
 
 template <class T>

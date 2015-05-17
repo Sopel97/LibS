@@ -66,13 +66,16 @@ public:
     virtual void translate(const Vec2<T>& v);
     virtual void scale(const Vec2<T>& s);
 
-    Vec2<T> project(const Vec2<T>& b) const;
-    std::pair<T, T> projectMinMax(const Vec2<T>& b) const;
-
     virtual void transform(const std::function<void(Vec2<T>&)>& transformationFunction);
     virtual void transform(const Transformation2<T>& transformation);
     Polygon<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Polygon<T> transformed(const Transformation2<T>& transformation) const;
+
+    Vec2<T> project(const Vec2<T>& b) const;
+    std::pair<T, T> projectMinMax(const Vec2<T>& b) const;
+
+    virtual T distanceTo(const Vec2<T>& v1) const;
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
     virtual std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> createPreprocessedDataForRandomPointPicker() const;
 

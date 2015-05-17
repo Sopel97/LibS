@@ -384,6 +384,7 @@ public:
     template <class T>
     static bool contains(const Ray<T>& a, const Vec2<T>& b){return false;}
 
+    //Following ones are more complicated than I thought and they may not be implemented correctly for a long time.
     //Meshes
     template <class T, class V>
     static bool contains(const Mesh2<T>& a, const Mesh2<V>& b);

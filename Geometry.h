@@ -228,7 +228,7 @@ namespace Geo
     template <class T> class BezierCurve;
     template <class T> class BezierPath;
     template <class T> class Matrix3x3;
-    template <class T> class RapidlyExploringRandomTree;
+    template <class T, template <class TT = T> class NodeType> class RapidlyExploringRandomTree;
 
     /*         HEADERS         */
 
@@ -256,6 +256,8 @@ namespace Geo
 
 #include "include/Raycast.h"
 #include "include/Raycaster.h"
+
+#include "include/Node.h"
 
 #include "include/RandomShapePicker.h"
 #include "include/ConvexHull.h"

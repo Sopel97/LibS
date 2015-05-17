@@ -158,6 +158,34 @@ std::pair<T, T> Polygon<T>::projectMinMax(const Vec2<T>& b) const
     return std::pair<T, T>(minProjection, maxProjection);
 }
 template <class T>
+T Polygon<T>::distanceTo(const Vec2<T>& point) const
+{
+    return point.distanceTo(nearestPointTo(point));
+}
+template <class T>
+Vec2<T> Polygon<T>::nearestPointTo(const Vec2<T>& point) const
+{
+    if(point.intersects(*this)) return point;
+
+    T minDistance = std::numeric_limits<T>::max();
+    Vec2<T> nearestPoint(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+    size_t polySize = size();
+    for(size_t i = 0; i < polySize; ++i)
+    {
+        const Vec2<T>& thisVertex = vertices[i];
+        const Vec2<T>& nextVertex = vertices[(i + 1) % polySize];
+
+        Vec2<T> nearPoint = LineSegment<T>(thisVertex, nextVertex).nearestPointTo(point);
+        T distance = nearPoint.distanceTo(point);
+        if(distance < minDistance)
+        {
+            minDistance = distance;
+            nearestPoint = nearPoint;
+        }
+    }
+    return nearestPoint;
+}
+template <class T>
 std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Polygon<T>::createPreprocessedDataForRandomPointPicker() const
 {
     PolygonTriangulation<T> triangulation(*this);

@@ -6,6 +6,15 @@
     http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
 */
 
+//TODO: make Triangulation class that contains:
+//          - array of vertices and set of connections between them (as mapping of indices (size_t, size_t))
+//          - resulting mesh of triangles (replacing current m_result)
+//
+//      And make it the base class for all Triangulations.
+//
+//      This will allow for easy constrution of graphs based on triagulation
+//
+//      Add a member that indicates whether the Triangulation is completed or not.
 template <class T>
 class PolygonTriangulation
 {

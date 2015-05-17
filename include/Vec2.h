@@ -48,7 +48,6 @@ public:
 
     T magnitude() const;
     T quadrance() const;
-    T distanceTo(const Vec2<T>& v1) const;
     T distanceTo(const LineSegment<T>& lineSegment) const;
     void normalize();
     Vec2<T> normalized() const;
@@ -73,6 +72,9 @@ public:
     virtual void transform(const Transformation2<T>& transformation);
     Vec2<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Vec2<T> transformed(const Transformation2<T>& transformation) const;
+
+    virtual T distanceTo(const Vec2<T>& v1) const;
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
@@ -187,7 +189,6 @@ public:
 
     T magnitude() const;
     T quadrance() const;
-    T distanceTo(const Vec2<T>& v1) const;
     T distanceTo(const LineSegment<T>& lineSegment) const;
     void normalize();
     Vec2<T> normalized() const;
@@ -212,6 +213,9 @@ public:
     virtual void transform(const Transformation2<T>& transformation);
     Vec2<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Vec2<T> transformed(const Transformation2<T>& transformation) const;
+
+    virtual T distanceTo(const Vec2<T>& v1) const;
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}

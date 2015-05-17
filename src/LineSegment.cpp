@@ -47,20 +47,6 @@ T LineSegment<T>::length() const
 {
     return begin.distanceTo(end);
 }
-template <class T>
-T LineSegment<T>::distanceTo(const Vec2<T>& point) const
-{
-    return point.distanceTo(nearestPointTo(point));
-}
-template <class T>
-Vec2<T> LineSegment<T>::nearestPointTo(const Vec2<T>& point) const
-{
-    Vec2<T> AO = point - begin;
-    Vec2<T> AB = end - begin;
-    T t = AO.dot(AB) / AB.quadrance();
-    t = clamp(t, T(0.0), T(1.0));
-    return begin + AB * t;
-}
 
 template <class T>
 void LineSegment<T>::translate(const Vec2<T>& v)
@@ -99,6 +85,20 @@ LineSegment<T> LineSegment<T>::transformed(const Transformation2<T>& transformat
     LineSegment<T> copy(*this);
     copy.transform(transformation);
     return copy;
+}
+template <class T>
+T LineSegment<T>::distanceTo(const Vec2<T>& point) const
+{
+    return point.distanceTo(nearestPointTo(point));
+}
+template <class T>
+Vec2<T> LineSegment<T>::nearestPointTo(const Vec2<T>& point) const
+{
+    Vec2<T> AO = point - begin;
+    Vec2<T> AB = end - begin;
+    T t = AO.dot(AB) / AB.quadrance();
+    t = clamp(t, T(0.0), T(1.0));
+    return begin + AB * t;
 }
 template <class T>
 Polyline<T> LineSegment<T>::asPolyline() const

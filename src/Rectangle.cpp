@@ -95,6 +95,18 @@ Rectangle<T> Rectangle<T>::transformed(const Transformation2<T>& transformation)
 }
 
 template <class T>
+T Rectangle<T>::distanceTo(const Vec2<T>& point) const
+{
+    return point.distanceTo(nearestPointTo(point));
+}
+template <class T>
+Vec2<T> Rectangle<T>::nearestPointTo(const Vec2<T>& point) const
+{
+    if(point.intersects(*this)) return point;
+
+    return Vec2<T>(clamp(point.x, min.x, max.x), clamp(point.y, min.y, max.y));
+}
+template <class T>
 Polyline<T> Rectangle<T>::asPolyline() const
 {
     return Polyline<T>(

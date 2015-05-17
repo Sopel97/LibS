@@ -42,6 +42,9 @@ public:
     Rectangle<T> transformed(const std::function<void(Vec2<T>&)>& transformationFunction) const;
     Rectangle<T> transformed(const Transformation2<T>& transformation) const;
 
+    virtual T distanceTo(const Vec2<T>& v1) const;
+    virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
+
     Polyline<T> asPolyline() const;
 
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
