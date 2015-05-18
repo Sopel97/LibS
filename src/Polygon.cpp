@@ -189,7 +189,6 @@ template <class T>
 std::unique_ptr<typename Shape2<T>::RandomPointPickerPreprocessedData> Polygon<T>::createPreprocessedDataForRandomPointPicker() const
 {
     PolygonTriangulation<T> triangulation(*this);
-    triangulation.calculate();
     return std::make_unique<RandomPointPickerPreprocessedData>(std::move(triangulation));
 }
 template <class T>

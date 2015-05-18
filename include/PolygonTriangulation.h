@@ -15,8 +15,6 @@ public:
 
     virtual ~PolygonTriangulation(){}
 
-    virtual void calculate();
-
     const Polygon<T>& polygon() const;
 
     virtual size_t numberOfPoints() const;
@@ -26,6 +24,7 @@ public:
 protected:
     Polygon<T> m_polygon;
 
+    void calculate();
     bool snip(size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V);
 };
 

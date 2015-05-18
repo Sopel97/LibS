@@ -2,20 +2,22 @@ template <class T, class NodeType>
 PointSetDelaunayTriangulation<T, NodeType>::PointSetDelaunayTriangulation(const std::vector<Vec2<T>>& points) :
     m_points(points)
 {
-
+    calculate();
 }
 template <class T, class NodeType>
 PointSetDelaunayTriangulation<T, NodeType>::PointSetDelaunayTriangulation(std::vector<Vec2<T>>&& points) :
     m_points(std::move(points))
 {
-
+    calculate();
 }
 
 template <class T, class NodeType>
 void PointSetDelaunayTriangulation<T, NodeType>::calculate()
 {
     this->m_connections.clear();
+    this->m_triangleMesh.clear();
     this->m_triangles.clear();
+    m_closedTriangles.clear();
 
     //copy of the vertices because we add 3 vertices later (supertriangle's vertices)
     std::vector<Vec2<T>> vertices = m_points;
@@ -47,7 +49,6 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
     // and the closed list (which is empty since we havn't processed any triangles yet).
     // all triangles are stored as indices of vertices along with their circumcircles
     std::vector<CircumCircle> open({circumcircle(vertices, n + 0, n + 1, n + 2)});
-    std::vector<CircumCircle> closed;
 
     // Incrementally add each vertex to the mesh.
     for(size_t c : indices)
@@ -65,7 +66,7 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
             T dx = vertices[c].x - open[j].circumcircle.origin.x;
             if(dx > 0.0 && dx * dx > open[j].circumcircle.radius)
             {
-                closed.push_back(open[j]);
+                m_closedTriangles.push_back(open[j]);
                 open.erase(open.begin() + j);
                 continue;
             }
@@ -79,9 +80,9 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
 
             // If we are inside a circumference remove the triangle and add it's edges to the edge list.
             // All edges should be unique, that's automatically handled by a set.
-            edges.insert(typename Triangulation<T, NodeType>::Edge(open[j].i, open[j].j));
-            edges.insert(typename Triangulation<T, NodeType>::Edge(open[j].j, open[j].k));
-            edges.insert(typename Triangulation<T, NodeType>::Edge(open[j].k, open[j].i));
+            edges.insert(typename Triangulation<T, NodeType>::EdgeInd(open[j].i, open[j].j));
+            edges.insert(typename Triangulation<T, NodeType>::EdgeInd(open[j].j, open[j].k));
+            edges.insert(typename Triangulation<T, NodeType>::EdgeInd(open[j].k, open[j].i));
 
             open.erase(open.begin() + j);
         }
@@ -89,30 +90,33 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
         /* Add a new triangle constructed from each edge and point indicated by c. */
         for(const auto& edge : edges)
         {
-            open.push_back(circumcircle(vertices, edge.v1, edge.v2, c));
+            open.push_back(circumcircle(vertices, edge.i, edge.j, c));
         }
     }
 
     // Copy any remaining open triangles to the closed list, and then
     for(const auto& triangle : open)
     {
-        closed.push_back(triangle);
+        m_closedTriangles.push_back(triangle);
     }
 
-    for(const auto& triangle : closed)
+    for(const auto& triangle : m_closedTriangles)
     {
         // onlt triangles that DO NOT share a vertex with the supertriangle (since they are outside point set)
         if(triangle.i < n && triangle.j < n && triangle.k < n)
         {
-            this->m_triangles.add(Triangle<T>(vertices[triangle.i], vertices[triangle.j], vertices[triangle.k]));
+            this->m_triangleMesh.add(Triangle<T>(vertices[triangle.i], vertices[triangle.j], vertices[triangle.k]));
 
-            this->m_connections.insert(typename Triangulation<T, NodeType>::Edge(triangle.i, triangle.j));
-            this->m_connections.insert(typename Triangulation<T, NodeType>::Edge(triangle.j, triangle.k));
-            this->m_connections.insert(typename Triangulation<T, NodeType>::Edge(triangle.k, triangle.i));
+            this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(triangle.i, triangle.j));
+            this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(triangle.j, triangle.k));
+            this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(triangle.k, triangle.i));
+
+            m_closedTriangles.push_back(triangle);
+
+            this->m_triangles.push_back(typename Triangulation<T, NodeType>::TriangleInd(triangle.i, triangle.l, triangle.k));
         }
     }
 
-    this->createGraphFromConnections();
     this->m_isCompleted = true;
 }
 
@@ -132,6 +136,11 @@ const Vec2<T>& PointSetDelaunayTriangulation<T, NodeType>::point(size_t i) const
     return m_points[i];
 }
 
+template <class T, class NodeType>
+const std::vector<typename PointSetDelaunayTriangulation<T, NodeType>::CircumCircle>& PointSetDelaunayTriangulation<T, NodeType>::closedTriangles() const
+{
+    return m_closedTriangles;
+}
 
 
 template <class T, class NodeType>

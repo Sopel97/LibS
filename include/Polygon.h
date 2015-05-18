@@ -10,8 +10,8 @@ public:
         RandomPointPickerPreprocessedData(PolygonTriangulation<T>&& triang) :
             triangulation(std::move(triang))
         {
-            trianglesByArea.reserve(triangulation.triangles().size());
-            for(auto& triangle : triangulation.triangles().elements)
+            trianglesByArea.reserve(triangulation.triangleMesh().size());
+            for(auto& triangle : triangulation.triangleMesh().elements)
             {
                 trianglesByArea.push_back(std::make_pair(&triangle, triangle.area()));
             }

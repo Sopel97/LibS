@@ -227,6 +227,8 @@ namespace Geo
     template <class T, class NodeType = GraphNode<T>> class Triangulation;
     template <class T, class NodeType = GraphNode<T>> class PolygonTriangulation;
     template <class T, class NodeType = GraphNode<T>> class PointSetDelaunayTriangulation;
+    template <class T, class NodeType = GraphNode<T>> class EuclideanGraph;
+    template <class T, class NodeType = GraphNode<T>> class UrquhartGraph;
     template <class T> class RandomShapePicker;
     template <class T> class ConvexHull;
     template <class T> class Transformation2;
@@ -268,6 +270,8 @@ namespace Geo
 #include "include/Triangulation.h"
 #include "include/PolygonTriangulation.h"
 #include "include/PointSetDelaunayTriangulation.h"
+#include "include/EuclideanGraph.h"
+#include "include/UrquhartGraph.h"
 #include "include/RandomShapePicker.h"
 #include "include/ConvexHull.h"
 #include "include/Transformation2.h"

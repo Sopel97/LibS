@@ -1,36 +1,44 @@
 #ifndef TRIANGULATION_H
 #define TRIANGULATION_H
 
+//NOTE: All triangulations are being computed when created.
 template <class T, class NodeType>
 class Triangulation
 {
 public:
-    struct Edge
+    struct TriangleInd //stores only indices
     {
-        size_t v1;
-        size_t v2;
+        size_t i;
+        size_t j;
+        size_t k;
+    };
 
-        Edge(size_t a, size_t b)
+    struct EdgeInd
+    {
+        size_t i;
+        size_t j;
+
+        EdgeInd(size_t a, size_t b)
         {
             if(a > b)
             {
-                v1 = a;
-                v2 = b;
+                i = a;
+                j = b;
             }
             else
             {
-                v1 = b;
-                v2 = a;
+                i = b;
+                j = a;
             }
         }
 
-        bool operator==(const Edge& other) const
+        bool operator==(const EdgeInd& other) const
         {
-            return ((v1 == other.v1) && (v2 == other.v2)); //since v1 and v2 are sorted
+            return ((i == other.i) && (j == other.j)); //since v1 and v2 are sorted
         }
-        bool operator<(const Edge& other) const
+        bool operator<(const EdgeInd& other) const
         {
-            return ((v1 < other.v1) || ((v1 == other.v1) && (v2 < other.v2)));
+            return ((i < other.i) || ((i == other.i) && (j < other.j)));
         }
     };
 
@@ -38,13 +46,9 @@ public:
 
     virtual ~Triangulation();
 
-    virtual void calculate() = 0;
-
-    const Mesh2<Triangle<T>>& triangles() const;
-    const std::set<Edge>& connections() const;
-    const std::vector<NodeType*>& graph() const;
-
-    virtual void createGraphFromConnections();
+    const Mesh2<Triangle<T>>& triangleMesh() const;
+    const std::set<EdgeInd>& connections() const;
+    const std::vector<TriangleInd>& triangles() const;
 
     virtual size_t numberOfPoints() const = 0;
     virtual const std::vector<Vec2<T>>& points() const = 0;
@@ -53,9 +57,9 @@ public:
     bool isCompleted() const;
 
 protected:
-    Mesh2<Triangle<T>> m_triangles;
-    std::set<Edge> m_connections; //vertex to vertex connection
-    std::vector<NodeType*> m_graph; //NOTE: It is guaranteed that all nodes have the same indices as their respective vertices (in some vertex contained passed to triangulation).
+    Mesh2<Triangle<T>> m_triangleMesh;
+    std::set<EdgeInd> m_connections;
+    std::vector<TriangleInd> m_triangles;
 
     bool m_isCompleted;
 };

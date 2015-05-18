@@ -3,14 +3,14 @@ PolygonTriangulation<T, NodeType>::PolygonTriangulation(const Polygon<T>& polygo
     Triangulation<T>::Triangulation(),
     m_polygon(polygon)
 {
-
+    calculate();
 }
 template <class T, class NodeType>
 PolygonTriangulation<T, NodeType>::PolygonTriangulation(Polygon<T>&& polygon) :
     Triangulation<T>::Triangulation(),
     m_polygon(std::move(polygon))
 {
-
+    calculate();
 }
 template <class T, class NodeType>
 void PolygonTriangulation<T, NodeType>::calculate()
@@ -18,18 +18,18 @@ void PolygonTriangulation<T, NodeType>::calculate()
     //for convex shape
     if(this->m_isCompleted) return;
 
-    this->m_triangles.elements.clear();
+    this->m_triangleMesh.elements.clear();
     this->m_connections.clear();
 
     if(m_polygon.size() < 3) return;
     if(m_polygon.isConvex())
     {
         size_t numberOfVertices = m_polygon.size();
-        this->m_triangles.elements.reserve(numberOfVertices - 2);
+        this->m_triangleMesh.elements.reserve(numberOfVertices - 2);
         const Vec2<T>& firstVertex = m_polygon.vertices[0];
         for(size_t i = 2; i < numberOfVertices; ++i)
         {
-            this->m_triangles.add(Triangle<T>(firstVertex, m_polygon.vertices[i - 1], m_polygon.vertices[i]));
+            this->m_triangleMesh.add(Triangle<T>(firstVertex, m_polygon.vertices[i - 1], m_polygon.vertices[i]));
         }
     }
     else
@@ -77,10 +77,10 @@ void PolygonTriangulation<T, NodeType>::calculate()
                 a = V[u]; b = V[v]; c = V[w];
 
                 /* output Triangle */
-                this->m_triangles.add(Triangle<T>(m_polygon.vertices[a], m_polygon.vertices[b], m_polygon.vertices[c]));
-                this->m_connections.insert(typename Triangulation<T, NodeType>::Edge(a, b));
-                this->m_connections.insert(typename Triangulation<T, NodeType>::Edge(b, c));
-                this->m_connections.insert(typename Triangulation<T, NodeType>::Edge(c, a));
+                this->m_triangleMesh.add(Triangle<T>(m_polygon.vertices[a], m_polygon.vertices[b], m_polygon.vertices[c]));
+                this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(a, b));
+                this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(b, c));
+                this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(c, a));
                 ++m;
 
                 /* remove v from remaining polygon */
@@ -92,7 +92,6 @@ void PolygonTriangulation<T, NodeType>::calculate()
         }
     }
 
-    this->createGraphFromConnections();
     this->m_isCompleted = true;
 }
 
