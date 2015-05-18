@@ -47,8 +47,8 @@ void Triangulation<T, NodeType>::createGraphFromConnections()
         auto& node1 = m_graph[connection.v1];
         auto& node2 = m_graph[connection.v2];
 
-        node1.addChild(node2);
-        node2.addChild(node1);
+        node1->addChild(node2);
+        node2->addChild(node1);
     }
 }
 

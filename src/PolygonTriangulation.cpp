@@ -92,6 +92,7 @@ void PolygonTriangulation<T, NodeType>::calculate()
         }
     }
 
+    this->createGraphFromConnections();
     this->m_isCompleted = true;
 }
 

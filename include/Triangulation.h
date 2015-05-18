@@ -44,7 +44,7 @@ public:
     const std::set<Edge>& connections() const;
     const std::vector<NodeType*>& graph() const;
 
-    void createGraphFromConnections();
+    virtual void createGraphFromConnections();
 
     virtual size_t numberOfPoints() const = 0;
     virtual const std::vector<Vec2<T>>& points() const = 0;
@@ -55,7 +55,7 @@ public:
 protected:
     Mesh2<Triangle<T>> m_triangles;
     std::set<Edge> m_connections; //vertex to vertex connection
-    std::vector<NodeType*> m_graph;
+    std::vector<NodeType*> m_graph; //NOTE: It is guaranteed that all nodes have the same indices as their respective vertices (in some vertex contained passed to triangulation).
 
     bool m_isCompleted;
 };
