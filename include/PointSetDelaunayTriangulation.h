@@ -1,0 +1,40 @@
+#ifndef POINTSETDELAUNAYTRIANGULATION_H
+#define POINTSETDELAUNAYTRIANGULATION_H
+
+
+template <class T, class NodeType>
+class PointSetDelaunayTriangulation : public Triangulation<T, NodeType>
+{
+public:
+    PointSetDelaunayTriangulation(const std::vector<Vec2<T>>& points);
+    PointSetDelaunayTriangulation(std::vector<Vec2<T>>&& points);
+
+    virtual ~PointSetDelaunayTriangulation(){}
+
+    virtual void calculate();
+
+    virtual size_t numberOfPoints() const;
+    virtual const std::vector<Vec2<T>>& points() const;
+    virtual const Vec2<T>& point(size_t i) const;
+
+protected:
+    struct CircumCircle
+    {
+        size_t i; //indices of the vertices of the triangle
+        size_t j;
+        size_t k;
+        Circle<T> circle;
+    };
+    std::vector<Vec2<T>> m_points;
+
+    Triangle<T> superTriangle(const std::vector<Vec2<T>>& vertices);
+    CircumCircle circumcircle(const std::vector<Vec2<T>>& vertices, size_t i, size_t j, size_t k);
+};
+
+typedef PointSetDelaunayTriangulation<double> PointSetDelaunayTriangulationD;
+typedef PointSetDelaunayTriangulation<float> PointSetDelaunayTriangulationF;
+typedef PointSetDelaunayTriangulation<int> PointSetDelaunayTriangulationI;
+
+#include "../src/PointSetDelaunayTriangulation.cpp"
+
+#endif // POINTSETDELAUNAYTRIANGULATION_H

@@ -43,26 +43,20 @@ class GraphNode
 public:
     GraphNode() = default;
     GraphNode(const Vec2<T>& position);
-    GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>& parents);
-    GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>&& parents);
-    GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>& parents, const std::vector<GraphNode<T>*>& children);
-    GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>&& parents, const std::vector<GraphNode<T>*>&& children);
+    GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>& children);
+    GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>&& children);
 
     GraphNode(const GraphNode<T>& other);
     GraphNode(GraphNode<T>&& other);
 
     void addChild(GraphNode<T>* newChild);
-    void addParent(GraphNode<T>* newParent);
 
     void removeChild(GraphNode<T>* child);
-    void removeParent(GraphNode<T>* parent);
 
     const Vec2<T>& position() const;
     const std::vector<GraphNode<T>*>& children() const;
-    const std::vector<GraphNode<T>*>& parents() const;
 protected:
     Vec2<T> m_position;
-    std::vector<GraphNode<T>*> m_parents; //non owning
     std::vector<GraphNode<T>*> m_children; //non owning
 };
 

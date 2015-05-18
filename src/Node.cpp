@@ -96,31 +96,15 @@ GraphNode<T>::GraphNode(const Vec2<T>& position) :
 
 }
 template <class T>
-GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>& parents) :
+GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>& children) :
     m_position(position),
-    m_parents(parents)
-{
-
-}
-template <class T>
-GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>&& parents) :
-    m_position(position),
-    m_parents(std::move(parents))
-{
-
-}
-template <class T>
-GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>& parents, const std::vector<GraphNode<T>*>& children) :
-    m_position(position),
-    m_parents(parents),
     m_children(children)
 {
 
 }
 template <class T>
-GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>&& parents, const std::vector<GraphNode<T>*>&& children) :
+GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*>&& children) :
     m_position(position),
-    m_parents(std::move(parents)),
     m_children(std::move(children))
 {
 
@@ -128,7 +112,6 @@ GraphNode<T>::GraphNode(const Vec2<T>& position, const std::vector<GraphNode<T>*
 template <class T>
 GraphNode<T>::GraphNode(const GraphNode<T>& other) :
     m_position(other.m_position),
-    m_parents(other.m_parents),
     m_children(other.m_children)
 {
 
@@ -136,7 +119,6 @@ GraphNode<T>::GraphNode(const GraphNode<T>& other) :
 template <class T>
 GraphNode<T>::GraphNode(GraphNode<T>&& other) :
     m_position(std::move(other.m_position)),
-    m_parents(std::move(other.m_parents)),
     m_children(std::move(other.m_children))
 {
 
@@ -148,20 +130,9 @@ void GraphNode<T>::addChild(GraphNode<T>* newChild)
     m_children.push_back(newChild);
 }
 template <class T>
-void GraphNode<T>::addParent(GraphNode<T>* newParent)
-{
-    m_parents.push_back(newParent);
-}
-
-template <class T>
 void GraphNode<T>::removeChild(GraphNode<T>* child)
 {
     m_children.erase(std::remove(std::begin(m_children), std::end(m_children), child), std::end(m_children));
-}
-template <class T>
-void GraphNode<T>::removeParent(GraphNode<T>* parent)
-{
-    m_parents.erase(std::remove(std::begin(m_parents), std::end(m_parents), parent), std::end(m_parents));
 }
 
 template <class T>
@@ -173,9 +144,4 @@ template <class T>
 const std::vector<GraphNode<T>*>& GraphNode<T>::children() const
 {
     return m_children;
-}
-template <class T>
-const std::vector<GraphNode<T>*>& GraphNode<T>::parents() const
-{
-    return m_parents;
 }

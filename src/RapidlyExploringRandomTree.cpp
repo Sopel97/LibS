@@ -1,37 +1,37 @@
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 RapidlyExploringRandomTree<T, NodeType>::RapidlyExploringRandomTree(const Shape2<T>& space) :
     m_space(space.clone()),
     m_randomEngine(std::make_unique<Random::Xorshift64Engine>()),
     m_randomPointPicker(*m_space)
 {
     Vec2<T> center(space.center());
-    m_nodes.push_back(new NodeType<T>(center, nullptr));
+    m_nodes.push_back(new NodeType(center, nullptr));
 }
 
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 RapidlyExploringRandomTree<T, NodeType>::RapidlyExploringRandomTree(const Shape2<T>& space, const Random::RandomEngineBase& randomEngine) :
     m_space(space.clone()),
     m_randomEngine(randomEngine.clone()),
     m_randomPointPicker(*m_space)
 {
     Vec2<T> center(space.center());
-    m_nodes.push_back(new NodeType<T>(center));
+    m_nodes.push_back(new NodeType(center));
 }
 
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 const Shape2<T>& RapidlyExploringRandomTree<T, NodeType>::space() const
 {
     return m_space;
 }
 
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 template <class SomeShape>
 void RapidlyExploringRandomTree<T, NodeType>::addObstacle(const SomeShape& someShape)
 {
     m_obstacles.push_back(someShape.clone().release());
 }
 
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 void RapidlyExploringRandomTree<T, NodeType>::generateNodes(size_t quantity)
 {
     m_nodes.reserve(quantity + m_nodes.size());
@@ -46,11 +46,11 @@ void RapidlyExploringRandomTree<T, NodeType>::generateNodes(size_t quantity)
         }
         while(!isWayClear(sample, closestEdge.targetVertex));
 
-        NodeType<T>* parentOfNewNode = nullptr;
+        NodeType* parentOfNewNode = nullptr;
 
         if(closestEdge.isNewNodeRequired)
         {
-            NodeType<T>* newNodeOnEdge = new NodeType<T>(closestEdge.targetVertex, closestEdge.beginNode, closestEdge.endNode);
+            NodeType* newNodeOnEdge = new NodeType(closestEdge.targetVertex, closestEdge.beginNode, closestEdge.endNode);
             closestEdge.beginNode->removeChild(closestEdge.endNode);
             closestEdge.beginNode->addChild(newNodeOnEdge);
             closestEdge.endNode->setParent(newNodeOnEdge);
@@ -62,20 +62,20 @@ void RapidlyExploringRandomTree<T, NodeType>::generateNodes(size_t quantity)
             parentOfNewNode = closestEdge.closestEndNode;
         }
 
-        NodeType<T>* newNode = new NodeType<T>(sample, parentOfNewNode); //closest node as parent
+        NodeType* newNode = new NodeType(sample, parentOfNewNode); //closest node as parent
         parentOfNewNode->addChild(newNode);
         addNode(newNode);
     }
 }
-template <class T, template <class TT = T> class NodeType>
-void RapidlyExploringRandomTree<T, NodeType>::addNode(NodeType<T>* newNode)
+template <class T, class NodeType>
+void RapidlyExploringRandomTree<T, NodeType>::addNode(NodeType* newNode)
 {
     m_nodes.push_back(newNode);
 }
-template <class T, template <class TT = T> class NodeType>
-const NodeType<T>* RapidlyExploringRandomTree<T, NodeType>::nearestNode(const Vec2<T>& position) const
+template <class T, class NodeType>
+const NodeType* RapidlyExploringRandomTree<T, NodeType>::nearestNode(const Vec2<T>& position) const
 {
-    const NodeType<T>* closestNode = nullptr;
+    const NodeType* closestNode = nullptr;
     T minDistance = std::numeric_limits<T>::max();
     if(!m_nodes.empty()) closestNode = m_nodes.back();
     for(const auto& node : m_nodes)
@@ -89,10 +89,10 @@ const NodeType<T>* RapidlyExploringRandomTree<T, NodeType>::nearestNode(const Ve
     }
     return closestNode;
 }
-template <class T, template <class TT = T> class NodeType>
-NodeType<T>* RapidlyExploringRandomTree<T, NodeType>::nearestNode(const Vec2<T>& position)
+template <class T, class NodeType>
+NodeType* RapidlyExploringRandomTree<T, NodeType>::nearestNode(const Vec2<T>& position)
 {
-    NodeType<T>* closestNode = nullptr;
+    NodeType* closestNode = nullptr;
     T minDistance = std::numeric_limits<T>::max();
     if(!m_nodes.empty()) closestNode = m_nodes.back();
     for(auto& node : m_nodes)
@@ -106,7 +106,7 @@ NodeType<T>* RapidlyExploringRandomTree<T, NodeType>::nearestNode(const Vec2<T>&
     }
     return closestNode;
 }
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 typename RapidlyExploringRandomTree<T, NodeType>::Edge RapidlyExploringRandomTree<T, NodeType>::nearestEdge(const Vec2<T>& sample)
 {
     Edge closestEdge {nullptr, nullptr, nullptr, Vec2<T>(), false};
@@ -126,7 +126,7 @@ typename RapidlyExploringRandomTree<T, NodeType>::Edge RapidlyExploringRandomTre
             const T t = (sample - beginNodePosition).dot(edge) / q;
 
             Vec2<T> vertexOnEdge;
-            NodeType<T>* closestNode = nullptr;
+            NodeType* closestNode = nullptr;
             if(t <= 0.0)
             {
                 vertexOnEdge = beginNodePosition;        // Beyond the 'v' end of the segment
@@ -149,19 +149,19 @@ typename RapidlyExploringRandomTree<T, NodeType>::Edge RapidlyExploringRandomTre
     }
     if(closestEdge.beginNode == nullptr)
     {
-        NodeType<T>* onlyNode = m_nodes.back();
+        NodeType* onlyNode = m_nodes.back();
         Vec2<T> onlyNodePosition = onlyNode->position();
         closestEdge = Edge {onlyNode, onlyNode, onlyNode, onlyNodePosition, false};
     }
     return closestEdge;
 }
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 Vec2<T> RapidlyExploringRandomTree<T, NodeType>::generateRandomSample() const
 {
     return m_randomPointPicker.pickRandomPoint(*m_randomEngine);
 }
 
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 bool RapidlyExploringRandomTree<T, NodeType>::isWayClear(const Vec2<T>& begin, const Vec2<T>& end) const
 {
     LineSegment<T> edge(begin, end);
@@ -176,13 +176,13 @@ bool RapidlyExploringRandomTree<T, NodeType>::isWayClear(const Vec2<T>& begin, c
     return true;
 }
 
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 bool RapidlyExploringRandomTree<T, NodeType>::isWayInsideShape(const Vec2<T>& begin, const Vec2<T>& end) const
 {
     //return m_space->contains(LineSegment<T>(begin, end)); //this will be enabled when the containment methods get implemented
     return true; //temporary
 }
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 std::vector<LineSegment<T>> RapidlyExploringRandomTree<T, NodeType>::edges() const
 {
     std::vector<LineSegment<T>> allEdges;
@@ -198,7 +198,7 @@ std::vector<LineSegment<T>> RapidlyExploringRandomTree<T, NodeType>::edges() con
     }
     return allEdges;
 }
-template <class T, template <class TT = T> class NodeType>
+template <class T, class NodeType>
 RapidlyExploringRandomTree<T, NodeType>::~RapidlyExploringRandomTree()
 {
     for(auto& obstacle : m_obstacles)

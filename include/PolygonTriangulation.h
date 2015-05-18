@@ -6,16 +6,22 @@
     http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
 */
 
-template <class T>
-class PolygonTriangulation : public Triangulation<T>
+template <class T, class NodeType>
+class PolygonTriangulation : public Triangulation<T, NodeType>
 {
 public:
     PolygonTriangulation(const Polygon<T>& polygon);
     PolygonTriangulation(Polygon<T>&& polygon);
 
+    virtual ~PolygonTriangulation(){}
+
     virtual void calculate();
 
     const Polygon<T>& polygon() const;
+
+    virtual size_t numberOfPoints() const;
+    virtual const std::vector<Vec2<T>>& points() const;
+    virtual const Vec2<T>& point(size_t i) const;
 
 protected:
     Polygon<T> m_polygon;

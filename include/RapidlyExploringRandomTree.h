@@ -1,7 +1,7 @@
 #ifndef RAPIDLYEXPLORINGRANDOMTREE_H
 #define RAPIDLYEXPLORINGRANDOMTREE_H
 
-template <class T, template <class TT = T> class NodeType> //NodeType* must be compatibile with TreeNode
+template <class T, class NodeType> //NodeType* must be compatibile with TreeNode
 class RapidlyExploringRandomTree
 {
 public:
@@ -16,10 +16,10 @@ public:
 
     void generateNodes(size_t quantity);
 
-    void addNode(NodeType<T>* newNode);
+    void addNode(NodeType* newNode);
 
-    const NodeType<T>* nearestNode(const Vec2<T>& position) const;
-    NodeType<T>* nearestNode(const Vec2<T>& position);
+    const NodeType* nearestNode(const Vec2<T>& position) const;
+    NodeType* nearestNode(const Vec2<T>& position);
 
     Vec2<T> generateRandomSample() const;
 
@@ -33,9 +33,9 @@ public:
 protected:
     struct Edge
     {
-        NodeType<T>* beginNode;
-        NodeType<T>* endNode;
-        NodeType<T>* closestEndNode;
+        NodeType* beginNode;
+        NodeType* endNode;
+        NodeType* closestEndNode;
         Vec2<T> targetVertex;
         bool isNewNodeRequired;
     };
@@ -43,15 +43,15 @@ protected:
     std::unique_ptr<Shape2<T>> m_space;
     std::unique_ptr<Random::RandomEngineBase> m_randomEngine;
     std::vector<Shape2<T>*> m_obstacles; //owning
-    std::vector<NodeType<T>*> m_nodes; //owning
+    std::vector<NodeType*> m_nodes; //owning
     RandomShapePicker<T> m_randomPointPicker;
 
     Edge nearestEdge(const Vec2<T>& sample);
 };
 
-typedef RapidlyExploringRandomTree<double, TreeNode> RapidlyExploringRandomTreeD;
-typedef RapidlyExploringRandomTree<float, TreeNode> RapidlyExploringRandomTreeF;
-typedef RapidlyExploringRandomTree<int, TreeNode> RapidlyExploringRandomTreeI;
+typedef RapidlyExploringRandomTree<double> RapidlyExploringRandomTreeD;
+typedef RapidlyExploringRandomTree<float> RapidlyExploringRandomTreeF;
+typedef RapidlyExploringRandomTree<int> RapidlyExploringRandomTreeI;
 
 #include "../src/RapidlyExploringRandomTree.cpp"
 

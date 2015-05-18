@@ -221,16 +221,20 @@ namespace Geo
     template <class T> class Raycast;
     class Raycaster;
 
-    template <class T> class Triangulation;
+    template <class T> class TreeNode;
+    template <class T> class GraphNode;
+
+    template <class T, class NodeType = GraphNode<T>> class Triangulation;
+    template <class T, class NodeType = GraphNode<T>> class PolygonTriangulation;
+    template <class T, class NodeType = GraphNode<T>> class PointSetDelaunayTriangulation;
     template <class T> class RandomShapePicker;
     template <class T> class ConvexHull;
-    template <class T> class PolygonTriangulation;
     template <class T> class Transformation2;
     template <class T> class AffineTransformation;
     template <class T> class BezierCurve;
     template <class T> class BezierPath;
     template <class T> class Matrix3x3;
-    template <class T, template <class TT = T> class NodeType> class RapidlyExploringRandomTree;
+    template <class T, class NodeType = TreeNode<T>> class RapidlyExploringRandomTree;
 
     /*         HEADERS         */
 
@@ -262,9 +266,10 @@ namespace Geo
 #include "include/Node.h"
 
 #include "include/Triangulation.h"
+#include "include/PolygonTriangulation.h"
+#include "include/PointSetDelaunayTriangulation.h"
 #include "include/RandomShapePicker.h"
 #include "include/ConvexHull.h"
-#include "include/PolygonTriangulation.h"
 #include "include/Transformation2.h"
 #include "include/AffineTransformation.h"
 #include "include/BezierCurve.h"
