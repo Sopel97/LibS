@@ -2,7 +2,7 @@
 #define TRIANGULATION_H
 
 //NOTE: All triangulations are being computed when created.
-template <class T, class NodeType>
+template <class T>
 class Triangulation
 {
 public:
@@ -34,7 +34,7 @@ public:
 
         bool operator==(const EdgeInd& other) const
         {
-            return ((i == other.i) && (j == other.j)); //since v1 and v2 are sorted
+            return ((i == other.i) && (j == other.j)); //since i and j are sorted
         }
         bool operator<(const EdgeInd& other) const
         {

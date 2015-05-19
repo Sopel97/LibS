@@ -6,8 +6,8 @@
     http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
 */
 
-template <class T, class NodeType>
-class PolygonTriangulation : public Triangulation<T, NodeType>
+template <class T>
+class PolygonTriangulation : public Triangulation<T>
 {
 public:
     PolygonTriangulation(const Polygon<T>& polygon);

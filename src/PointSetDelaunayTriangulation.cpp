@@ -1,18 +1,18 @@
-template <class T, class NodeType>
-PointSetDelaunayTriangulation<T, NodeType>::PointSetDelaunayTriangulation(const std::vector<Vec2<T>>& points) :
+template <class T>
+PointSetDelaunayTriangulation<T>::PointSetDelaunayTriangulation(const std::vector<Vec2<T>>& points) :
     m_points(points)
 {
     calculate();
 }
-template <class T, class NodeType>
-PointSetDelaunayTriangulation<T, NodeType>::PointSetDelaunayTriangulation(std::vector<Vec2<T>>&& points) :
+template <class T>
+PointSetDelaunayTriangulation<T>::PointSetDelaunayTriangulation(std::vector<Vec2<T>>&& points) :
     m_points(std::move(points))
 {
     calculate();
 }
 
-template <class T, class NodeType>
-void PointSetDelaunayTriangulation<T, NodeType>::calculate()
+template <class T>
+void PointSetDelaunayTriangulation<T>::calculate()
 {
     this->m_connections.clear();
     this->m_triangleMesh.clear();
@@ -53,7 +53,7 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
     // Incrementally add each vertex to the mesh.
     for(size_t c : indices)
     {
-        std::set<typename Triangulation<T, NodeType>::Edge> edges;
+        std::set<typename Triangulation<T>::Edge> edges;
 
         // For each open triangle, check to see if the current point is
         // inside it's circumcircle. If it is, remove the triangle and add
@@ -80,9 +80,9 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
 
             // If we are inside a circumference remove the triangle and add it's edges to the edge list.
             // All edges should be unique, that's automatically handled by a set.
-            edges.insert(typename Triangulation<T, NodeType>::EdgeInd(open[j].i, open[j].j));
-            edges.insert(typename Triangulation<T, NodeType>::EdgeInd(open[j].j, open[j].k));
-            edges.insert(typename Triangulation<T, NodeType>::EdgeInd(open[j].k, open[j].i));
+            edges.insert(typename Triangulation<T>::EdgeInd(open[j].i, open[j].j));
+            edges.insert(typename Triangulation<T>::EdgeInd(open[j].j, open[j].k));
+            edges.insert(typename Triangulation<T>::EdgeInd(open[j].k, open[j].i));
 
             open.erase(open.begin() + j);
         }
@@ -107,44 +107,44 @@ void PointSetDelaunayTriangulation<T, NodeType>::calculate()
         {
             this->m_triangleMesh.add(Triangle<T>(vertices[triangle.i], vertices[triangle.j], vertices[triangle.k]));
 
-            this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(triangle.i, triangle.j));
-            this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(triangle.j, triangle.k));
-            this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(triangle.k, triangle.i));
+            this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.i, triangle.j));
+            this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.j, triangle.k));
+            this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.k, triangle.i));
 
             m_closedTriangles.push_back(triangle);
 
-            this->m_triangles.push_back(typename Triangulation<T, NodeType>::TriangleInd(triangle.i, triangle.l, triangle.k));
+            this->m_triangles.push_back(typename Triangulation<T>::TriangleInd(triangle.i, triangle.l, triangle.k));
         }
     }
 
     this->m_isCompleted = true;
 }
 
-template <class T, class NodeType>
-size_t PointSetDelaunayTriangulation<T, NodeType>::numberOfPoints() const
+template <class T>
+size_t PointSetDelaunayTriangulation<T>::numberOfPoints() const
 {
     return m_points.size();
 }
-template <class T, class NodeType>
-const std::vector<Vec2<T>>& PointSetDelaunayTriangulation<T, NodeType>::points() const
+template <class T>
+const std::vector<Vec2<T>>& PointSetDelaunayTriangulation<T>::points() const
 {
     return m_points;
 }
-template <class T, class NodeType>
-const Vec2<T>& PointSetDelaunayTriangulation<T, NodeType>::point(size_t i) const
+template <class T>
+const Vec2<T>& PointSetDelaunayTriangulation<T>::point(size_t i) const
 {
     return m_points[i];
 }
 
-template <class T, class NodeType>
-const std::vector<typename PointSetDelaunayTriangulation<T, NodeType>::CircumCircle>& PointSetDelaunayTriangulation<T, NodeType>::closedTriangles() const
+template <class T>
+const std::vector<typename PointSetDelaunayTriangulation<T>::CircumCircle>& PointSetDelaunayTriangulation<T>::closedTriangles() const
 {
     return m_closedTriangles;
 }
 
 
-template <class T, class NodeType>
-Triangle<T> PointSetDelaunayTriangulation<T, NodeType>::superTriangle(const std::vector<Vec2<T>>& vertices) const
+template <class T>
+Triangle<T> PointSetDelaunayTriangulation<T>::superTriangle(const std::vector<Vec2<T>>& vertices) const
 {
     T xmin = std::numeric_limits<T>::max();
     T ymin = std::numeric_limits<T>::max();
@@ -170,8 +170,8 @@ Triangle<T> PointSetDelaunayTriangulation<T, NodeType>::superTriangle(const std:
                        Vec2<T>(xmid + 20.0 * dmax, ymid -      dmax));
 }
 
-template <class T, class NodeType>
-typename PointSetDelaunayTriangulation<T, NodeType>::CircumCircle PointSetDelaunayTriangulation<T, NodeType>::circumcircle(const std::vector<Vec2<T>>& vertices, size_t i, size_t j, size_t k) const
+template <class T>
+typename PointSetDelaunayTriangulation<T>::CircumCircle PointSetDelaunayTriangulation<T>::circumcircle(const std::vector<Vec2<T>>& vertices, size_t i, size_t j, size_t k) const
 {
     T x1 = vertices[i].x;
     T y1 = vertices[i].y;

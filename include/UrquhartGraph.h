@@ -7,11 +7,11 @@ class UrquhartGraph
 public:
     UrquhartGraph(const std::vector<Vec2<T>>& points);
     UrquhartGraph(std::vector<Vec2<T>>&& points);
-    UrquhartGraph(const PointSetDelaunayTriangulation<T, NodeType>& triangulation);
+    UrquhartGraph(const PointSetDelaunayTriangulation<T>& triangulation);
 
 protected:
 
-    void calculate(const PointSetDelaunayTriangulation<T, NodeType>& triangulation);
+    void calculate(const PointSetDelaunayTriangulation<T>& triangulation);
 };
 
 typedef UrquhartGraph<double> UrquhartGraphD;

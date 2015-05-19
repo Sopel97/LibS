@@ -1,19 +1,19 @@
-template <class T, class NodeType>
-PolygonTriangulation<T, NodeType>::PolygonTriangulation(const Polygon<T>& polygon) :
+template <class T>
+PolygonTriangulation<T>::PolygonTriangulation(const Polygon<T>& polygon) :
     Triangulation<T>::Triangulation(),
     m_polygon(polygon)
 {
     calculate();
 }
-template <class T, class NodeType>
-PolygonTriangulation<T, NodeType>::PolygonTriangulation(Polygon<T>&& polygon) :
+template <class T>
+PolygonTriangulation<T>::PolygonTriangulation(Polygon<T>&& polygon) :
     Triangulation<T>::Triangulation(),
     m_polygon(std::move(polygon))
 {
     calculate();
 }
-template <class T, class NodeType>
-void PolygonTriangulation<T, NodeType>::calculate()
+template <class T>
+void PolygonTriangulation<T>::calculate()
 {
     //for convex shape
     if(this->m_isCompleted) return;
@@ -78,9 +78,9 @@ void PolygonTriangulation<T, NodeType>::calculate()
 
                 /* output Triangle */
                 this->m_triangleMesh.add(Triangle<T>(m_polygon.vertices[a], m_polygon.vertices[b], m_polygon.vertices[c]));
-                this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(a, b));
-                this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(b, c));
-                this->m_connections.insert(typename Triangulation<T, NodeType>::EdgeInd(c, a));
+                this->m_connections.insert(typename Triangulation<T>::EdgeInd(a, b));
+                this->m_connections.insert(typename Triangulation<T>::EdgeInd(b, c));
+                this->m_connections.insert(typename Triangulation<T>::EdgeInd(c, a));
                 ++m;
 
                 /* remove v from remaining polygon */
@@ -95,29 +95,29 @@ void PolygonTriangulation<T, NodeType>::calculate()
     this->m_isCompleted = true;
 }
 
-template <class T, class NodeType>
-const Polygon<T>& PolygonTriangulation<T, NodeType>::polygon() const
+template <class T>
+const Polygon<T>& PolygonTriangulation<T>::polygon() const
 {
     return m_polygon;
 }
-template <class T, class NodeType>
-size_t PolygonTriangulation<T, NodeType>::numberOfPoints() const
+template <class T>
+size_t PolygonTriangulation<T>::numberOfPoints() const
 {
     return m_polygon.size();
 }
-template <class T, class NodeType>
-const std::vector<Vec2<T>>& PolygonTriangulation<T, NodeType>::points() const
+template <class T>
+const std::vector<Vec2<T>>& PolygonTriangulation<T>::points() const
 {
     return m_polygon.vertices;
 }
-template <class T, class NodeType>
-const Vec2<T>& PolygonTriangulation<T, NodeType>::point(size_t i) const
+template <class T>
+const Vec2<T>& PolygonTriangulation<T>::point(size_t i) const
 {
     return m_polygon.vertices[i];
 }
 
-template <class T, class NodeType>
-bool PolygonTriangulation<T, NodeType>::snip(size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
+template <class T>
+bool PolygonTriangulation<T>::snip(size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
 {
     const Vec2<T>& a = m_polygon.vertices[V[u]];
     const Vec2<T>& b = m_polygon.vertices[V[v]];

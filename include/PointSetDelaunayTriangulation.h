@@ -7,8 +7,8 @@
 */
 
 //TODO: Change name to DelaunayTriangulation (when triangulation of polygons is added it will take either vector of points or polygon, it will be properly dispatched trough constructors)
-template <class T, class NodeType>
-class PointSetDelaunayTriangulation : public Triangulation<T, NodeType>
+template <class T>
+class PointSetDelaunayTriangulation : public Triangulation<T>
 {
 public:
     struct CircumCircle

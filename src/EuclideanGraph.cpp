@@ -11,13 +11,13 @@ EuclideanGraph<T, NodeType>::~EuclideanGraph()
 }
 
 template <class T, class NodeType>
-void EuclideanGraph<T, NodeType>::fromTriangulation(const Triangulation<T, NodeType>& triangulation)
+void EuclideanGraph<T, NodeType>::fromTriangulation(const Triangulation<T>& triangulation)
 {
     fromChosenTriangulationConnections(triangulation.points(), triangulation.connections());
 }
 
 template <class T, class NodeType>
-void EuclideanGraph<T, NodeType>::fromChosenTriangulationConnections(const std::vector<Vec2<T>>& points, const std::set<typename Triangulation<T, NodeType>::EdgeInd>& connections)
+void EuclideanGraph<T, NodeType>::fromChosenTriangulationConnections(const std::vector<Vec2<T>>& points, const std::set<typename Triangulation<T>::EdgeInd>& connections)
 {
     for(auto& node : m_nodes) delete node;
     m_nodes.clear();
