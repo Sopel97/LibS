@@ -6,7 +6,7 @@ template <class T>
 class Triangulation
 {
 public:
-    struct TriangleInd //stores only indices
+    struct TriangleInd //stores only indices. TODO: consider sorting
     {
         size_t i;
         size_t j;
@@ -20,7 +20,7 @@ public:
 
         EdgeInd(size_t a, size_t b)
         {
-            if(a > b)
+            if(a < b)
             {
                 i = a;
                 j = b;
@@ -34,11 +34,11 @@ public:
 
         bool operator==(const EdgeInd& other) const
         {
-            return ((i == other.i) && (j == other.j)); //since i and j are sorted
+            return std::tie(i, j) == std::tie(other.i, other.j); //since i and j are sorted
         }
         bool operator<(const EdgeInd& other) const
         {
-            return ((i < other.i) || ((i == other.i) && (j < other.j)));
+            return std::tie(i, j) < std::tie(other.i, other.j);
         }
     };
 

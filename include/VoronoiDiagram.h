@@ -9,6 +9,9 @@ public:
     VoronoiDiagram(std::vector<Vec2<T>>&& points);
     VoronoiDiagram(const PointSetDelaunayTriangulation<T>& triangulation);
 
+    const std::vector<Polygon<T>>& polygons() const;
+    const std::vector<Vec2<T>>& points() const;
+    const std::set<typename Triangulation<T>::EdgeInd>& connections() const;
 protected:
     std::vector<Polygon<T>> m_polygons;
     std::vector<Vec2<T>> m_points;

@@ -44,8 +44,9 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
                 return da.cross(db) > 0;
             }
 
-            // TODO: polygons for which this point is reached when sorting should be excluded from voronoi diagram since they extend to infinity.
-            //       somehow make it give such information in return
+            // TODO: polygons for which only one side of reference is reached should be removed because
+            //       these are the one that stretch to infinity and should be replaced by rays
+            //       Somehow make it give such information in return
 
             // vectors "less than" zero degrees are actually large, near 2 pi
             return deta > 0;
@@ -59,44 +60,70 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
     m_polygons.clear();
     m_connections.clear();
 
-    std::vector<std::vector<Vec2<T>>> polygons; // vertices of polygon around vertex i (for i being index of every point in m_points)
+    const auto& triangles = triangulation.closedTriangles();
+    const auto& delaunayPoints = triangulation.points();
+
+    std::vector<std::vector<Vec2<T>>> polygonsVertices(delaunayPoints.size()); // vertices of polygon around vertex i (for i being index of every point in m_points)
+    std::vector<std::vector<size_t>> polygonsIndices(delaunayPoints.size()); // indices of vertices of polygon around vertex i (for i being index of every point in m_points)
     // for vertices on the boundary it will form only part of the polygon.
     // These need to be recognized and either extended to infinity or removed and replaced by two rays (the second one is on todo list)
 
-    const auto& triangles = triangulation.triangles();
-    const auto& delaunayPoints = triangulation.points();
+    m_points.reserve(triangles.size());
 
-    m_points.reserve(triangles.size);
-    polygons.resize(triangles.size());
-
+    size_t polyIndex = 0;
     for(const auto& triangle : triangles)
     {
         const Vec2<T>& currentCircumcircle = triangle.circumcircle.origin;
 
         m_points.push_back(currentCircumcircle);
 
-        polygons[triangle.i].push_back(currentCircumcircle);
-        polygons[triangle.j].push_back(currentCircumcircle);
-        polygons[triangle.k].push_back(currentCircumcircle);
+        polygonsVertices[triangle.i].push_back(currentCircumcircle);
+        polygonsVertices[triangle.j].push_back(currentCircumcircle);
+        polygonsVertices[triangle.k].push_back(currentCircumcircle);
+
+        polygonsIndices[triangle.i].push_back(polyIndex);
+        polygonsIndices[triangle.j].push_back(polyIndex);
+        polygonsIndices[triangle.k].push_back(polyIndex);
+        ++polyIndex;
     }
 
     size_t i = 0;
-    for(auto& polygonUnorderedPoints : polygons)
+    for(auto& polygonUnorderedPoints : polygonsVertices)
     {
+        if(polygonUnorderedPoints.size() < 3) continue;
         std::sort(polygonUnorderedPoints.begin() + 1, polygonUnorderedPoints.end(), AngleSort(delaunayPoints[i++], polygonUnorderedPoints.front()));
     }
 
     // TODO: some of the polygons are still to be removed
+    //       do rays where polygons would stretch to infinity
 
-    m_polygons.reserve(polygons.size());
-    for(auto& polygon : polygons)
+    m_polygons.reserve(polygonsVertices.size());
+    for(auto& polygon : polygonsVertices)
+    {
+        m_polygons.emplace_back(std::move(polygon));
+    }
+    for(auto& polygon : polygonsIndices)
     {
         size_t size = polygon.size();
         for(size_t i = 0; i < size; ++i)
         {
             m_connections.insert(typename Triangulation<T>::EdgeInd(polygon[i], polygon[(i + 1) % size]));
         }
-
-        m_polygons.emplace_back(std::move(polygon));
     }
+
+}
+template <class T>
+const std::vector<Polygon<T>>& VoronoiDiagram<T>::polygons() const
+{
+    return m_polygons;
+}
+template <class T>
+const std::vector<Vec2<T>>& VoronoiDiagram<T>::points() const
+{
+    return m_points;
+}
+template <class T>
+const std::set<typename Triangulation<T>::EdgeInd>& VoronoiDiagram<T>::connections() const
+{
+    return m_connections;
 }

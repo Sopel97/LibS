@@ -80,29 +80,6 @@ public:
 
     }
 };
-Geo::Vec2D center(const Geo::PolygonD& polygon)
-{
-    double xsum = 0.0;
-    double ysum = 0.0;
-    double area = 0.0;
-    for(size_t i = 0; i < polygon.size(); ++i)
-    {
-        const Vec2D& p0 = polygon.vertices[i];
-        const Vec2D& p1 = polygon.vertices[(i + 1) % polygon.size()];
-
-        double areaSum = (p0.x * p1.y) - (p1.x * p0.y);
-
-        xsum += (p0.x + p1.x) * areaSum;
-        ysum += (p0.y + p1.y) * areaSum;
-
-        area += areaSum;
-    }
-
-    double centMassX = xsum / (area * 3.0);
-    double centMassY = ysum / (area * 3.0);
-
-    return Vec2D {centMassX, centMassY};
-}
 class RigidBody
 {
 public:
@@ -111,7 +88,7 @@ public:
     double distanceToFurthestPoint;
     RigidBody(const PolygonD& poly) : polygon(poly)
     {
-        centerOfMass = center(poly);
+        centerOfMass = poly.center();
         distanceToFurthestPoint = 0.0;
         for(const auto& v : poly.vertices)
         {
@@ -197,9 +174,117 @@ void next(int counter, const RayD& ray, const Mesh2<CircleD>& mesh, const std::v
         next(counter - 1, RayD(closestHit.hitPoint - ray.direction * 0.001, directionAfterReflection), mesh, bodies);
     }
 }
+template <class T>
+void draw(const Vec2<T>& point, const ALLEGRO_COLOR& color)
+{
+    al_draw_pixel(point.x, point.y, color);
+}
+template <class T>
+void draw(const Circle<T>& circle, const ALLEGRO_COLOR& color)
+{
+    al_draw_circle(circle.origin.x, circle.origin.y, circle.radius, color);
+}
+template <class T>
+void draw(const Geo::Rectangle<T>& rect, const ALLEGRO_COLOR& color)
+{
+    al_draw_rectangle(rect.min.x, rect.min.y, rect.max.x, rect.max.y, color, 1);
+}
+template <class T>
+void draw(const LineSegment<T>& line, const ALLEGRO_COLOR& color)
+{
+    al_draw_line(line.begin.x, line.begin.y, line.end.x, line.end.y, color, 1);
+}
+template <class T>
+void draw(const Ray<T>& ray, const ALLEGRO_COLOR& color)
+{
+    al_draw_line(ray.origin.x, ray.origin.y, ray.origin.x + ray.direction.x * 10000.0f, ray.origin.y + ray.direction.y * 10000.0f, color, 1);
+}
+template <class T>
+void draw(const Triangle<T>& triangle, const ALLEGRO_COLOR& color)
+{
+    al_draw_triangle(triangle.vertices[0].x, triangle.vertices[0].y,
+                     triangle.vertices[1].x, triangle.vertices[1].y,
+                     triangle.vertices[2].x, triangle.vertices[2].y,
+                     color, 1);
+}
+template <class T>
+void draw(const Geo::Polygon<T>& polygon, const ALLEGRO_COLOR& color)
+{
+    std::vector<ALLEGRO_VERTEX> vertices;
+    size_t size = polygon.size();
+    if(size < 3) return;
+    vertices.reserve(size+1);
+    for(size_t i = 0; i <= size; ++i)
+    {
+        const Vec2<T>& v = polygon.vertices[i % size];
+        vertices.push_back(ALLEGRO_VERTEX {static_cast<float>(v.x), static_cast<float>(v.y), 0.0f, 0.0f, 0.0f, color});
+    }
+
+    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size, ALLEGRO_PRIM_LINE_STRIP);
+}
+template <class T>
+void draw(const Geo::Polyline<T>& polyline, const ALLEGRO_COLOR& color)
+{
+    std::vector<ALLEGRO_VERTEX> vertices;
+    size_t size = polyline.size();
+    vertices.reserve(size);
+    for(size_t i = 0; i < size; ++i)
+    {
+        const Vec2<T>& v = polyline[i];
+        vertices.push_back(ALLEGRO_VERTEX {static_cast<float>(v.x), static_cast<float>(v.y), 0.0f, 0.0f, 0.0f, color});
+    }
+
+    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size, ALLEGRO_PRIM_LINE_STRIP);
+}
+template <class ShapeType>
+void draw(const Mesh2<ShapeType>& mesh, const ALLEGRO_COLOR& color)
+{
+    for(const auto& shape : mesh.elements)
+        draw(shape, color);
+}
+template <class ShapeType>
+void draw(const std::vector<ShapeType>& mesh, const ALLEGRO_COLOR& color)
+{
+    for(const auto& shape : mesh)
+        draw(shape, color);
+}
+
+void delaunayVornoiTest()
+{
+    //may generatet wrong polygons close to boundary because polygons thay stretch to infinity are not handled yet
+    constexpr size_t numberOfPoints = 100u; //there are some weird results when set to 1000 (results compared when debugging and not). May be because of point duplicates
+    Random::Xorshift64Engine randomEngine;
+    RectangleD boundingRect(Vec2D{100.0, 100.0}, Vec2D{1200.0, 700.0});
+
+    std::vector<Vec2D> points;
+    points.reserve(numberOfPoints);
+
+    for(size_t i = 0; i < numberOfPoints; ++i)
+    {
+        points.push_back(boundingRect.pickRandomPoint(randomEngine));
+    }
+
+    PointSetDelaunayTriangulationD triangulation(points);
+    VoronoiDiagramD voronoi(triangulation);
+    std::cout << "Number of generated triangles: " << triangulation.triangleMesh().size();
+    std::cout << "Number of generated polygons: " << voronoi.polygons().size();
+
+    ALLEGRO_KEYBOARD_STATE keyboardState;
+    for(;;)
+    {
+        al_get_keyboard_state(&keyboardState);
+        if(al_key_down(&keyboardState, ALLEGRO_KEY_ESCAPE)) break;
+
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+
+        draw(triangulation.triangleMesh(), al_map_rgb(255, 0, 0));
+        draw(voronoi.polygons(), al_map_rgb(0, 255, 0));
+
+        al_flip_display();
+    }
+}
 int main()
 {
-
     //Vec2 v1(2.0f, 0.0f);
     //Vec2 v2(0.0f, 0.0f);
     //Vec2 v3;
@@ -238,6 +323,11 @@ int main()
     al_install_mouse();
     al_install_keyboard();
     al_create_display(1280, 800);
+
+    delaunayVornoiTest();
+    return 0;
+    //old test below
+
     //ALLEGRO_COLOR colliding = al_map_rgb(255, 0, 0);
     ALLEGRO_COLOR notcolliding = al_map_rgb(0, 255, 0);
     Vec2D::VectorType vvv {22, 33};
@@ -332,8 +422,8 @@ int main()
     //Random::Xorshift32Engine engine;
     //Random::Xorshift64Engine engine;
     //Random::Xorshift128Engine engine;
-    Random::Xorshift1024Engine engine;
-    //Random::CMWCEngine engine;
+    //Random::Xorshift1024Engine engine;
+    Random::CMWCEngine engine;
     //Random::WELL512Engine engine;
     //Random::WELL1024Engine engine;
 
@@ -417,7 +507,6 @@ int main()
     }
     PolygonD polygon({Vec2D(700, 100),Vec2D(900, 100),Vec2D(820, 200),Vec2D(900, 300),Vec2D(800, 400),Vec2D(700, 300),Vec2D(780, 200)});
     PolygonTriangulationD triangulation(polygon);
-    triangulation.calculate();
     /*for(const auto& triangle : triangulation.result().elements)
     {
         edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(triangle.vertices[0].x), static_cast<float>(triangle.vertices[0].y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});

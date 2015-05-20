@@ -15,7 +15,7 @@ template <class T>
 void PointSetDelaunayTriangulation<T>::calculate()
 {
     this->m_connections.clear();
-    this->m_triangleMesh.clear();
+    this->m_triangleMesh.elements.clear();
     this->m_triangles.clear();
     m_closedTriangles.clear();
 
@@ -36,7 +36,7 @@ void PointSetDelaunayTriangulation<T>::calculate()
         indices.push_back(i);
     }
 
-    std::sort(indices.begin(), indices.end(), [&vertices](const size_t& i, const size_t& j) -> bool {return vertices[i].x < vertices[j].x;});
+    std::sort(indices.begin(), indices.end(), [&vertices](const size_t& i, const size_t& j) -> bool {return vertices[i].x > vertices[j].x;});
 
     // Next, find the vertices of the supertriangle (which contains all other
     // triangles), and append them onto the end of a (copy of) the vertex array
@@ -53,7 +53,8 @@ void PointSetDelaunayTriangulation<T>::calculate()
     // Incrementally add each vertex to the mesh.
     for(size_t c : indices)
     {
-        std::set<typename Triangulation<T>::Edge> edges;
+        std::set<typename Triangulation<T>::EdgeInd> edges;
+        std::set<typename Triangulation<T>::EdgeInd> edgesToRemove;
 
         // For each open triangle, check to see if the current point is
         // inside it's circumcircle. If it is, remove the triangle and add
@@ -80,9 +81,77 @@ void PointSetDelaunayTriangulation<T>::calculate()
 
             // If we are inside a circumference remove the triangle and add it's edges to the edge list.
             // All edges should be unique, that's automatically handled by a set.
-            edges.insert(typename Triangulation<T>::EdgeInd(open[j].i, open[j].j));
-            edges.insert(typename Triangulation<T>::EdgeInd(open[j].j, open[j].k));
-            edges.insert(typename Triangulation<T>::EdgeInd(open[j].k, open[j].i));
+
+            //This was a bit problematic.
+            //This is the original code.
+            //edges.insert(typename Triangulation<T>::EdgeInd(open[j].i, open[j].j));
+            //edges.insert(typename Triangulation<T>::EdgeInd(open[j].j, open[j].k));
+            //edges.insert(typename Triangulation<T>::EdgeInd(open[j].k, open[j].i));
+            //The problem was that when situation like this happened
+            /*
+                                                     .  some point we want to incorporate into triangulation
+
+                                          -------------------------
+                                          \                       /
+                                           \                     /
+                                            \                   /
+                                             \                 /
+                                              \               /
+                                               \             /
+                                                \           /
+                                                 \         /
+                                                  \       /
+                                                   \     /
+                                                    \   /
+                                                     \ /
+
+            */
+            //this would happen
+            /*
+                                           _________ .__________
+                                          /          |          \
+                                          -----------+------------
+                                          \          |           /
+                                           \         |          /
+                                            \        |         /
+                                             \       |        /
+                                              \      |       /
+                                               \     |      /
+                                                \    |     /
+                                                 \   |    /
+                                                  \  |   /
+                                                   \ |  /
+                                                    \| /
+                                                     \/
+
+            */
+            //Basically - there would be have a crossing o edges.
+            //To prevent that it is necessary to check that if we create an edge between to points that
+            //are left there is no crossing (we check if points are on the same side of the edge)
+            //But we have to store edges that need to be removed since there may be a valid
+            //connection that would permit the edge to exist
+            //Is may be possible to code it better. Currently it looks like it adds wuite a bit of complexity.
+
+            const Vec2<T> v[3] = {vertices[open[j].i], vertices[open[j].j], vertices[open[j].k]};
+            size_t vi[3] = {open[j].i, open[j].j, open[j].k};
+            for(size_t i = 0; i < 3; ++i)
+            {
+                const Vec2<T>& v1 = v[i];
+                const Vec2<T>& v2 = v[(i + 1) % 3];
+                const Vec2<T>& v3 = v[(i + 2) % 3];
+
+                Vec2<T> edge1 = v2 - v1;
+                Vec2<T> edge2 = v3 - v1;
+                Vec2<T> edge3 = vertices[c] - v1;
+                if(edge1.cross(edge2) * edge1.cross(edge3) > 0.0)
+                {
+                    edges.insert(typename Triangulation<T>::EdgeInd(vi[i], vi[(i + 1) % 3]));
+                }
+                else
+                {
+                    edgesToRemove.insert(typename Triangulation<T>::EdgeInd(vi[i], vi[(i + 1) % 3])); //we want to indicate that such edge can't exist in triangulation
+                }
+            }
 
             open.erase(open.begin() + j);
         }
@@ -90,6 +159,7 @@ void PointSetDelaunayTriangulation<T>::calculate()
         /* Add a new triangle constructed from each edge and point indicated by c. */
         for(const auto& edge : edges)
         {
+            if(edgesToRemove.find(edge) != edgesToRemove.end()) continue; //we don't want edges that cross the others (these are excuded before)
             open.push_back(circumcircle(vertices, edge.i, edge.j, c));
         }
     }
@@ -97,12 +167,15 @@ void PointSetDelaunayTriangulation<T>::calculate()
     // Copy any remaining open triangles to the closed list, and then
     for(const auto& triangle : open)
     {
-        m_closedTriangles.push_back(triangle);
+        if(triangle.i < n && triangle.j < n && triangle.k < n)
+        {
+            m_closedTriangles.push_back(triangle);
+        }
     }
 
     for(const auto& triangle : m_closedTriangles)
     {
-        // onlt triangles that DO NOT share a vertex with the supertriangle (since they are outside point set)
+        // only triangles that DO NOT share a vertex with the supertriangle (since they are outside point set)
         if(triangle.i < n && triangle.j < n && triangle.k < n)
         {
             this->m_triangleMesh.add(Triangle<T>(vertices[triangle.i], vertices[triangle.j], vertices[triangle.k]));
@@ -113,7 +186,7 @@ void PointSetDelaunayTriangulation<T>::calculate()
 
             m_closedTriangles.push_back(triangle);
 
-            this->m_triangles.push_back(typename Triangulation<T>::TriangleInd(triangle.i, triangle.l, triangle.k));
+            this->m_triangles.push_back(typename Triangulation<T>::TriangleInd{triangle.i, triangle.j, triangle.k});
         }
     }
 
