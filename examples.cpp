@@ -251,8 +251,8 @@ void draw(const std::vector<ShapeType>& mesh, const ALLEGRO_COLOR& color)
 
 void delaunayVornoiTest()
 {
-    //may generatet wrong polygons close to boundary because polygons thay stretch to infinity are not handled yet
-    constexpr size_t numberOfPoints = 100u; //there are some weird results when set to 1000 (results compared when debugging and not). May be because of point duplicates
+    //may generate wrong polygons close to boundary because polygons that stretch to infinity are not handled yet
+    constexpr size_t numberOfPoints = 100u;
     Random::Xorshift64Engine randomEngine;
     RectangleD boundingRect(Vec2D{100.0, 100.0}, Vec2D{1200.0, 700.0});
 
@@ -266,8 +266,8 @@ void delaunayVornoiTest()
 
     PointSetDelaunayTriangulationD triangulation(points);
     VoronoiDiagramD voronoi(triangulation);
-    std::cout << "Number of generated triangles: " << triangulation.triangleMesh().size();
-    std::cout << "Number of generated polygons: " << voronoi.polygons().size();
+    std::cout << "Number of generated triangles: " << triangulation.triangleMesh().size() << '\n';
+    std::cout << "Number of generated polygons: " << voronoi.polygons().size() << '\n';
 
     ALLEGRO_KEYBOARD_STATE keyboardState;
     for(;;)

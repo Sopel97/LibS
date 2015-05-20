@@ -176,18 +176,13 @@ void PointSetDelaunayTriangulation<T>::calculate()
     for(const auto& triangle : m_closedTriangles)
     {
         // only triangles that DO NOT share a vertex with the supertriangle (since they are outside point set)
-        if(triangle.i < n && triangle.j < n && triangle.k < n)
-        {
-            this->m_triangleMesh.add(Triangle<T>(vertices[triangle.i], vertices[triangle.j], vertices[triangle.k]));
+        this->m_triangleMesh.add(Triangle<T>(vertices[triangle.i], vertices[triangle.j], vertices[triangle.k]));
 
-            this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.i, triangle.j));
-            this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.j, triangle.k));
-            this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.k, triangle.i));
+        this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.i, triangle.j));
+        this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.j, triangle.k));
+        this->m_connections.insert(typename Triangulation<T>::EdgeInd(triangle.k, triangle.i));
 
-            m_closedTriangles.push_back(triangle);
-
-            this->m_triangles.push_back(typename Triangulation<T>::TriangleInd{triangle.i, triangle.j, triangle.k});
-        }
+        this->m_triangles.push_back(typename Triangulation<T>::TriangleInd{triangle.i, triangle.j, triangle.k});
     }
 
     this->m_isCompleted = true;
