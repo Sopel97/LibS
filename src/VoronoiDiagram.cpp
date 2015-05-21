@@ -28,6 +28,8 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
         {
             const Vec2<T> da = a - m_origin;
             const Vec2<T> db = b - m_origin;
+
+            /*
             const double detb = m_dreference.cross(db);
 
             // nothing is less than zero degrees
@@ -50,6 +52,9 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
 
             // vectors "less than" zero degrees are actually large, near 2 pi
             return deta > 0;
+
+            */
+            return std::atan2(da.y, da.x) < std::atan2(db.y, db.x);
         }
     protected:
         Vec2<T> m_origin;
@@ -84,6 +89,7 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
         polygonsIndices[triangle.i].push_back(polyIndex);
         polygonsIndices[triangle.j].push_back(polyIndex);
         polygonsIndices[triangle.k].push_back(polyIndex);
+
         ++polyIndex;
     }
 

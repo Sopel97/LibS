@@ -363,6 +363,8 @@ public:
     }
     Array2& operator= (Array2<T> && array)
     {
+        if(m_data) delete m_data;
+
         m_data = std::move(array.m_data);
         m_sizeX = array.m_sizeX;
         m_sizeY = array.m_sizeY;

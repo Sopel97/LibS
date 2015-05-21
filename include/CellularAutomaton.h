@@ -1,0 +1,96 @@
+#ifndef CELLULARAUTOMATON_H
+#define CELLULARAUTOMATON_H
+
+template <class Rules> //class representing a rule
+class CellularAutomaton
+{
+public:
+    typedef typename Rules::States States;
+
+    CellularAutomaton(const Rules& rule, size_t width, size_t height);
+    CellularAutomaton(const Rules& rule, size_t width, size_t height, States fillState);
+
+    States cellAt(size_t x, size_t y) const;
+
+    void fill(States fillState);
+    template <class FillFunction>
+    void fill(FillFunction fillFuntion); //fill function must take x, y as coordinates and output value from States
+
+    void iterate(size_t times = 1u); //can be QuantityRules or any other with proper () operator
+
+    size_t quantityOfStateIn3x3(States state, size_t x, size_t y) const; //x,y determine center of the 3x3 region
+    size_t quantityOfStateInNeighbourhood(States state, size_t x, size_t y) const; //x,y determine center of the 3x3 region
+    size_t quantityOfStateInRegion(States state, size_t x, size_t y, size_t w, size_t h) const; //x,y determine top left of the region. w,h determine size. Does NOT check bounds
+
+protected:
+    Rules m_rules;
+    Array2<States> m_grid;
+};
+
+enum class OriginalCellularAutomatonStates
+{
+    White,
+    Black
+};
+
+template <class PossibleStates> //enum representing all possible states
+class QuantityRules
+{
+public:
+    typedef PossibleStates States;
+
+    QuantityRules(States state, const std::array<States, 10u>& outputs) :
+        m_state(state),
+        m_outputs(outputs)
+    {
+
+    }
+
+    States operator()(const CellularAutomaton<QuantityRules>& automaton, size_t x, size_t y)
+    {
+        return m_outputs[automaton.quantityOfStateIn3x3(m_state, x, y)];
+    }
+
+    void setOutputForQuantity(States outputState, size_t quantity)
+    {
+        m_outputs[quantity] = outputState;
+    }
+
+protected:
+    States m_state;
+    std::array<States, 10u> m_outputs; //the quantity of state in 3x3 region is the index
+};
+
+class ConwaysGameOfLifeRules
+{
+public:
+    enum class States
+    {
+        Dead,
+        Live
+    };
+
+    ConwaysGameOfLifeRules(){}
+
+    States operator()(const CellularAutomaton<ConwaysGameOfLifeRules>& automaton, size_t x, size_t y)
+    {
+        size_t numberOfLiveNeighbours = automaton.quantityOfStateInNeighbourhood(States::Live, x, y);
+        const auto& thisCell = automaton.cellAt(x, y);
+        if(thisCell == States::Live)
+        {
+            if(numberOfLiveNeighbours < 2) return States::Dead;
+            if(numberOfLiveNeighbours > 3) return States::Dead;
+            return States::Live;
+        }
+        else //Dead
+        {
+            if(numberOfLiveNeighbours == 3) return States::Live;
+            return States::Dead;
+        }
+    }
+};
+
+
+#include "../src/CellularAutomaton.cpp"
+
+#endif // CELLULARAUTOMATON_H
