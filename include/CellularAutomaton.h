@@ -19,7 +19,8 @@ public:
     void iterate(size_t times = 1u); //can be QuantityRules or any other with proper () operator
 
     size_t quantityOfStateIn3x3(States state, size_t x, size_t y) const; //x,y determine center of the 3x3 region
-    size_t quantityOfStateInNeighbourhood(States state, size_t x, size_t y) const; //x,y determine center of the 3x3 region
+    size_t quantityOfStateInMooreNeighbourhood(States state, size_t x, size_t y) const; //only sides
+    size_t quantityOfStateInNeighbourhood(States state, size_t x, size_t y) const; //sides and diagonals
     size_t quantityOfStateInRegion(States state, size_t x, size_t y, size_t w, size_t h) const; //x,y determine top left of the region. w,h determine size. Does NOT check bounds
 
 protected:
@@ -76,20 +77,51 @@ public:
     {
         size_t numberOfLiveNeighbours = automaton.quantityOfStateInNeighbourhood(States::Live, x, y);
         const auto& thisCell = automaton.cellAt(x, y);
+
         if(thisCell == States::Live)
         {
-            if(numberOfLiveNeighbours < 2) return States::Dead;
-            if(numberOfLiveNeighbours > 3) return States::Dead;
+            if(numberOfLiveNeighbours < 2u) return States::Dead;
+            if(numberOfLiveNeighbours > 3u) return States::Dead;
+
             return States::Live;
         }
         else //Dead
         {
-            if(numberOfLiveNeighbours == 3) return States::Live;
+            if(numberOfLiveNeighbours == 3u) return States::Live;
+
             return States::Dead;
         }
     }
 };
+class WireworldRules
+{
+public:
+    enum class States
+    {
+        Empty,
+        ElectronHead,
+        ElectronTail,
+        Conductor
+    };
 
+    WireworldRules(){}
+
+    States operator()(const CellularAutomaton<WireworldRules>& automaton, size_t x, size_t y)
+    {
+        const auto& thisCell = automaton.cellAt(x, y);
+
+        if(thisCell == States::Empty) return States::Empty;
+        else if(thisCell == States::ElectronHead) return States::ElectronTail;
+        else if(thisCell == States::ElectronTail) return States::Conductor;
+        else if(thisCell == States::Conductor)
+        {
+            size_t numberOfElectronHeadsInNeighbourhood = automaton.quantityOfStateInMooreNeighbourhood(States::ElectronHead, x, y);
+            if(numberOfElectronHeadsInNeighbourhood == 1u || numberOfElectronHeadsInNeighbourhood == 2u) return States::ElectronHead;
+
+            return States::Conductor;
+        }
+    }
+};
 
 #include "../src/CellularAutomaton.cpp"
 

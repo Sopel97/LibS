@@ -86,6 +86,19 @@ size_t CellularAutomaton<Rules>::quantityOfStateIn3x3(States state, size_t x, si
     return quantity;
 }
 template <class Rules>
+size_t CellularAutomaton<Rules>::quantityOfStateInMooreNeighbourhood(States state, size_t x, size_t y) const
+{
+    size_t quantity = 0u;
+
+    if(x > 0                  && m_grid(x - 1, y) == state) ++quantity;
+    if(x < m_grid.sizeX() - 1 && m_grid(x + 1, y) == state) ++quantity;
+    if(y > 0                  && m_grid(x, y - 1) == state) ++quantity;
+    if(y < m_grid.sizeY() - 1 && m_grid(x, y + 1) == state) ++quantity;
+
+    return quantity;
+}
+
+template <class Rules>
 size_t CellularAutomaton<Rules>::quantityOfStateInNeighbourhood(States state, size_t x, size_t y) const
 {
     size_t quantity = 0u;

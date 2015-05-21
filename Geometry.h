@@ -7,6 +7,7 @@
 #include <utility>
 #include <functional>
 #include <algorithm>
+#include <array>
 #include "Array2.h"
 #include "Random.h"
 
@@ -238,6 +239,7 @@ namespace Geo
     template <class T> class BezierPath;
     template <class T> class Matrix3x3;
     enum class OriginalCellularAutomatonStates;
+    template <int I = 0> class ElementaryCellularAutomatonT;
     template <class Rules> class CellularAutomaton;
     template <class T, class NodeType = TreeNode<T>> class RapidlyExploringRandomTree;
 
@@ -283,6 +285,7 @@ namespace Geo
 #include "include/BezierCurve.h"
 #include "include/BezierPath.h"
 #include "include/Matrix3x3.h"
+#include "include/ElementaryCellularAutomaton.h"
 #include "include/CellularAutomaton.h"
 #include "include/RapidlyExploringRandomTree.h"
 
