@@ -93,12 +93,10 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
         ++polyIndex;
     }
 
-    size_t i = -1;
+    size_t i = 0u;
     for(auto& polygonUnorderedPoints : polygonsVertices)
     {
-        ++i;
-        if(polygonUnorderedPoints.size() < 3) continue;
-        std::sort(polygonUnorderedPoints.begin(), polygonUnorderedPoints.end(), AngleSort(delaunayPoints[i], polygonUnorderedPoints.front()));
+        std::sort(polygonUnorderedPoints.begin(), polygonUnorderedPoints.end(), AngleSort(delaunayPoints[i++], polygonUnorderedPoints.front()));
     }
 
     // TODO: some of the polygons are still to be removed
