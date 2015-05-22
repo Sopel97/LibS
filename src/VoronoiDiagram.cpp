@@ -29,7 +29,7 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
             const Vec2<T> da = a - m_origin;
             const Vec2<T> db = b - m_origin;
 
-            /*
+
             const double detb = m_dreference.cross(db);
 
             // nothing is less than zero degrees
@@ -53,8 +53,8 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
             // vectors "less than" zero degrees are actually large, near 2 pi
             return deta > 0;
 
-            */
-            return std::atan2(da.y, da.x) < std::atan2(db.y, db.x);
+
+            //return std::atan2(da.y, da.x) < std::atan2(db.y, db.x);
         }
     protected:
         Vec2<T> m_origin;
@@ -93,11 +93,12 @@ void VoronoiDiagram<T>::calculate(const PointSetDelaunayTriangulation<T>& triang
         ++polyIndex;
     }
 
-    size_t i = 0;
+    size_t i = -1;
     for(auto& polygonUnorderedPoints : polygonsVertices)
     {
+        ++i;
         if(polygonUnorderedPoints.size() < 3) continue;
-        std::sort(polygonUnorderedPoints.begin() + 1, polygonUnorderedPoints.end(), AngleSort(delaunayPoints[i++], polygonUnorderedPoints.front()));
+        std::sort(polygonUnorderedPoints.begin(), polygonUnorderedPoints.end(), AngleSort(delaunayPoints[i], polygonUnorderedPoints.front()));
     }
 
     // TODO: some of the polygons are still to be removed

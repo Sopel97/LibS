@@ -220,7 +220,7 @@ void draw(const Geo::Polygon<T>& polygon, const ALLEGRO_COLOR& color)
         vertices.push_back(ALLEGRO_VERTEX {static_cast<float>(v.x), static_cast<float>(v.y), 0.0f, 0.0f, 0.0f, color});
     }
 
-    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size, ALLEGRO_PRIM_LINE_STRIP);
+    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size+1, ALLEGRO_PRIM_LINE_STRIP);
 }
 template <class T>
 void draw(const Geo::Polyline<T>& polyline, const ALLEGRO_COLOR& color)
@@ -249,7 +249,7 @@ void draw(const std::vector<ShapeType>& mesh, const ALLEGRO_COLOR& color)
         draw(shape, color);
 }
 
-void delaunayVornoiTest()
+void delaunayVoronoiTest()
 {
     //may generate wrong polygons close to boundary because polygons that stretch to infinity are not handled yet
     constexpr size_t numberOfPoints = 100u;
@@ -277,7 +277,7 @@ void delaunayVornoiTest()
 
         al_clear_to_color(al_map_rgb(0, 0, 0));
 
-        draw(triangulation.triangleMesh(), al_map_rgb(255, 0, 0));
+        draw(triangulation.triangleMesh(), al_map_rgb(200, 0, 0));
         draw(voronoi.polygons(), al_map_rgb(0, 255, 0));
 
         al_flip_display();
@@ -324,7 +324,7 @@ int main()
     al_install_keyboard();
     al_create_display(1280, 800);
 
-    delaunayVornoiTest();
+    delaunayVoronoiTest();
     return 0;
     //old test below
 
