@@ -369,7 +369,7 @@ void conwaysGameOfLifeExample()
     constexpr size_t height = 70u;
     constexpr size_t padding = 10u;
 
-    CellularAutomaton<ConwaysGameOfLifeRules> ca(ConwaysGameOfLifeRules(), width, height, ConwaysGameOfLifeRules::States::Dead);
+    CellularAutomaton<ConwaysGameOfLifeRules> ca(ConwaysGameOfLifeRules(), width, height, ConwaysGameOfLifeRules::States::Dead, CellularAutomatonGridTopology::Toroidal);
 
     constexpr auto D = ConwaysGameOfLifeRules::States::Dead;
     constexpr auto L = ConwaysGameOfLifeRules::States::Live;
@@ -381,7 +381,6 @@ void conwaysGameOfLifeExample()
             {L, D, D, L},
             {L, D, D, L},
             {D, L, D, D}
-
         },
 
         {
@@ -399,12 +398,22 @@ void conwaysGameOfLifeExample()
             {D, D, D, D, D, D, D, D, D, D, D, D, D, D, D},
             {D, D, D, D, L, L, D, D, D, L, L, D, D, D, D},
             {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D},
-            {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D},
-
+            {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D}
+        },
+        {
+            {D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, L, D, D, D, D, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, L, D, L, D, D, D, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, L, L, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, L, L, D, L, D, D, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, L, D, L, D, D, D, D, D, D, D, D, D, D, D, D, D, D, L, L, D, L, L, D, D, D, L, L},
+            {D, D, D, D, L, L, D, D, D, D, D, D, L, D, D, D, D, D, D, D, D, D, D, D, D, D, L, L, D, L, D, D, D, D, L, L},
+            {L, L, D, L, D, D, L, D, D, L, D, D, L, D, D, D, D, D, D, D, D, D, D, D, D, D, L, D, L, D, D, D, D, D, D, D},
+            {L, L, D, D, L, L, D, D, D, D, D, D, L, D, D, D, D, D, D, D, D, D, D, D, D, D, D, L, D, D, D, D, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, L, D, L, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, L, L, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D}
         }
     });
 
-    constexpr size_t selectedPattern = 1u;
+    constexpr size_t selectedPattern = 2u;
 
     size_t patternWidth = patterns[selectedPattern].sizeX();
     size_t patternHeight = patterns[selectedPattern].sizeY();
@@ -429,7 +438,7 @@ void conwaysGameOfLifeExample()
         if(al_key_down(&keyboardState, ALLEGRO_KEY_UP))
         {
             ca.iterate();
-            al_rest(0.1f);
+            al_rest(0.05f);
         }
 
         al_clear_to_color(al_map_rgb(0, 0, 0));

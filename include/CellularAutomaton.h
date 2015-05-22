@@ -1,14 +1,26 @@
 #ifndef CELLULARAUTOMATON_H
 #define CELLULARAUTOMATON_H
 
+enum class OriginalCellularAutomatonStates
+{
+    White,
+    Black
+};
+
+enum class CellularAutomatonGridTopology
+{
+    Finite,
+    Toroidal //for toroidal space it is still required that passed coordinates are valid finite coordinates
+};
+
 template <class Rules> //class representing a rule
 class CellularAutomaton
 {
 public:
     typedef typename Rules::States States;
 
-    CellularAutomaton(const Rules& rule, size_t width, size_t height);
-    CellularAutomaton(const Rules& rule, size_t width, size_t height, States fillState);
+    CellularAutomaton(const Rules& rule, size_t width, size_t height, CellularAutomatonGridTopology topology = CellularAutomatonGridTopology::Finite);
+    CellularAutomaton(const Rules& rule, size_t width, size_t height, States fillState, CellularAutomatonGridTopology topology = CellularAutomatonGridTopology::Finite);
 
     States cellAt(size_t x, size_t y) const;
 
@@ -28,12 +40,7 @@ public:
 protected:
     Rules m_rules;
     Array2<States> m_grid;
-};
-
-enum class OriginalCellularAutomatonStates
-{
-    White,
-    Black
+    CellularAutomatonGridTopology m_topology;
 };
 
 template <class PossibleStates> //enum representing all possible states
