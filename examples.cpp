@@ -185,9 +185,19 @@ void draw(const Circle<T>& circle, const ALLEGRO_COLOR& color)
     al_draw_circle(circle.origin.x, circle.origin.y, circle.radius, color);
 }
 template <class T>
+void drawFilled(const Circle<T>& circle, const ALLEGRO_COLOR& color)
+{
+    al_draw_filled_circle(circle.origin.x, circle.origin.y, circle.radius, color);
+}
+template <class T>
 void draw(const Geo::Rectangle<T>& rect, const ALLEGRO_COLOR& color)
 {
     al_draw_rectangle(rect.min.x, rect.min.y, rect.max.x, rect.max.y, color, 1);
+}
+template <class T>
+void drawFilled(const Geo::Rectangle<T>& rect, const ALLEGRO_COLOR& color)
+{
+    al_draw_filled_rectangle(rect.min.x, rect.min.y, rect.max.x, rect.max.y, color);
 }
 template <class T>
 void draw(const LineSegment<T>& line, const ALLEGRO_COLOR& color)
@@ -208,19 +218,27 @@ void draw(const Triangle<T>& triangle, const ALLEGRO_COLOR& color)
                      color, 1);
 }
 template <class T>
+void drawFilled(const Triangle<T>& triangle, const ALLEGRO_COLOR& color)
+{
+    al_draw_filled_triangle(triangle.vertices[0].x, triangle.vertices[0].y,
+                     triangle.vertices[1].x, triangle.vertices[1].y,
+                     triangle.vertices[2].x, triangle.vertices[2].y,
+                     color);
+}
+template <class T>
 void draw(const Geo::Polygon<T>& polygon, const ALLEGRO_COLOR& color)
 {
     std::vector<ALLEGRO_VERTEX> vertices;
     size_t size = polygon.size();
     if(size < 3) return;
-    vertices.reserve(size+1);
+    vertices.reserve(size + 1);
     for(size_t i = 0; i <= size; ++i)
     {
         const Vec2<T>& v = polygon.vertices[i % size];
         vertices.push_back(ALLEGRO_VERTEX {static_cast<float>(v.x), static_cast<float>(v.y), 0.0f, 0.0f, 0.0f, color});
     }
 
-    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size+1, ALLEGRO_PRIM_LINE_STRIP);
+    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size + 1, ALLEGRO_PRIM_LINE_STRIP);
 }
 template <class T>
 void draw(const Geo::Polyline<T>& polyline, const ALLEGRO_COLOR& color)
@@ -249,12 +267,12 @@ void draw(const std::vector<ShapeType>& mesh, const ALLEGRO_COLOR& color)
         draw(shape, color);
 }
 
-void delaunayVoronoiTest()
+void delaunayVoronoiExamples()
 {
     //may generate wrong polygons close to boundary because polygons that stretch to infinity are not handled yet
     constexpr size_t numberOfPoints = 100u;
     Random::Xorshift64Engine randomEngine;
-    RectangleD boundingRect(Vec2D{100.0, 100.0}, Vec2D{1200.0, 700.0});
+    RectangleD boundingRect(Vec2D {100.0, 100.0}, Vec2D {1200.0, 700.0});
 
     std::vector<Vec2D> points;
     points.reserve(numberOfPoints);
@@ -283,6 +301,67 @@ void delaunayVoronoiTest()
         al_flip_display();
     }
 }
+
+void cellularAutomatonWhite()
+{
+    //white floor, black wall
+    constexpr size_t cellSize = 10u;
+    constexpr size_t width = 100u;
+    constexpr size_t height = 70u;
+    constexpr size_t padding = 10u;
+
+    CellularAutomaton<QuantityRules<OriginalCellularAutomatonStates>> ca(
+                QuantityRules<OriginalCellularAutomatonStates>(
+                    OriginalCellularAutomatonStates::Black,
+                    std::array<OriginalCellularAutomatonStates, 10u>
+    {
+        OriginalCellularAutomatonStates::White,
+        OriginalCellularAutomatonStates::White,
+        OriginalCellularAutomatonStates::White,
+        OriginalCellularAutomatonStates::White,
+        OriginalCellularAutomatonStates::White,
+        OriginalCellularAutomatonStates::Black,
+        OriginalCellularAutomatonStates::Black,
+        OriginalCellularAutomatonStates::Black,
+        OriginalCellularAutomatonStates::Black,
+        OriginalCellularAutomatonStates::Black
+    }),
+    width, height);
+    ca.fill([width, height](size_t x, size_t y) -> OriginalCellularAutomatonStates
+    {
+        static Random::Xorshift64Engine randomEngine;
+        if(width - x <= 2 || x <= 1 || height - y <= 2 || y <= 1) return OriginalCellularAutomatonStates::Black;
+        return (randomEngine.nextDouble() < 0.50 ? OriginalCellularAutomatonStates::Black : OriginalCellularAutomatonStates::White);
+    });
+    ALLEGRO_KEYBOARD_STATE keyboardState;
+    for(;;)
+    {
+        al_get_keyboard_state(&keyboardState);
+        if(al_key_down(&keyboardState, ALLEGRO_KEY_ESCAPE)) break;
+        if(al_key_down(&keyboardState, ALLEGRO_KEY_UP))
+        {
+            ca.iterate();
+            al_rest(0.1f);
+        }
+
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+
+        for(size_t x = 0u; x < width; ++x)
+        {
+            for(size_t y = 0u; y < height; ++y)
+            {
+                drawFilled(
+                    RectangleF(
+                        Vec2F(padding + x * cellSize, padding + y * cellSize),
+                        10.0f,
+                        10.0f),
+                    ca.cellAt(x, y) == OriginalCellularAutomatonStates::Black ? al_map_rgb(64, 64, 64) : al_map_rgb(255, 255, 255));
+            }
+        }
+        al_flip_display();
+    }
+}
+
 int main()
 {
     //Vec2 v1(2.0f, 0.0f);
@@ -324,7 +403,10 @@ int main()
     al_install_keyboard();
     al_create_display(1280, 800);
 
-    delaunayVoronoiTest();
+    //delaunayVoronoiWhite();
+    cellularAutomatonWhite();
+
+
     return 0;
     //old test below
 
@@ -493,19 +575,19 @@ int main()
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(CircleD(Vec2D{300.0, 300.0f}, 200.0));
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(TriangleD(Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{200.0, 600.0f}));
     //RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D{100.0, 100.0f}, Vec2D{500.0, 200.0f}, Vec2D{700.0, 600.0f}, Vec2D{50.0, 600.0f}, Vec2D{50.0, 300.0f}}));
-    RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D(700, 100),Vec2D(900, 100),Vec2D(820, 200),Vec2D(900, 300),Vec2D(800, 400),Vec2D(700, 300),Vec2D(780, 200)}));
-    rapidlyExploringRandomTree.addObstacle(LineSegmentD(Vec2D{140, 140},Vec2D{450, 300}));
-    rapidlyExploringRandomTree.addObstacle(RectangleD(Vec2D{200.0, 430.0f}, 200.0, 100.0));
+    RapidlyExploringRandomTreeD rapidlyExploringRandomTree(PolygonD({Vec2D(700, 100), Vec2D(900, 100), Vec2D(820, 200), Vec2D(900, 300), Vec2D(800, 400), Vec2D(700, 300), Vec2D(780, 200)}));
+    rapidlyExploringRandomTree.addObstacle(LineSegmentD(Vec2D {140, 140}, Vec2D {450, 300}));
+    rapidlyExploringRandomTree.addObstacle(RectangleD(Vec2D {200.0, 430.0f}, 200.0, 100.0));
     rapidlyExploringRandomTree.generateNodes(2000);
     auto edges = rapidlyExploringRandomTree.edges();
     std::vector<ALLEGRO_VERTEX> edgesVertexData;
-    edgesVertexData.reserve(edges.size()*2);
+    edgesVertexData.reserve(edges.size() * 2);
     for(const auto& edge : edges)
     {
         edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(edge.begin.x), static_cast<float>(edge.begin.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
         edgesVertexData.push_back(ALLEGRO_VERTEX {static_cast<float>(edge.end.x), static_cast<float>(edge.end.y), 0.0f, 0.0f, 0.0f, al_map_rgb(255, 0, 0)});
     }
-    PolygonD polygon({Vec2D(700, 100),Vec2D(900, 100),Vec2D(820, 200),Vec2D(900, 300),Vec2D(800, 400),Vec2D(700, 300),Vec2D(780, 200)});
+    PolygonD polygon({Vec2D(700, 100), Vec2D(900, 100), Vec2D(820, 200), Vec2D(900, 300), Vec2D(800, 400), Vec2D(700, 300), Vec2D(780, 200)});
     PolygonTriangulationD triangulation(polygon);
     /*for(const auto& triangle : triangulation.result().elements)
     {
@@ -538,9 +620,9 @@ int main()
         for(int i = 0; i < numberOfControlPoints; ++i) curvePoints[i].move(prev, now);
         for(auto& body : bodies)
         {
-            if((prev.buttons & 1) && body.polygon.intersects(Vec2D (prev.x, prev.y)))
+            if((prev.buttons & 1) && body.polygon.intersects(Vec2D(prev.x, prev.y)))
             {
-                body.dragDrop(Vec2D (prev.x, prev.y), Vec2D (now.x, now.y));
+                body.dragDrop(Vec2D(prev.x, prev.y), Vec2D(now.x, now.y));
             }
         }
         al_clear_to_color(al_map_rgb(0, 0, 0));

@@ -85,7 +85,7 @@ Circle<T> Circle<T>::transformed(const Transformation2<T>& transformation) const
 template <class T>
 T Circle<T>::distanceTo(const Vec2<T>& v1) const
 {
-    return std::max(0.0, v1.distanceTo(origin) - radius);
+    return std::max(T(0.0), v1.distanceTo(origin) - radius);
 }
 template <class T>
 Vec2<T> Circle<T>::nearestPointTo(const Vec2<T>& point) const

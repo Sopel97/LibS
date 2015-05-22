@@ -70,10 +70,10 @@ size_t CellularAutomaton<Rules>::quantityOfStateIn3x3(States state, size_t x, si
 {
     size_t quantity = 0u;
 
-    size_t xmin = std::max(x, 0u);
-    size_t ymin = std::max(y, 0u);
-    size_t xmax = std::min(x, m_grid.sizeX() - 1u);
-    size_t ymax = std::min(y, m_grid.sizeY() - 1u);
+    size_t xmin = std::max(x, 1u) - 1u;
+    size_t ymin = std::max(y, 1u) - 1u;
+    size_t xmax = std::min(x + 1, m_grid.sizeX() - 1u);
+    size_t ymax = std::min(y + 1, m_grid.sizeY() - 1u);
 
     for(size_t xx = xmin; xx <= xmax; ++xx)
     {
@@ -103,10 +103,10 @@ size_t CellularAutomaton<Rules>::quantityOfStateInNeighbourhood(States state, si
 {
     size_t quantity = 0u;
 
-    size_t xmin = std::max(x, 0u);
-    size_t ymin = std::max(y, 0u);
-    size_t xmax = std::min(x, m_grid.sizeX() - 1u);
-    size_t ymax = std::min(y, m_grid.sizeY() - 1u);
+    size_t xmin = std::max(x, 1u) - 1u;
+    size_t ymin = std::max(y, 1u) - 1u;
+    size_t xmax = std::min(x + 1, m_grid.sizeX() - 1u);
+    size_t ymax = std::min(y + 1, m_grid.sizeY() - 1u);
 
     for(size_t xx = xmin; xx <= xmax; ++xx)
     {
