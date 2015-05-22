@@ -12,6 +12,8 @@ public:
 
     States cellAt(size_t x, size_t y) const;
 
+    void setCell(size_t x, size_t y, States state);
+
     void fill(States fillState);
     template <class FillFunction>
     void fill(FillFunction fillFuntion); //fill function must take x, y as coordinates and output value from States

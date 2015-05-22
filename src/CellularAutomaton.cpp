@@ -47,6 +47,12 @@ void CellularAutomaton<Rules>::fill(FillFunction fillFunction)
 }
 
 template <class Rules>
+void CellularAutomaton<Rules>::setCell(size_t x, size_t y, States state)
+{
+    m_grid(x, y) = state;
+}
+
+template <class Rules>
 void CellularAutomaton<Rules>::iterate(size_t times)
 {
     size_t w = m_grid.sizeX();

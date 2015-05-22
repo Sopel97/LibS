@@ -221,9 +221,9 @@ template <class T>
 void drawFilled(const Triangle<T>& triangle, const ALLEGRO_COLOR& color)
 {
     al_draw_filled_triangle(triangle.vertices[0].x, triangle.vertices[0].y,
-                     triangle.vertices[1].x, triangle.vertices[1].y,
-                     triangle.vertices[2].x, triangle.vertices[2].y,
-                     color);
+                            triangle.vertices[1].x, triangle.vertices[1].y,
+                            triangle.vertices[2].x, triangle.vertices[2].y,
+                            color);
 }
 template <class T>
 void draw(const Geo::Polygon<T>& polygon, const ALLEGRO_COLOR& color)
@@ -361,7 +361,94 @@ void cellularAutomatonCaveGenerationExample()
         al_flip_display();
     }
 }
+void conwaysGameOfLifeExample()
+{
+    //white floor, black wall
+    constexpr size_t cellSize = 10u;
+    constexpr size_t width = 100u;
+    constexpr size_t height = 70u;
+    constexpr size_t padding = 10u;
 
+    CellularAutomaton<ConwaysGameOfLifeRules> ca(ConwaysGameOfLifeRules(), width, height, ConwaysGameOfLifeRules::States::Dead);
+
+    constexpr auto D = ConwaysGameOfLifeRules::States::Dead;
+    constexpr auto L = ConwaysGameOfLifeRules::States::Live;
+
+    std::vector<Array2<ConwaysGameOfLifeRules::States>> patterns(
+    {
+        {
+            {D, D, L, D},
+            {L, D, D, L},
+            {L, D, D, L},
+            {D, L, D, D}
+
+        },
+
+        {
+            {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D},
+            {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D},
+            {D, D, D, D, L, L, D, D, D, L, L, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, D, D, D, D, D, D},
+            {L, L, L, D, D, L, L, D, L, L, D, D, L, L, L},
+            {D, D, L, D, L, D, L, D, L, D, L, D, L, D, D},
+            {D, D, D, D, L, L, D, D, D, L, L, D, D, D, D},
+            {D, D, D, D, D, D, D, D, D, D, D, D, D, D, D},
+            {D, D, D, D, L, L, D, D, D, L, L, D, D, D, D},
+            {D, D, L, D, L, D, L, D, L, D, L, D, L, D, D},
+            {L, L, L, D, D, L, L, D, L, L, D, D, L, L, L},
+            {D, D, D, D, D, D, D, D, D, D, D, D, D, D, D},
+            {D, D, D, D, L, L, D, D, D, L, L, D, D, D, D},
+            {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D},
+            {D, D, D, D, L, D, D, D, D, D, L, D, D, D, D},
+
+        }
+    });
+
+    constexpr size_t selectedPattern = 1u;
+
+    size_t patternWidth = patterns[selectedPattern].sizeX();
+    size_t patternHeight = patterns[selectedPattern].sizeY();
+
+    size_t patternOriginX = width / 2 - patternWidth / 2;
+    size_t patternOriginY = height / 2 - patternHeight / 2;
+
+
+    for(size_t x = 0u; x < patternWidth; ++x)
+    {
+        for(size_t y = 0u; y < patternHeight; ++y)
+        {
+            ca.setCell(x + patternOriginX, y + patternOriginY, patterns[selectedPattern](x, y));
+        }
+    }
+
+    ALLEGRO_KEYBOARD_STATE keyboardState;
+    for(;;)
+    {
+        al_get_keyboard_state(&keyboardState);
+        if(al_key_down(&keyboardState, ALLEGRO_KEY_ESCAPE)) break;
+        if(al_key_down(&keyboardState, ALLEGRO_KEY_UP))
+        {
+            ca.iterate();
+            al_rest(0.1f);
+        }
+
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+
+        for(size_t x = 0u; x < width; ++x)
+        {
+            for(size_t y = 0u; y < height; ++y)
+            {
+                drawFilled(
+                    RectangleF(
+                        Vec2F(padding + x * cellSize, padding + y * cellSize),
+                        10.0f,
+                        10.0f),
+                    ca.cellAt(x, y) == ConwaysGameOfLifeRules::States::Live ? al_map_rgb(0, 200, 0) : al_map_rgb(255, 255, 255));
+            }
+        }
+        al_flip_display();
+    }
+}
 int main()
 {
     //Vec2 v1(2.0f, 0.0f);
@@ -404,8 +491,8 @@ int main()
     al_create_display(1280, 800);
 
     //delaunayVoronoiExample();
-    cellularAutomatonCaveGenerationExample();
-
+    //cellularAutomatonCaveGenerationExample();
+    conwaysGameOfLifeExample();
 
     return 0;
     //old test below
