@@ -302,7 +302,7 @@ void delaunayVoronoiExamples()
     }
 }
 
-void cellularAutomatonWhite()
+void cellularAutomatonCaveGenerationExample()
 {
     //white floor, black wall
     constexpr size_t cellSize = 10u;
@@ -403,8 +403,8 @@ int main()
     al_install_keyboard();
     al_create_display(1280, 800);
 
-    //delaunayVoronoiWhite();
-    cellularAutomatonWhite();
+    //delaunayVoronoiExample();
+    cellularAutomatonCaveGenerationExample();
 
 
     return 0;
