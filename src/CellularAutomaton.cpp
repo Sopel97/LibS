@@ -60,17 +60,20 @@ void CellularAutomaton<Rules>::iterate(size_t times)
     size_t w = m_grid.sizeX();
     size_t h = m_grid.sizeY();
 
-    Array2<States> nextGrid(w, h);
-
-    for(size_t x = 0u; x < w; ++x)
+    while(times--)
     {
-        for(size_t y = 0u; y < h; ++y)
-        {
-            nextGrid(x, y) = m_rules(*this, x, y);
-        }
-    }
+        Array2<States> nextGrid(w, h);
 
-    m_grid = std::move(nextGrid);
+        for(size_t x = 0u; x < w; ++x)
+        {
+            for(size_t y = 0u; y < h; ++y)
+            {
+                nextGrid(x, y) = m_rules(*this, x, y);
+            }
+        }
+
+        m_grid = std::move(nextGrid);
+    }
 }
 
 template <class Rules>

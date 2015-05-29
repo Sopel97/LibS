@@ -11,17 +11,17 @@ public:
     Ray() = default;
     Ray(const Vec2<T>& o, const Vec2<T>& d);
 
-    Ray(const Ray<T>& r) = default;
+    Ray(const Ray<T>&) = default;
     template <class X>
     Ray(const Ray<X>& r);
-    Ray(Ray<T>&& r) = default;
+    Ray(Ray<T>&&) = default;
 
     virtual ~Ray(){}
 
-    Ray<T>& operator=(const Ray<T>& r) = default;
+    Ray<T>& operator=(const Ray<T>&) = default;
     template <class X>
     Ray<T>& operator=(const Ray<X>& r);
-    Ray<T>& operator=(Ray<T> && r) = default;
+    Ray<T>& operator=(Ray<T> &&) = default;
 
     Ray<T> operator+(const Vec2<T>& v) const;
     Ray<T> operator-(const Vec2<T>& v) const;
@@ -44,9 +44,11 @@ public:
 
     Polyline<T> asPolyline() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

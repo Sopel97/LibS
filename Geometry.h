@@ -289,7 +289,6 @@ namespace Geo
 #include "include/CellularAutomaton.h"
 #include "include/RapidlyExploringRandomTree.h"
 
-
 #undef SHAPE2_DOUBLE_DISPATCHING_METHODS
 }
 #endif // GEOMETRY_H_INCLUDED

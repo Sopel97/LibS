@@ -11,15 +11,15 @@ public:
     Circle() = default;
     Circle(const Vec2<T>& p1, T r);
 
-    Circle(const Circle<T>& c) = default;
+    Circle(const Circle<T>&) = default;
     template<class X>
-    Circle(const Circle<X>& c);
-    Circle(Circle<T>&& c) = default;
+    Circle(const Circle<X>&);
+    Circle(Circle<T>&&) = default;
 
     virtual ~Circle(){}
 
-    Circle& operator =(Circle<T> && c) = default;
-    Circle& operator =(const Circle<T>& c) = default;
+    Circle& operator =(Circle<T> &&) = default;
+    Circle& operator =(const Circle<T>&) = default;
     template<class X>
     Circle& operator =(const Circle<X>& c);
 
@@ -47,9 +47,11 @@ public:
     virtual Vec2<T> center() const;
     virtual T signedArea() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

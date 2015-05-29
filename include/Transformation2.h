@@ -12,6 +12,10 @@ public:
 protected:
 };
 
+typedef Transformation2<double> Transformation2D;
+typedef Transformation2<float> Transformation2F;
+typedef Transformation2<int> Transformation2I;
+
 #include "../src/Transformation2.cpp"
 
 #endif // TRANSFORMATION2_H

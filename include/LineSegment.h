@@ -11,17 +11,17 @@ public:
     LineSegment() = default;
     LineSegment(const Vec2<T>& _begin, const Vec2<T>& _end);
 
-    LineSegment(const LineSegment<T>& s) = default;
+    LineSegment(const LineSegment<T>&) = default;
     template <class X>
     LineSegment(const LineSegment<X>& s);
-    LineSegment(LineSegment<T>&& s) = default;
+    LineSegment(LineSegment<T>&&) = default;
 
     virtual ~LineSegment(){}
 
-    LineSegment<T>& operator=(const LineSegment<T>& s) = default;
+    LineSegment<T>& operator=(const LineSegment<T>&) = default;
     template <class X>
     LineSegment<T>& operator=(const LineSegment<X>& s);
-    LineSegment<T>& operator=(LineSegment<T> && s) = default;
+    LineSegment<T>& operator=(LineSegment<T> &&) = default;
 
     LineSegment<T> operator+(const Vec2<T>& v) const;
     LineSegment<T> operator-(const Vec2<T>& v) const;
@@ -48,9 +48,11 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
     virtual Vec2<T> center() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     bool intersects(const LineSegment<T>& lineSegment, Vec2<T>& intersectionPoint) const;

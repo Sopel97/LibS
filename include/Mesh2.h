@@ -78,9 +78,11 @@ public:
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
     virtual Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const; //for mesh2 these three are non-standard
     virtual bool contains(const Shape2<T>* other) const;
     virtual bool isContained(const Shape2<T>* other) const;
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

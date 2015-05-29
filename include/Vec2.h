@@ -76,9 +76,11 @@ public:
     virtual T distanceTo(const Vec2<T>& v1) const;
     virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;
@@ -217,9 +219,11 @@ public:
     virtual T distanceTo(const Vec2<T>& v1) const;
     virtual Vec2<T> nearestPointTo(const Vec2<T>& point) const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

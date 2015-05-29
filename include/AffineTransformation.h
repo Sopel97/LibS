@@ -44,6 +44,7 @@ typedef AffineTransformation<double> AffineTransformationD;
 typedef AffineTransformation<float> AffineTransformationF;
 typedef AffineTransformation<int> AffineTransformationI;
 
+
 #include "../src/AffineTransformation.cpp"
 
 #endif // AFFINETRANSFORMATION_H_INCLUDED

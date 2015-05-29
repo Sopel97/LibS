@@ -20,17 +20,17 @@ public:
     static Polyline<T> fromRectangle(const Rectangle<T>& rectangle);
     static Polyline<T> fromTriangle(const Triangle<T>& triangle);
 
-    Polyline(const Polyline<T>& p) = default;
+    Polyline(const Polyline<T>&) = default;
     template <class X>
     Polyline(const Polyline<X>& p);
-    Polyline(Polyline<T>&& p) = default;
+    Polyline(Polyline<T>&&) = default;
 
     virtual ~Polyline(){}
 
-    Polyline<T>& operator=(const Polyline<T>& p) = default;
+    Polyline<T>& operator=(const Polyline<T>&) = default;
     template <class X>
     Polyline<T>& operator=(const Polyline<X>& p);
-    Polyline<T>& operator=(Polyline<T> && p) = default;
+    Polyline<T>& operator=(Polyline<T> &&) = default;
 
     Polyline<T> operator+(const Vec2<T>& v) const;
     Polyline<T> operator-(const Vec2<T>& v) const;
@@ -65,9 +65,11 @@ public:
 
     size_t size() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

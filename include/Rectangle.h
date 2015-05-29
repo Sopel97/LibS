@@ -13,17 +13,17 @@ public:
 
     static Rectangle<T> unitRectangle();
 
-    Rectangle(const Rectangle<T>& r) = default;
+    Rectangle(const Rectangle<T>&) = default;
     template <class X>
     Rectangle(const Rectangle<X>& r);
-    Rectangle(Rectangle<T>&& r) = default;
+    Rectangle(Rectangle<T>&&) = default;
 
     virtual ~Rectangle(){}
 
-    Rectangle<T>& operator =(const Rectangle<T>& r) = default;
+    Rectangle<T>& operator =(const Rectangle<T>&) = default;
     template <class X>
     Rectangle<T>& operator =(const Rectangle<X>& r);
-    Rectangle<T>& operator =(Rectangle<T> && r) = default;
+    Rectangle<T>& operator =(Rectangle<T> &&) = default;
 
     Rectangle<T> operator +(const Vec2<T>& v) const;
     Rectangle<T> operator -(const Vec2<T>& v) const;
@@ -52,9 +52,11 @@ public:
     virtual Vec2<T> center() const;
     virtual T signedArea() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

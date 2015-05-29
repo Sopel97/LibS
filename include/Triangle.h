@@ -30,17 +30,17 @@ public:
     static Triangle<T> isosceles(const Vec2D& center, const T base, const T height);
     static Triangle<T> rightTriangle(const Vec2D& rightAngledVertex, const T width, const T height); //with 90 degree angle on the left
 
-    Triangle(const Triangle<T>& t) = default;
+    Triangle(const Triangle<T>&) = default;
     template <class X>
     Triangle(const Triangle<X>& t);
-    Triangle(Triangle<T>&& t) = default;
+    Triangle(Triangle<T>&&) = default;
 
     virtual ~Triangle(){}
 
-    Triangle<T>& operator =(const Triangle<T>& t) = default;
+    Triangle<T>& operator =(const Triangle<T>&) = default;
     template <class X>
     Triangle<T>& operator =(const Triangle<X>& t);
-    Triangle<T>& operator =(Triangle<T> && t) = default;
+    Triangle<T>& operator =(Triangle<T> &&) = default;
 
     Triangle<T> operator +(const Vec2<T>& p) const;
     Triangle<T> operator -(const Vec2<T>& p) const;
@@ -67,9 +67,11 @@ public:
     virtual Vec2<T> center() const;
     virtual T signedArea() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

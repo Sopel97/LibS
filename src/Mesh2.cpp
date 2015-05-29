@@ -231,6 +231,7 @@ Vec2<typename Mesh2<ShapeType>::T> Mesh2<ShapeType>::pickRandomPoint(Random::Ran
     return chosenShapeIter->first->pickRandomPoint(randomEngine);
 }
 //for double dispatch
+#ifndef GEOMETRY_LIGHT
 template <class ShapeType>
 bool Mesh2<ShapeType>::intersects(const Shape2<T>* other) const
 {
@@ -260,6 +261,7 @@ bool Mesh2<ShapeType>::isContained(const Shape2<T>* other) const
     }
     return true;
 }
+#endif // GEOMETRY_LIGHT
 
 template <class ShapeType>
 std::unique_ptr<Shape2<typename Mesh2<ShapeType>::T>> Mesh2<ShapeType>::clone() const

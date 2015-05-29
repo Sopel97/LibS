@@ -38,17 +38,17 @@ public:
     static Polygon<T> fromRectangle(const Rectangle<T>& rectangle);
     static Polygon<T> fromTriangle(const Triangle<T>& triangle);
 
-    Polygon(const Polygon<T>& p) = default;
+    Polygon(const Polygon<T>&) = default;
     template <class X>
     Polygon(const Polygon<X>& p);
-    Polygon(Polygon<T>&& p) = default;
+    Polygon(Polygon<T>&&) = default;
 
     virtual ~Polygon(){}
 
-    Polygon<T>& operator=(const Polygon<T>& p) = default;
+    Polygon<T>& operator=(const Polygon<T>&) = default;
     template <class X>
     Polygon<T>& operator=(const Polygon<X>& p);
-    Polygon<T>& operator=(Polygon<T> && p) = default;
+    Polygon<T>& operator=(Polygon<T> &&) = default;
 
     Polygon<T> operator+(const Vec2<T>& v) const;
     Polygon<T> operator-(const Vec2<T>& v) const;
@@ -90,9 +90,11 @@ public:
 
     size_t size() const;
 
+#ifndef GEOMETRY_LIGHT
     virtual bool intersects(const Shape2<T>* other) const {return other->intersects(*this);}
     virtual bool contains(const Shape2<T>* other) const {return other->isContained(*this);}
     virtual bool isContained(const Shape2<T>* other) const {return other->contains(*this);}
+#endif // GEOMETRY_LIGHT
     SHAPE2_DOUBLE_DISPATCHING_METHODS
 
     virtual std::unique_ptr<Shape2<T>> clone() const;

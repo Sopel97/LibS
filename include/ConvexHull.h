@@ -24,6 +24,10 @@ private:
     T cross(const Vec2<T>& o, const Vec2<T>& a, const Vec2<T>& b);
 };
 
+typedef ConvexHull<double> ConvexHullD;
+typedef ConvexHull<float> ConvexHullF;
+typedef ConvexHull<int> ConvexHullI;
+
 #include "../src/ConvexHull.cpp"
 
 #endif // CONVEXHULL_H_INCLUDED
