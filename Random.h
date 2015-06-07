@@ -25,6 +25,8 @@ namespace Random
     template <int I = 0> class WELL512EngineT;
     template <int I = 0> class WELL1024EngineT;
 
+    template <class StandardEngine> class StandardRandomNumberGeneratorWrapper;
+
 #include "include/RandomEngineBase.h"
 #include "include/RandomEngine.h"
 #include "include/CMWCEngine.h"
@@ -36,6 +38,8 @@ namespace Random
 
 #include "include/WELL512Engine.h"
 #include "include/WELL1024Engine.h"
+
+#include "include/StandardRandomNumberGeneratorWrapper.h"
 
 }
 
