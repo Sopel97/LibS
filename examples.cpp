@@ -510,22 +510,6 @@ int main()
 
     //ALLEGRO_COLOR colliding = al_map_rgb(255, 0, 0);
     ALLEGRO_COLOR notcolliding = al_map_rgb(0, 255, 0);
-    Vec2D::VectorType vvv {22, 33};
-    vvv = vvv.yx.normalized();
-    //vvv.xx = Vec2F{23,23}; won't compile since vvv.xx is a proxy with ununique references
-    //Vec3D xxx(vvv.yxx());
-    Vec2D zzz = vvv.yx.normal();
-    std::cout << vvv.x << ' ' << vvv.y << '\n';
-    std::cout << zzz.x << ' ' << zzz.y << '\n';
-    Vec3D v1 {1, 200, 3};
-    std::cout << v1.xxz.magnitude() << '\n';
-    std::cout << v1.xxxx.magnitude() << '\n';
-    //std::cout << xxx.xxx()[0] << ' ' << xxx[1] << ' ' << xxx.zzz()[2] << '\n';
-    //std::cout << zzz.xx().xxx()[0] << ' ' << zzz[1] << ' ' << zzz.xxx()[2] << '\n';
-    //Vec2<double&> www(zzz); //error
-    //std::cout << www.xx()[0] << '\n';
-    LineSegmentD ls {Vec2D{0.0, 0.0}, Vec2D{11.0, 22.0}};
-    ls.begin.xy = Vec2D {33, 44};
     Matrix<int, 3, 3> m;
     /*
     const int shapeSize = 4;
