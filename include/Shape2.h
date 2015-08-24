@@ -25,12 +25,12 @@ public:
 
     using VectorType = Vec2<T>;
 
-    Shape2() = default;
+    Shape2() {}
 
-    Shape2(const Shape2&) = default;
-    Shape2(Shape2&&) = default;
-    Shape2<T>& operator=(const Shape2&) = default;
-    Shape2<T>& operator=(Shape2&&) = default;
+    Shape2(const Shape2&) {}
+    Shape2(Shape2&&)  {}
+    Shape2<T>& operator=(const Shape2&) {}
+    Shape2<T>& operator=(Shape2&&)  {}
 
     virtual ~Shape2(){}
 };

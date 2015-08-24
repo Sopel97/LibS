@@ -14,15 +14,15 @@ public:
 
     virtual ~Cylinder(){}
 
-    Cylinder(const Cylinder<T>& c) = default;
+    Cylinder(const Cylinder<T>& c){center = c.center; radius = c.radius; height = c.height;}
     template <class X>
     Cylinder(const Cylinder<X>& c);
-    Cylinder(Cylinder<T>&& c) = default;
+    Cylinder(Cylinder<T>&& c){center = std::move(c.center); radius = std::move(c.radius); height = std::move(c.height);}
 
-    Cylinder<T>& operator =(const Cylinder<T>& c) = default;
+    Cylinder<T>& operator =(const Cylinder<T>& c){center = c.center; radius = c.radius; height = c.height;}
     template <class X>
     Cylinder<T>& operator =(const Cylinder<X>& c);
-    Cylinder<T>& operator =(Cylinder<T> && c) = default;
+    Cylinder<T>& operator =(Cylinder<T> && c){center = std::move(c.center); radius = std::move(c.radius); height = std::move(c.height);}
 
     Cylinder<T> operator +(const Vec3<T>& v) const;
     Cylinder<T> operator -(const Vec3<T>& v) const;

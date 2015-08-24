@@ -6,19 +6,6 @@ template <class T>
 Rectangle<T>::Rectangle(const Vec2<T>& p1, const T width, const T height) : min(p1), max(p1 + Vec2<T>(width, height))
 {
 }
-template <class T>
-template <class X>
-Rectangle<T>::Rectangle(const Rectangle<X>& r) : min(r.min), max(r.max)
-{
-}
-template <class T>
-template <class X>
-Rectangle<T>& Rectangle<T>::operator =(const Rectangle<X>& r)
-{
-    min = r.min;
-    max = r.max;
-    return *this;
-}
 
 template <class T>
 Rectangle<T> Rectangle<T>::operator +(const Vec2<T>& v) const
@@ -110,6 +97,11 @@ template <class T>
 Vec2<T> Rectangle<T>::center() const
 {
     return (min + max) / T(2);
+}
+template <class T>
+T Rectangle<T>::area() const
+{
+    return width()*height();
 }
 
 

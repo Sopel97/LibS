@@ -5,8 +5,8 @@ namespace ls
 {
     template <int I> class RandomEngineT;
 
-#include "include/RandomEngine.h"
-#include "include/StandardRandomNumberGeneratorWrapper.h"
+#include "RandomEngine.h"
+#include "StandardRandomNumberGeneratorWrapper.h"
 }
 
 #endif // RANDOM_H_INCLUDED

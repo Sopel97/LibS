@@ -11,7 +11,7 @@ public:
     };
     std::vector<Vec2<T>> vertices;
 
-    Polyline() = default;
+    Polyline(){}
     Polyline(const std::initializer_list<Vec2<T>>& list);
     Polyline(const std::vector<Vec2<T>>& v);
     Polyline(std::vector<Vec2<T>>&& v);
@@ -20,17 +20,17 @@ public:
     static Polyline<T> fromRectangle(const Rectangle<T>& rectangle);
     static Polyline<T> fromTriangle(const Triangle<T>& triangle);
 
-    Polyline(const Polyline<T>&) = default;
+    Polyline(const Polyline<T>& other){vertices = other.vertices;}
     template <class X>
     Polyline(const Polyline<X>& p);
-    Polyline(Polyline<T>&&) = default;
+    Polyline(Polyline<T>&& other){vertices = std::move(other.vertices);}
 
     virtual ~Polyline(){}
 
-    Polyline<T>& operator=(const Polyline<T>&) = default;
+    Polyline<T>& operator=(const Polyline<T>& other){vertices = other.vertices;}
     template <class X>
     Polyline<T>& operator=(const Polyline<X>& p);
-    Polyline<T>& operator=(Polyline<T> &&) = default;
+    Polyline<T>& operator=(Polyline<T> && other){vertices = std::move(other.vertices);}
 
     Polyline<T> operator+(const Vec2<T>& v) const;
     Polyline<T> operator-(const Vec2<T>& v) const;

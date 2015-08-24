@@ -28,7 +28,7 @@ public:
 */
     std::vector<Vec2<T>> vertices;
 
-    Polygon() = default;
+    Polygon(){}
     Polygon(const std::initializer_list<Vec2<T>>& list);
     Polygon(const std::vector<Vec2<T>>& v);
     Polygon(std::vector<Vec2<T>>&& v);
@@ -39,17 +39,17 @@ public:
     static Polygon<T> fromRectangle(const Rectangle<T>& rectangle);
     static Polygon<T> fromTriangle(const Triangle<T>& triangle);
 
-    Polygon(const Polygon<T>&) = default;
+    Polygon(const Polygon<T>& other){vertices = other.vertices;}
     template <class X>
     Polygon(const Polygon<X>& p);
-    Polygon(Polygon<T>&&) = default;
+    Polygon(Polygon<T>&& other){vertices = std::move(other.vertices);}
 
     virtual ~Polygon(){}
 
-    Polygon<T>& operator=(const Polygon<T>&) = default;
+    Polygon<T>& operator=(const Polygon<T>& other){vertices = other.vertices;}
     template <class X>
     Polygon<T>& operator=(const Polygon<X>& p);
-    Polygon<T>& operator=(Polygon<T> &&) = default;
+    Polygon<T>& operator=(Polygon<T> && other){vertices = std::move(other.vertices);}
 
     Polygon<T> operator+(const Vec2<T>& v) const;
     Polygon<T> operator-(const Vec2<T>& v) const;

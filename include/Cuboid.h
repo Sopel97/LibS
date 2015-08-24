@@ -13,15 +13,15 @@ public:
 
     virtual ~Cuboid(){}
 
-    Cuboid(const Cuboid<T>& c) = default;
+    Cuboid(const Cuboid<T>& c){min = c.min; max = c.max;}
     template <class X>
     Cuboid(const Cuboid<X>& c);
-    Cuboid(Cuboid<T>&& c) = default;
+    Cuboid(Cuboid<T>&& c){min = std::move(c.min); max = std::move(c.max);}
 
-    Cuboid<T>& operator =(const Cuboid<T>& c) = default;
+    Cuboid<T>& operator =(const Cuboid<T>& c){min = c.min; max = c.max;}
     template <class X>
     Cuboid<T>& operator =(const Cuboid<X>& c);
-    Cuboid<T>& operator =(Cuboid<T> && c) = default;
+    Cuboid<T>& operator =(Cuboid<T> && c){min = c.min; max = c.max;}
 
     Cuboid<T> operator +(const Vec3<T>& v) const;
     Cuboid<T> operator -(const Vec3<T>& v) const;

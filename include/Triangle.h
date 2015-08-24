@@ -22,7 +22,7 @@ public:
 
     Vec2<T> vertices[3];
 
-    Triangle() = default;
+    Triangle() {}
     Triangle(const Vec2<T>& p1, const Vec2<T>& p2, const Vec2<T>& p3);
     Triangle(const Vec2<T>* p);
 
@@ -30,17 +30,17 @@ public:
     static Triangle<T> isosceles(const Vec2D& center, const T base, const T height);
     static Triangle<T> rightTriangle(const Vec2D& rightAngledVertex, const T width, const T height); //with 90 degree angle on the left
 
-    Triangle(const Triangle<T>&) = default;
+    Triangle(const Triangle<T>& other){vertices[0] = other.vertices[0];vertices[1] = other.vertices[1];vertices[2] = other.vertices[2];}
     template <class X>
     Triangle(const Triangle<X>& t);
-    Triangle(Triangle<T>&&) = default;
+    Triangle(Triangle<T>&& other){vertices[0] = std::move(other.vertices[0]);vertices[1] = std::move(other.vertices[1]);vertices[2] = std::move(other.vertices[2]);}
 
     virtual ~Triangle(){}
 
-    Triangle<T>& operator =(const Triangle<T>&) = default;
+    Triangle<T>& operator =(const Triangle<T>& other){vertices[0] = other.vertices[0];vertices[1] = other.vertices[1];vertices[2] = other.vertices[2];}
     template <class X>
     Triangle<T>& operator =(const Triangle<X>& t);
-    Triangle<T>& operator =(Triangle<T> &&) = default;
+    Triangle<T>& operator =(Triangle<T> && other){vertices[0] = std::move(other.vertices[0]);vertices[1] = std::move(other.vertices[1]);vertices[2] = std::move(other.vertices[2]);}
 
     Triangle<T> operator +(const Vec2<T>& p) const;
     Triangle<T> operator -(const Vec2<T>& p) const;
