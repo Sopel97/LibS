@@ -14,8 +14,8 @@ public:
 
     virtual ~Shape(){}
 
-    Shape& operator = (const Shape&) {}
-    Shape& operator = (Shape &&) {}
+    Shape& operator = (const Shape&) { return *this;}
+    Shape& operator = (Shape &&) { return *this;}
 };
 
 typedef Shape<double> ShapeD;

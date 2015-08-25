@@ -29,8 +29,8 @@ public:
 
     Shape2(const Shape2&) {}
     Shape2(Shape2&&)  {}
-    Shape2<T>& operator=(const Shape2&) {}
-    Shape2<T>& operator=(Shape2&&)  {}
+    Shape2<T>& operator=(const Shape2&) { return *this;}
+    Shape2<T>& operator=(Shape2&&)  { return *this;}
 
     virtual ~Shape2(){}
 };

@@ -15,20 +15,19 @@ public:
     virtual ~Cylinder(){}
 
     Cylinder(const Cylinder<T>& c){center = c.center; radius = c.radius; height = c.height;}
-    template <class X>
-    Cylinder(const Cylinder<X>& c);
     Cylinder(Cylinder<T>&& c){center = std::move(c.center); radius = std::move(c.radius); height = std::move(c.height);}
 
-    Cylinder<T>& operator =(const Cylinder<T>& c){center = c.center; radius = c.radius; height = c.height;}
-    template <class X>
-    Cylinder<T>& operator =(const Cylinder<X>& c);
-    Cylinder<T>& operator =(Cylinder<T> && c){center = std::move(c.center); radius = std::move(c.radius); height = std::move(c.height);}
+    Cylinder<T>& operator =(const Cylinder<T>& c){center = c.center; radius = c.radius; height = c.height; return *this;}
+    Cylinder<T>& operator =(Cylinder<T> && c){center = std::move(c.center); radius = std::move(c.radius); height = std::move(c.height); return *this;}
 
     Cylinder<T> operator +(const Vec3<T>& v) const;
     Cylinder<T> operator -(const Vec3<T>& v) const;
 
     Cylinder<T>& operator +=(const Vec3<T>& v);
     Cylinder<T>& operator -=(const Vec3<T>& v);
+
+    template <class T2>
+    explicit operator Cylinder<T2>() const;
 
     Circle<T> base() const;
 

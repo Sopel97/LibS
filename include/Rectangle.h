@@ -18,14 +18,17 @@ public:
 
     virtual ~Rectangle(){}
 
-    Rectangle<T>& operator =(const Rectangle<T>& other){min = other.min; max = other.max;};
-    Rectangle<T>& operator =(Rectangle<T> && other){min = std::move(other.min); max = std::move(other.max);};
+    Rectangle<T>& operator =(const Rectangle<T>& other){min = other.min; max = other.max; return *this;};
+    Rectangle<T>& operator =(Rectangle<T> && other){min = std::move(other.min); max = std::move(other.max); return *this;};
 
     Rectangle<T> operator +(const Vec2<T>& v) const;
     Rectangle<T> operator -(const Vec2<T>& v) const;
 
     Rectangle<T>& operator +=(const Vec2<T>& v);
     Rectangle<T>& operator -=(const Vec2<T>& v);
+
+    template <class T2>
+    explicit operator Rectangle<T2>() const;
 
     T width() const;
     T height() const;
@@ -38,9 +41,7 @@ public:
 
     Polyline<T> asPolyline() const;
 
-    //Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine) const;
-    //Vec2<T> pickRandomPoint(Random::RandomEngineBase& randomEngine, typename Shape2<T>::RandomPointPickerPreprocessedData& preprocessedData) const; //preprocessed data is of base type. All shapes have to cast it to use it.
-    Vec2<T> center() const;
+    Vec2<T> centerOfMass() const;
     T area() const;
 };
 

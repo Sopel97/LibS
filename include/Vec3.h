@@ -20,16 +20,12 @@ public:
     Vec3(const std::initializer_list<T>& list);
 
     Vec3(const Vec3<T>& v){x = v.x; y = v.y; z = v.z;}
-    template <class X>
-    Vec3(const Vec3<X>& v);
     Vec3(Vec3<T>&& v){x = std::move(v.x); y = std::move(v.y); z = std::move(v.z);}
 
     virtual ~Vec3(){}
 
-    Vec3<T>& operator=(const Vec3<T>& v1){x = v1.x; y = v1.y; z = v1.z;}
-    template <class X>
-    Vec3<T>& operator=(const Vec3<X>& v1);
-    Vec3<T>& operator=(Vec3<T> && v1){x = std::move(v1.x); y = std::move(v1.y); z = std::move(v1.z);}
+    Vec3<T>& operator=(const Vec3<T>& v1){x = v1.x; y = v1.y; z = v1.z; return *this;}
+    Vec3<T>& operator=(Vec3<T> && v1){x = std::move(v1.x); y = std::move(v1.y); z = std::move(v1.z); return *this;}
 
     inline T& operator [](int i);
     inline const T& operator [](int i) const;
@@ -47,6 +43,9 @@ public:
     Vec3<T>& operator*=(const T scalar);
     Vec3<T>& operator*=(const Vec3<T>& v1);
     Vec3<T>& operator/=(const T scalar);
+
+    template <class T2>
+    explicit operator Vec3<T2>() const;
 
     T magnitude();
     T distance(const Vec3<T>& v);
