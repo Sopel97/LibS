@@ -136,30 +136,30 @@ public:
             typedef std::forward_iterator_tag iterator_category;
             typedef int difference_type;
 
-            iterator(pointer ptr, int jump) : m_start(ptr), m_ptr(ptr), m_jump(jump) { }
+            iterator(pointer ptr, int jump) : m_start(ptr), m_ptr(ptr), m_jump(jump) {}
 
-            self_type       operator++ (int)                  { self_type i = *this; m_ptr += m_jump; return i;       }
-            self_type       operator-- (int)                  { self_type i = *this; m_ptr -= m_jump; return i;       }
-            self_type&      operator++ ()                     { m_ptr += m_jump; return *this;                        }
-            self_type&      operator-- ()                     { m_ptr -= m_jump; return *this;                        }
+            self_type       operator++ (int) { self_type i = *this; m_ptr += m_jump; return i; }
+            self_type       operator-- (int) { self_type i = *this; m_ptr -= m_jump; return i; }
+            self_type&      operator++ () { m_ptr += m_jump; return *this; }
+            self_type&      operator-- () { m_ptr -= m_jump; return *this; }
 
-            self_type       operator+  (int n)                { self_type i = *this; i.m_ptr += m_jump * n; return i; }
-            self_type       operator-  (int n)                { self_type i = *this; i.m_ptr -= m_jump * n; return i; }
-            self_type&      operator+= (int n)                { m_ptr += m_jump * n; return *this;                    }
-            self_type&      operator-= (int n)                { m_ptr -= m_jump * n; return *this;                    }
+            self_type       operator+  (int n) { self_type i = *this; i.m_ptr += m_jump * n; return i; }
+            self_type       operator-  (int n) { self_type i = *this; i.m_ptr -= m_jump * n; return i; }
+            self_type&      operator+= (int n) { m_ptr += m_jump * n; return *this; }
+            self_type&      operator-= (int n) { m_ptr -= m_jump * n; return *this; }
 
-            difference_type operator-  (const self_type& n)   { return (m_ptr - n.m_ptr) / m_jump;                    }
+            difference_type operator-  (const self_type& n) { return (m_ptr - n.m_ptr) / m_jump; }
 
-            reference       operator[] (int n)                { return m_start[m_jump * n];                           }
-            reference       operator*  ()                     { return *m_ptr;                                        }
-            pointer         operator-> ()                     { return m_ptr;                                         }
+            reference       operator[] (int n) { return m_start[m_jump * n]; }
+            reference       operator*  () { return *m_ptr; }
+            pointer         operator-> () { return m_ptr; }
 
-            bool            operator== (const self_type& rhs) { return m_ptr == rhs.m_ptr;                            }
-            bool            operator<  (const self_type& rhs) { return m_ptr <  rhs.m_ptr;                            }
-            bool            operator>  (const self_type& rhs) { return m_ptr >  rhs.m_ptr;                            }
-            bool            operator<= (const self_type& rhs) { return m_ptr <= rhs.m_ptr;                            }
-            bool            operator>= (const self_type& rhs) { return m_ptr >= rhs.m_ptr;                            }
-            bool            operator!= (const self_type& rhs) { return m_ptr != rhs.m_ptr;                            }
+            bool            operator== (const self_type& rhs) { return m_ptr == rhs.m_ptr; }
+            bool            operator<  (const self_type& rhs) { return m_ptr < rhs.m_ptr; }
+            bool            operator>  (const self_type& rhs) { return m_ptr > rhs.m_ptr; }
+            bool            operator<= (const self_type& rhs) { return m_ptr <= rhs.m_ptr; }
+            bool            operator>= (const self_type& rhs) { return m_ptr >= rhs.m_ptr; }
+            bool            operator!= (const self_type& rhs) { return m_ptr != rhs.m_ptr; }
 
         private:
             pointer m_start;
