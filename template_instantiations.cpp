@@ -1,83 +1,129 @@
 #include "Geometry.h"
 #include "Noise.h"
+#include "DynamicPtr.h"
 
 namespace ls
 {
-    template class AffineTransformation<double>;
-    template class AffineTransformation<float>;
-    template class AffineTransformation<int>;
+    template class AffineTransformation2<double>;
+    template class AffineTransformation2<float>;
 
-    template class Angle<double>;
-    template class Angle<float>;
-    template class Angle<int>;
+    template class Angle2<double>;
+    template class Angle2<float>;
 
-    template class BezierCurve<double>;
-    template class BezierCurve<float>;
-    template class BezierCurve<int>;
+    template class BezierCurve2<double>;
+    template class BezierCurve2<float>;
 
-    template class BezierPath<double>;
-    template class BezierPath<float>;
-    template class BezierPath<int>;
+    template class BezierPath2<double>;
+    template class BezierPath2<float>;
 
     template class CellNoise<double>;
     template class CellNoise<float>;
-    template class CellNoise<int>;
 
-    template class Circle<double>;
-    template class Circle<float>;
-    template class Circle<int>;
+    template class Circle2<double>;
+    template class Circle2<float>;
 
-    template class PointSetConvexHull<double>;
-    template class PointSetConvexHull<float>;
-    template class PointSetConvexHull<int>;
+    template class Cuboid3<double>;
+    template class Cuboid3<float>;
 
-    template class Cuboid<double>;
-    template class Cuboid<float>;
-    template class Cuboid<int>;
+    template class Cylinder3<double>;
+    template class Cylinder3<float>;
 
-    template class Cylinder<double>;
-    template class Cylinder<float>;
-    template class Cylinder<int>;
+    //template class DelaunayTriangulation2<double>;
+    //template class DelaunayTriangulation2<float>;
 
-    template class EuclideanGraph<double>;
-    template class EuclideanGraph<float>;
-    template class EuclideanGraph<int>;
+    template class LineSegment2<double>;
+    template class LineSegment2<float>;
+    template class ConstLineSegment2View<double>;
+    template class ConstLineSegment2View<float>;
 
-    template class LineSegment<double>;
-    template class LineSegment<float>;
-    template class LineSegment<int>;
+    template class ContinuousCollision2<double>;
+    template class ContinuousCollision2<float>;
 
-    template class GraphNode<double>;
-    template class GraphNode<float>;
-    template class GraphNode<int>;
+    template class Matrix<double, 2u, 2u>;
+    template class Matrix<float, 2u, 2u>;
+    template class Matrix<int, 2u, 2u>;
 
-    template class PointSetDelaunayTriangulation<double>;
-    template class PointSetDelaunayTriangulation<float>;
-    template class PointSetDelaunayTriangulation<int>;
+    template class Matrix<double, 2u, 3u>;
+    template class Matrix<float, 2u, 3u>;
+    template class Matrix<int, 2u, 3u>;
 
-    template class Polygon<double>;
-    template class Polygon<float>;
-    template class Polygon<int>;
+    template class Matrix<double, 2u, 4u>;
+    template class Matrix<float, 2u, 4u>;
+    template class Matrix<int, 2u, 4u>;
 
-    template class PolygonTriangulation<double>;
-    template class PolygonTriangulation<float>;
-    template class PolygonTriangulation<int>;
+    template class Matrix<double, 3u, 2u>;
+    template class Matrix<float, 3u, 2u>;
+    template class Matrix<int, 3u, 2u>;
 
-    template class Polyline<double>;
-    template class Polyline<float>;
-    template class Polyline<int>;
+    template class Matrix<double, 3u, 3u>;
+    template class Matrix<float, 3u, 3u>;
+    template class Matrix<int, 3u, 3u>;
 
-    template class Ray<double>;
-    template class Ray<float>;
-    template class Ray<int>;
+    template class Matrix<double, 3u, 4u>;
+    template class Matrix<float, 3u, 4u>;
+    template class Matrix<int, 3u, 4u>;
 
-    template class Raycast<double>;
-    template class Raycast<float>;
-    template class Raycast<int>;
+    template class Matrix<double, 4u, 2u>;
+    template class Matrix<float, 4u, 2u>;
+    template class Matrix<int, 4u, 2u>;
 
-    template class Rectangle<double>;
-    template class Rectangle<float>;
-    template class Rectangle<int>;
+    template class Matrix<double, 4u, 3u>;
+    template class Matrix<float, 4u, 3u>;
+    template class Matrix<int, 4u, 3u>;
+
+    template class Matrix<double, 4u, 4u>;
+    template class Matrix<float, 4u, 4u>;
+    template class Matrix<int, 4u, 4u>;
+
+    template class EuclideanGraphNode<double, 2>;
+    template class EuclideanGraphNode<float, 2>;
+
+    template class WeightedGraphEdge<double>;
+    template class WeightedGraphEdge<float>;
+
+    template class Graph<double, NeighbourSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, NeighbourSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, AdjacencyMatrixTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, AdjacencyMatrixTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, EdgeSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, EdgeSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, NeighbourEdgeSetWithEdgeListTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, NeighbourEdgeSetWithEdgeListTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, NeighbourSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, NeighbourSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, AdjacencyMatrixTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, AdjacencyMatrixTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, EdgeSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, EdgeSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Graph<double, NeighbourEdgeSetWithEdgeListTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<float, NeighbourEdgeSetWithEdgeListTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+
+    template class Polygon2<double>;
+    template class Polygon2<float>;
+    template class ConstPolygon2View<double>;
+    template class ConstPolygon2View<float>;
+
+    template class Polyline2<double>;
+    template class Polyline2<float>;
+    template class ConstPolyline2View<double>;
+    template class ConstPolyline2View<float>;
+
+    template class Ray2<double>;
+    template class Ray2<float>;
+
+    template class Raycast2<double>;
+    template class Raycast2<float>;
+
+    template class Rectangle2<double>;
+    template class Rectangle2<float>;
+    template class Rectangle2<int>;
 
     template class Shape<double>;
     template class Shape<float>;
@@ -95,24 +141,41 @@ namespace ls
     template class Shape4<float>;
     template class Shape4<int>;
 
-    template class SimplexNoise<double>;
-    template class SimplexNoise<float>;
+    template class SimplexNoise<double, 1>;
+    template class SimplexNoise<float, 1>;
+
+    template class SimplexNoise<double, 2>;
+    template class SimplexNoise<float, 2>;
+
+    template class SimplexNoise<double, 3>;
+    template class SimplexNoise<float, 3>;
+
+    template class SimplexNoise<double, 4>;
+    template class SimplexNoise<float, 4>;
+
+    template class PerlinNoise<double, 1>;
+    template class PerlinNoise<float, 1>;
+
+    template class PerlinNoise<double, 2>;
+    template class PerlinNoise<float, 2>;
+
+    template class PerlinNoise<double, 3>;
+    template class PerlinNoise<float, 3>;
+
+    template class PerlinNoise<double, 4>;
+    template class PerlinNoise<float, 4>;
 
     template class Transformation2<double>;
     template class Transformation2<float>;
-    template class Transformation2<int>;
 
-    template class Triangle<double>;
-    template class Triangle<float>;
-    template class Triangle<int>;
+    template class Triangle2<double>;
+    template class Triangle2<float>;
+    template class ConstTriangle2View<double>;
+    template class ConstTriangle2View<float>;
 
-    template class Triangulation<double>;
-    template class Triangulation<float>;
-    template class Triangulation<int>;
-
-    template class UrquhartGraph<double>;
-    template class UrquhartGraph<float>;
-    template class UrquhartGraph<int>;
+    template class Index2Template<int>;
+    template class Index3Template<int>;
+    template class IndexNTemplate<int>;
 
     template class Vec2<double>;
     template class Vec2<float>;
@@ -126,4 +189,7 @@ namespace ls
     template class Vec4<float>;
     template class Vec4<int>;
 
+
+	template class PointMass2<double>;
+	template class PointMass2<float>;
 }

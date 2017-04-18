@@ -1,87 +1,19 @@
 #include <iostream>
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
-#include "Geometry.h"
-#include "Noise.h"
-#include "Random.h"
-#include "Util.h"
 #include <cstdlib>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <chrono>
+#include "Geometry.h"
+#include "CellularAutomata.h"
+#include "Array2.h"
+#include "EuclideanGraphAlgorithms.h"
 
-#define PrettyPrinterTest
-#include "PrettyPrinter.h"
+#include "main.cpp"
 
 using namespace std;
+using namespace ls;
 
-template <class T>
-class InteractiveShape
-{
-public:
-    T shape;
-    ALLEGRO_COLOR color;
-    InteractiveShape()
-    {
-
-    }
-    InteractiveShape(const T& s)
-    {
-        shape = s;
-        color = al_map_rgb(0, 255, 0);
-    }
-    void draw()
-    {
-        ls::Polyline<typename T::ValueType> outline = shape.asPolyline();
-        int outlineSize = outline.size();
-        ALLEGRO_VERTEX* vertices = new ALLEGRO_VERTEX[outlineSize + 1];
-        int j = 0;
-        for(int i = 0; i < outlineSize; ++i)
-        {
-            vertices[j].x = outline.vertices[i].x;
-            vertices[j].y = outline.vertices[i].y;
-            vertices[j].color = color;
-
-            j += 1;
-
-            /* does not work LOL
-            vertices[j].x = outline.elements[i].begin.x;
-            vertices[j].y = outline.elements[i].begin.y;
-            vertices[j].color = color;
-            ++j;
-            vertices[j].x = outline.elements[i].end.x;
-            vertices[j].y = outline.elements[i].end.y;
-            vertices[j].color = color;
-            */
-        }
-        int i = 0;
-        vertices[j].x = outline.vertices[i].x;
-        vertices[j].y = outline.vertices[i].y;
-        vertices[j].color = color;
-
-        al_draw_prim(vertices, NULL, NULL, 0, outlineSize + 1, ALLEGRO_PRIM_LINE_STRIP);
-    }
-    bool move(ALLEGRO_MOUSE_STATE& before, ALLEGRO_MOUSE_STATE& after)
-    {
-        bool moved = false;
-        ls::Vec2D posBefore = {(double)before.x, (double)before.y};
-        ls::Vec2D posAfter = {(double)after.x, (double)after.y};
-        if(before.buttons & 1)
-        {
-            if(shape.intersects(posBefore))
-            {
-                shape += posAfter - posBefore;
-                moved = true;
-            }
-        }
-        return moved;
-    }
-    void setColor(ALLEGRO_COLOR c)
-    {
-        color = c;
-    }
-    ~InteractiveShape()
-    {
-
-    }
-};
+/*
 class RigidBody
 {
 public:
@@ -175,106 +107,156 @@ void next(int counter, const RayD& ray, const Mesh2<CircleD>& mesh, const std::v
         Vec2D directionAfterReflection = ray.direction - n * 2.0 * ray.direction.dot(n);
         next(counter - 1, RayD(closestHit.hitPoint - ray.direction * 0.001, directionAfterReflection), mesh, bodies);
     }
+}*/
+/*
+template <class T>
+void draw(sf::RenderWindow& window, Vec2<T>& point, const sf::Color& color)
+{
+    sf::Vertex vertex(sf::Vector2f(point.x, point.y), color);
+    window.draw(vertex);
 }
 template <class T>
-void draw(const Vec2<T>& point, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const Circle<T>& circle, const sf::Color& color)
 {
-    al_draw_pixel(point.x, point.y, color);
+    sf::CircleShape circleShape(circle.radius);
+    circleShape.setPosition(circle.origin.x, circle.origin.y);
+    circleShape.setFillColor(sf::Color::Transparent);
+    circleShape.setOutlineColor(color);
+    circleShape.setOutlineThickness(1.0f);
+    window.draw(circleShape);
 }
 template <class T>
-void draw(const Circle<T>& circle, const ALLEGRO_COLOR& color)
+void drawFilled(sf::RenderWindow& window, const Circle<T>& circle, const sf::Color& color)
 {
-    al_draw_circle(circle.origin.x, circle.origin.y, circle.radius, color);
+    sf::CircleShape circleShape(circle.radius);
+    circleShape.setPosition(circle.origin.x, circle.origin.y);
+    circleShape.setFillColor(color);
+    circleShape.setOutlineThickness(0.0f);
+    window.draw(circleShape);
 }
 template <class T>
-void drawFilled(const Circle<T>& circle, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const ls::Rectangle<T>& rect, const sf::Color& color)
 {
-    al_draw_filled_circle(circle.origin.x, circle.origin.y, circle.radius, color);
+    sf::RectangleShape rectangleShape(sf::Vector2f(rect.width(), rect.height()));
+    rectangleShape.setPosition(rect.min.x, rect.min.y);
+    rectangleShape.setFillColor(sf::Color::Transparent);
+    rectangleShape.setOutlineColor(color);
+    rectangleShape.setOutlineThickness(1.0f);
+    window.draw(rectangleShape);
 }
 template <class T>
-void draw(const ls::Rectangle<T>& rect, const ALLEGRO_COLOR& color)
+void drawFilled(sf::RenderWindow& window, const ls::Rectangle<T>& rect, const sf::Color& color)
 {
-    al_draw_rectangle(rect.min.x, rect.min.y, rect.max.x, rect.max.y, color, 1);
+    sf::RectangleShape rectangleShape(sf::Vector2f(rect.width(), rect.height()));
+    rectangleShape.setPosition(rect.min.x, rect.min.y);
+    rectangleShape.setFillColor(color);
+    rectangleShape.setOutlineThickness(0.0f);
+    window.draw(rectangleShape);
 }
 template <class T>
-void drawFilled(const ls::Rectangle<T>& rect, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const LineSegment<T>& line, const sf::Color& color)
 {
-    al_draw_filled_rectangle(rect.min.x, rect.min.y, rect.max.x, rect.max.y, color);
+    sf::ConvexShape lineShape;
+    lineShape.setPointCount(2);
+    lineShape.setPoint(0, sf::Vector2f(ray.origin.x, ray.origin.y));
+    lineShape.setPoint(1, sf::Vector2f(ray.origin.x + ray.direction.x * 10000.0f, ray.origin.y + ray.direction.y * 10000.0f));
+    lineShape.setFillColor(sf::Color::Transparent);
+    lineShape.setOutlineColor(color);
+    lineShape.setOutlineThickness(1.0f);
+    window.draw(lineShape);
 }
 template <class T>
-void draw(const LineSegment<T>& line, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const Ray<T>& ray, const sf::Color& color)
 {
-    al_draw_line(line.begin.x, line.begin.y, line.end.x, line.end.y, color, 1);
+    sf::ConvexShape lineShape;
+    lineShape.setPointCount(2);
+    lineShape.setPoint(0, sf::Vector2f(ray.origin.x, ray.origin.y));
+    lineShape.setPoint(1, sf::Vector2f(ray.origin.x + ray.direction.x * 10000.0f, ray.origin.y + ray.direction.y * 10000.0f));
+    lineShape.setFillColor(sf::Color::Transparent);
+    lineShape.setOutlineColor(color);
+    lineShape.setOutlineThickness(1.0f);
+    window.draw(lineShape);
 }
 template <class T>
-void draw(const Ray<T>& ray, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const Triangle<T>& triangle, const sf::Color& color)
 {
-    al_draw_line(ray.origin.x, ray.origin.y, ray.origin.x + ray.direction.x * 10000.0f, ray.origin.y + ray.direction.y * 10000.0f, color, 1);
+    sf::ConvexShape triangleShape;
+    triangleShape.setPointCount(3);
+    triangleShape.setPoint(0, sf::Vector2f(triangle.vertices[0].x, triangle.vertices[0].y));
+    triangleShape.setPoint(1, sf::Vector2f(triangle.vertices[1].x, triangle.vertices[1].y));
+    triangleShape.setPoint(2, sf::Vector2f(triangle.vertices[2].x, triangle.vertices[2].y));
+    triangleShape.setFillColor(sf::Color::Transparent);
+    triangleShape.setOutlineColor(color);
+    triangleShape.setOutlineThickness(1.0f);
+    window.draw(triangleShape);
 }
 template <class T>
-void draw(const Triangle<T>& triangle, const ALLEGRO_COLOR& color)
+void drawFilled(sf::RenderWindow& window, const Triangle<T>& triangle, const sf::Color& color)
 {
-    al_draw_triangle(triangle.vertices[0].x, triangle.vertices[0].y,
-                     triangle.vertices[1].x, triangle.vertices[1].y,
-                     triangle.vertices[2].x, triangle.vertices[2].y,
-                     color, 1);
+    sf::ConvexShape triangleShape;
+    triangleShape.setPointCount(3);
+    triangleShape.setPoint(0, sf::Vector2f(triangle.vertices[0].x, triangle.vertices[0].y));
+    triangleShape.setPoint(1, sf::Vector2f(triangle.vertices[1].x, triangle.vertices[1].y));
+    triangleShape.setPoint(2, sf::Vector2f(triangle.vertices[2].x, triangle.vertices[2].y));
+    triangleShape.setFillColor(color);
+    triangleShape.setOutlineThickness(0.0f);
+    window.draw(triangleShape);
 }
 template <class T>
-void drawFilled(const Triangle<T>& triangle, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const ls::Polygon<T>& polygon, const sf::Color& color)
 {
-    al_draw_filled_triangle(triangle.vertices[0].x, triangle.vertices[0].y,
-                            triangle.vertices[1].x, triangle.vertices[1].y,
-                            triangle.vertices[2].x, triangle.vertices[2].y,
-                            color);
-}
-template <class T>
-void draw(const ls::Polygon<T>& polygon, const ALLEGRO_COLOR& color)
-{
-    std::vector<ALLEGRO_VERTEX> vertices;
+    sf::ConvexShape poly;
     size_t size = polygon.size();
     if(size < 3) return;
-    vertices.reserve(size + 1);
+    poly.setPointCount(size);
     for(size_t i = 0; i <= size; ++i)
     {
-        const Vec2<T>& v = polygon.vertices[i % size];
-        vertices.push_back(ALLEGRO_VERTEX {static_cast<float>(v.x), static_cast<float>(v.y), 0.0f, 0.0f, 0.0f, color});
+        poly.setPoint(i, sf::Vector2f(polygon.vertices[i].x, polygon.vertices[i].y));
     }
+    poly.setFillColor(sf::Color::Transparent);
+    poly.setOutlineColor(color);
+    poly.setOutlineThickness(1.0f);
 
-    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size + 1, ALLEGRO_PRIM_LINE_STRIP);
+    window.draw(poly);
 }
 template <class T>
-void draw(const ls::Polyline<T>& polyline, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const ls::Polyline<T>& polyline, const sf::Color& color)
 {
-    std::vector<ALLEGRO_VERTEX> vertices;
-    size_t size = polyline.size();
-    vertices.reserve(size);
-    for(size_t i = 0; i < size; ++i)
+    sf::ConvexShape poly;
+    size_t size = polygon.size();
+    if(size < 3) return;
+    poly.setPointCount(size);
+    for(size_t i = 0; i <= size; ++i)
     {
-        const Vec2<T>& v = polyline[i];
-        vertices.push_back(ALLEGRO_VERTEX {static_cast<float>(v.x), static_cast<float>(v.y), 0.0f, 0.0f, 0.0f, color});
+        poly.setPoint(i, sf::Vector2f(polygon.vertices[i].x, polygon.vertices[i].y));
     }
+    poly.setFillColor(sf::Color::Transparent);
+    poly.setOutlineColor(color);
+    poly.setOutlineThickness(1.0f);
 
-    al_draw_prim(vertices.data(), nullptr, nullptr, 0, size, ALLEGRO_PRIM_LINE_STRIP);
+    window.draw(poly);
 }
 template <class ShapeType>
-void draw(const Mesh2<ShapeType>& mesh, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const Mesh2<ShapeType>& mesh, const sf::Color& color)
 {
     for(const auto& shape : mesh.elements)
-        draw(shape, color);
+        draw(window, shape, color);
 }
 template <class ShapeType>
-void draw(const std::vector<ShapeType>& mesh, const ALLEGRO_COLOR& color)
+void draw(sf::RenderWindow& window, const std::vector<ShapeType>& mesh, const sf::Color& color)
 {
     for(const auto& shape : mesh)
-        draw(shape, color);
+        draw(window, shape, color);
 }
 
 void delaunayVoronoiExamples()
 {
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "LibS examples");
+
     //may generate wrong polygons close to boundary because polygons that stretch to infinity are not handled yet
     constexpr size_t numberOfPoints = 100u;
-    StandardRandomNumberGeneratorWrapper<std::mt19937> randomEngine;
-    RectangleD boundingRect(Vec2D {100.0, 100.0}, Vec2D {1200.0, 700.0});
+    std::mt19937 randomEngine;
+    RectangleD boundingRect(Vec2D{100.0, 100.0}, Vec2D{1200.0, 700.0});
 
     std::vector<Vec2D> points;
     points.reserve(numberOfPoints);
@@ -290,82 +272,80 @@ void delaunayVoronoiExamples()
     std::cout << "Number of generated triangles: " << triangulation.triangleMesh().size() << '\n';
     std::cout << "Number of generated polygons: " << voronoi.polygons().size() << '\n';
 
-    ALLEGRO_KEYBOARD_STATE keyboardState;
     for(;;)
     {
-        al_get_keyboard_state(&keyboardState);
-        if(al_key_down(&keyboardState, ALLEGRO_KEY_ESCAPE)) break;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) break;
 
-        al_clear_to_color(al_map_rgb(0, 0, 0));
+        draw(window, triangulation.triangleMesh(), sf::Color(200, 0, 0));
+        draw(window, voronoi.polygons(), sf::Color(0, 255, 0));
 
-        draw(triangulation.triangleMesh(), al_map_rgb(200, 0, 0));
-        draw(voronoi.polygons(), al_map_rgb(0, 255, 0));
-
-        al_flip_display();
+        window.display();
     }
 }
 
 void cellularAutomatonCaveGenerationExample()
 {
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "LibS examples");
+
     //white floor, black wall
     constexpr size_t cellSize = 10u;
     constexpr size_t width = 100u;
     constexpr size_t height = 70u;
     constexpr size_t padding = 10u;
 
-    CellularAutomaton<QuantityRules<OriginalCellularAutomatonStates>> ca(
-                QuantityRules<OriginalCellularAutomatonStates>(
-                    OriginalCellularAutomatonStates::Black,
-                    std::array<OriginalCellularAutomatonStates, 10u>
+    CellularAutomaton<QuantityRules<DefaultCellularAutomatonStates>> ca(
+        QuantityRules<DefaultCellularAutomatonStates>(
+            DefaultCellularAutomatonStates::Black,
+            std::array<DefaultCellularAutomatonStates, 10u>
     {
-        OriginalCellularAutomatonStates::White,
-        OriginalCellularAutomatonStates::White,
-        OriginalCellularAutomatonStates::White,
-        OriginalCellularAutomatonStates::White,
-        OriginalCellularAutomatonStates::White,
-        OriginalCellularAutomatonStates::Black,
-        OriginalCellularAutomatonStates::Black,
-        OriginalCellularAutomatonStates::Black,
-        OriginalCellularAutomatonStates::Black,
-        OriginalCellularAutomatonStates::Black
+        DefaultCellularAutomatonStates::White,
+        DefaultCellularAutomatonStates::White,
+        DefaultCellularAutomatonStates::White,
+        DefaultCellularAutomatonStates::White,
+        DefaultCellularAutomatonStates::White,
+        DefaultCellularAutomatonStates::Black,
+        DefaultCellularAutomatonStates::Black,
+        DefaultCellularAutomatonStates::Black,
+        DefaultCellularAutomatonStates::Black,
+        DefaultCellularAutomatonStates::Black
     }),
-    width, height);
-    ca.fill([width, height](size_t x, size_t y) -> OriginalCellularAutomatonStates
-    {
-        static StandardRandomNumberGeneratorWrapper<std::mt19937> randomEngine;
-        if(width - x <= 2 || x <= 1 || height - y <= 2 || y <= 1) return OriginalCellularAutomatonStates::Black;
-        return (randomEngine.nextDouble() < 0.50 ? OriginalCellularAutomatonStates::Black : OriginalCellularAutomatonStates::White);
+        width, height);
+    ca.fill([width, height] (size_t x, size_t y) -> DefaultCellularAutomatonStates {
+        static std::mt19937 randomEngine;
+        static std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+        if(width - x <= 2 || x <= 1 || height - y <= 2 || y <= 1) return DefaultCellularAutomatonStates::Black;
+        return (distribution(randomEngine) < 0.50 ? DefaultCellularAutomatonStates::Black : DefaultCellularAutomatonStates::White);
     });
-    ALLEGRO_KEYBOARD_STATE keyboardState;
+
     for(;;)
     {
-        al_get_keyboard_state(&keyboardState);
-        if(al_key_down(&keyboardState, ALLEGRO_KEY_ESCAPE)) break;
-        if(al_key_down(&keyboardState, ALLEGRO_KEY_UP))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) break;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
             ca.iterate();
-            al_rest(0.1f);
+            sf::sleep(sf::milliseconds(100));
         }
-
-        al_clear_to_color(al_map_rgb(0, 0, 0));
 
         for(size_t x = 0u; x < width; ++x)
         {
             for(size_t y = 0u; y < height; ++y)
             {
                 drawFilled(
+                    window,
                     RectangleF(
                         Vec2F(padding + x * cellSize, padding + y * cellSize),
                         10.0f,
                         10.0f),
-                    ca.cellAt(x, y) == OriginalCellularAutomatonStates::Black ? al_map_rgb(64, 64, 64) : al_map_rgb(255, 255, 255));
+                    ca.cellAt(x, y) == DefaultCellularAutomatonStates::Black ? sf::Color(64, 64, 64) : sf::Color(255, 255, 255));
             }
         }
-        al_flip_display();
+        window.display();
     }
 }
 void conwaysGameOfLifeExample()
 {
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "LibS examples");
+
     //white floor, black wall
     constexpr size_t cellSize = 10u;
     constexpr size_t width = 100u;
@@ -433,45 +413,389 @@ void conwaysGameOfLifeExample()
         }
     }
 
-    ALLEGRO_KEYBOARD_STATE keyboardState;
     for(;;)
     {
-        al_get_keyboard_state(&keyboardState);
-        if(al_key_down(&keyboardState, ALLEGRO_KEY_ESCAPE)) break;
-        if(al_key_down(&keyboardState, ALLEGRO_KEY_UP))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) break;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
             ca.iterate();
-            al_rest(0.05f);
+            sf::sleep(sf::milliseconds(50));
         }
-
-        al_clear_to_color(al_map_rgb(0, 0, 0));
 
         for(size_t x = 0u; x < width; ++x)
         {
             for(size_t y = 0u; y < height; ++y)
             {
                 drawFilled(
+                    window,
                     RectangleF(
                         Vec2F(padding + x * cellSize, padding + y * cellSize),
                         10.0f,
                         10.0f),
-                    ca.cellAt(x, y) == ConwaysGameOfLifeRules::States::Live ? al_map_rgb(0, 200, 0) : al_map_rgb(255, 255, 255));
+                    ca.cellAt(x, y) == ConwaysGameOfLifeRules::States::Live ? sf::Color(0, 200, 0) : sf::Color(255, 255, 255));
             }
         }
-        al_flip_display();
+        window.display();
     }
 }
 int main()
 {
-    al_init();
-    al_init_primitives_addon();
-    al_install_mouse();
-    al_install_keyboard();
-    al_create_display(1280, 800);
-
     //delaunayVoronoiExample();
     //cellularAutomatonCaveGenerationExample();
     conwaysGameOfLifeExample();
 
     return 0;
 }
+*/
+
+void print(const Array2<int>& a)
+{
+    const int width = a.width();
+    const int height = a.height();
+    for(int y = 0; y < height; ++y)
+    {
+        for(int x = 0; x < width; ++x)
+        {
+            if(a[x][y] != a(x, y)) throw runtime_error("a[x][y] != a(x, y)");
+            std::cout << a(x, y) << ' ';
+        }
+        std::cout << '\n';
+    }
+}
+
+template <class T, class GraphRepresentationTag, bool IsDirected, class StorageTypeReference>
+void print(const Graph<T, GraphRepresentationTag, IsDirected, StorageTypeReference>& graph, std::ostream& out = std::cout)
+{
+    const int numberOfNodes = graph.numberOfNodes();
+
+    out << "Vertices:\n";
+    for(int i = 0; i < numberOfNodes; ++i)
+    {
+        const auto& node = graph.node(i);
+        out << '(' << i << ", " << node.position() << ")\n";
+    }
+
+    std::set<std::pair<int, int>> edges;
+    for(int i = 0; i < numberOfNodes; ++i)
+    {
+        for(const auto& j : graph.neighbours(i))
+        {
+            int ii = i;
+            int jj = j.v;
+            //if(ii > jj) std::swap(ii, jj);
+            edges.emplace(ii, jj);
+        }
+    }
+
+    out << "Edges:\n";
+    for(const auto& edge : edges)
+    {
+        out << '(' << edge.first << ", " << edge.second << ")\n";
+    }
+}
+
+template <class T, bool IsDirected, class StorageTypeReference>
+void print(const Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>& graph, std::ostream& out = std::cout)
+{
+    const int numberOfVertices = graph.numberOfNodes();
+    out << "Vertices:\n";
+    for(int i = 0; i < numberOfVertices; ++i)
+    {
+        const auto& vertex = graph.node(i);
+        out << '(' << i << ", " << vertex.position() << ")\n";
+    }
+
+    out << "Edges:\n";
+    for(const auto& edge : graph.edges())
+    {
+        out << '(' << edge.u << ", " << edge.v << ")\n";
+    }
+}
+
+template <class T, class GraphRepresentationTag, bool IsDirected, class StorageTypeReference>
+void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const Graph<T, GraphRepresentationTag, IsDirected, StorageTypeReference>& graph)
+{
+    constexpr float radius = 4.0f;
+    const int numberOfNodes = graph.numberOfNodes();
+
+    for(int i = 0; i < numberOfNodes; ++i)
+    {
+        const auto& node = graph.node(i);
+        sf::CircleShape circle;
+        circle.setPosition(node.position().x - radius, node.position().y - radius);
+        circle.setFillColor(sf::Color::Red);
+        circle.setRadius(radius);
+        window.draw(circle);
+    }
+
+    std::set<std::pair<int, int>> edges;
+    for(int i = 0; i < numberOfNodes; ++i)
+    {
+        for(const auto& j : graph.neighbours(i))
+        {
+            int ii = i;
+            int jj = j.v;
+            if(ii > jj) std::swap(ii, jj);
+            edges.emplace(ii, jj);
+        }
+    }
+
+    const int numberOfEdges = edges.size();
+    sf::VertexArray vertexBuffer(sf::PrimitiveType::Lines, numberOfEdges * 2);
+    for(const auto& edge : edges)
+    {
+        const auto& from = graph.node(edge.first).position();
+        const auto& to = graph.node(edge.second).position();
+
+        vertexBuffer.append(sf::Vertex(sf::Vector2f(from.x, from.y), sf::Color::Green));
+        vertexBuffer.append(sf::Vertex(sf::Vector2f(to.x, to.y), sf::Color::Green));
+    }
+    window.draw(vertexBuffer);
+}
+
+template <class T, bool IsDirected, class StorageTypeReference>
+void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>& graph)
+{
+    constexpr float radius = 4.0f;
+    const int numberOfNodes = graph.numberOfNodes();
+
+    for(int i = 0; i < numberOfNodes; ++i)
+    {
+        const auto& node = graph.node(i);
+        sf::CircleShape circle;
+        circle.setPosition(node.position().x - radius, node.position().y - radius);
+        circle.setFillColor(sf::Color::Red);
+        circle.setRadius(radius);
+        window.draw(circle);
+    }
+
+    const int numberOfEdges = graph.edges().size();
+    sf::VertexArray vertexBuffer(sf::PrimitiveType::Lines, numberOfEdges * 2);
+    for(const auto& edge : graph.edges())
+    {
+        const auto& from = graph.node(edge.u).position();
+        const auto& to = graph.node(edge.v).position();
+
+        vertexBuffer.append(sf::Vertex(sf::Vector2f(from.x, from.y), sf::Color::Green));
+        vertexBuffer.append(sf::Vertex(sf::Vector2f(to.x, to.y), sf::Color::Green));
+    }
+    window.draw(vertexBuffer);
+}
+
+
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Examples");
+
+    const Array2<int> a = {{1,2,3}, {4,5,6}};
+    print(a);
+
+    std::cout << "\n\n";
+
+    for(const auto& el : a[1].moveToNextCol()) std::cout << el << ' ';
+
+    std::cout << "\n\n";
+
+    for(const auto& el : a.row(1)) std::cout << el << ' ';
+
+    std::cout << "\n\n";
+
+    //IndexRegion2 r = a.possibleIndices();
+    IndexRegion2 r = IndexRegion2(1, 1, a.width() - 1, a.height() - 1);
+    for(auto i : r)
+    {
+        std::cout << "(" << i.x << ", " << i.y << "), ";
+    }
+
+    std::cout << "\n\n";
+
+    DynamicPtr<int> ptr = std::make_unique<int>(13);
+    std::cout << *ptr;
+    std::cout << ptr.isOwning();
+
+    Circle2D c1(Vec2D(100, 0), 100);
+    Circle2D c2(Vec2D(400, 0), 100);
+    Vec2D v1(100, 0);
+    Vec2D v2(-20, 0);
+    auto c = continuousCollision(moving(c1, v1), moving(c2, v2));
+    std::cout << c.value().timeToImpact();
+
+    Matrix2x2D m1;
+    std::cout << m1.determinant();
+    Matrix3x3D m2;
+    std::cout << m2.determinant();
+    Matrix4x4D m3;
+    std::cout << m3.trace();
+
+    std::cout << "\n\n\n\n";
+    Vec2D v3(10.0, 5.0);
+    Vec2D v4(3.0, 4.0);
+    Vec2D v5 = v3 / v4;
+    Vec2D v6 = v3 / 4;
+    Vec2D v7 = 4 / v4;
+    Vec2D v8 = v3 * v4;
+    Vec2D v9 = v3 * 4;
+    Vec2D v10 = 4 * v4;
+    std::cout << v5 << '\n';
+    std::cout << v6 << '\n';
+    std::cout << v7 << '\n';
+    std::cout << v8 << '\n';
+    std::cout << v9 << '\n';
+    std::cout << v10 << '\n';
+
+    struct F
+    {
+        uint32_t operator()(uint32_t x) const { return Util::hash(x); }
+    };
+
+    SimplexNoise<double, 1, F> p1;
+    SimplexNoise2D p2;
+    SimplexNoise3D p3;
+    SimplexNoise4D p4;
+    std::cout << p1(1.4) << '\n';
+    std::cout << p1(256.4) << '\n';
+    std::cout << p2({1.4, 2.4}) << '\n';
+    std::cout << p2({256.4, 2.4}) << '\n';
+    std::cout << p3({1.4, 2.4, 3.4}) << '\n';
+    std::cout << p3({256.4, 2.4, 3.4}) << '\n';
+    std::cout << p4({1.4, 2.4, 3.4, 4.4}) << '\n';
+    std::cout << p4({256.4, 2.4, 3.4, 4.4}) << '\n';
+
+    using GraphType = AdjacencyListEuclideanGraph2F;
+    //using GraphType = UndirectedAdjacencyMatrixEuclideanGraph2F;
+    //using GraphType = UndirectedEdgeListEuclideanGraph2F;
+
+    GraphType g;
+    /*
+    const int numberOfVertices = 20;
+    const int numberOfEdges = numberOfVertices*(numberOfVertices - 1) / 2 / 8;
+    std::mt19937 rng(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_real_distribution<float> xDistr(50.0f, 750.0f);
+    std::uniform_real_distribution<float> yDistr(50.0f, 550.0f);
+    std::uniform_int_distribution<int> vDistr(0, numberOfVertices - 1);
+
+    for(int i = 0; i < numberOfVertices; ++i)
+    {
+        float x = xDistr(rng);
+        float y = yDistr(rng);
+        g.emplaceVertex(Vec2F(x, y));
+    }
+    std::vector<std::pair<int, int>> allEdges;
+    for(int i = 0; i < numberOfVertices; ++i)
+    {
+        for(int j = i + 1; j < numberOfVertices; ++j)
+        {
+            allEdges.emplace_back(i, j);
+        }
+    }
+    std::sort(allEdges.begin(), allEdges.end(), [&g] (const std::pair<int, int>& lhs, const std::pair<int, int>& rhs)->bool {return g.vector(lhs.first, lhs.second).magnitude() < g.vector(rhs.first, rhs.second).magnitude(); });
+
+
+    for(int i = 0; i < numberOfEdges; ++i)
+    {
+        g.addEdge(allEdges[i].first, allEdges[i].second);
+    }
+    */
+
+    const int numberOfVertices = 5;
+    std::mt19937 rng(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_real_distribution<float> xDistr(50.0f, 750.0f);
+    std::uniform_real_distribution<float> yDistr(50.0f, 550.0f);
+    std::uniform_int_distribution<int> vDistr(0, numberOfVertices - 1);
+
+    for(int i = 0; i < numberOfVertices; ++i)
+    {
+        //float x = xDistr(rng);
+        //float y = yDistr(rng);
+        //g.emplaceVertex(Vec2F(x, y));
+    }
+    g.emplaceNode(Vec2F(200, 100));
+    g.emplaceNode(Vec2F(100, 200));
+    g.emplaceNode(Vec2F(300, 200));
+    g.emplaceNode(Vec2F(150, 300));
+    g.emplaceNode(Vec2F(250, 300));
+    g.emplaceNode(Vec2F(250, 300));
+    std::vector<std::pair<int, int>> allEdges;
+    for(int i = 0; i < numberOfVertices; ++i)
+    {
+        for(int j = i + 1; j < numberOfVertices; ++j)
+        {
+            if(xDistr(rng) > 400.0f)
+            {
+                allEdges.emplace_back(i, j);
+            }
+            else
+            {
+                allEdges.emplace_back(j, i);
+            }
+        }
+    }
+    std::sort(allEdges.begin(), allEdges.end(), [&g] (const std::pair<int, int>& lhs, const std::pair<int, int>& rhs)->bool {return g.edgeVector(lhs.first, lhs.second).magnitude() < g.edgeVector(rhs.first, rhs.second).magnitude(); });
+
+
+    for(const auto& edge : allEdges)
+    {
+        g.emplaceEdge(edge.first, edge.second);
+        std::cout << g.edgeWeight(edge.first, edge.second) << '\n';
+    }
+
+    print(g);
+
+    draw(window, sf::RenderStates::Default, g);
+    window.display();
+
+    auto path = closedEulerianPath(g);
+    for(int v : path.vertices()) std::cout << v << ' ';
+
+
+    std::cout << '\n';
+    std::cout << detail::HasMethod_weight<EuclideanGraphNode2D>::value << '\n';
+    std::cout << detail::HasMethod_weight<WeightedGraphEdge<float>>::value << '\n';
+
+	std::cout << "\n\n\n\n\n\n";
+	PointMass2D pa(Vec2D(0, 0), 0.5);
+	PointMass2D pb(Vec2D(0, 0), 1.0);
+	pa.setVelocity(Vec2D(5.0, 0.0));
+	pb.setVelocity(Vec2D(0, 0));
+	double eps = 0.5;
+	resolveImpactVelocities(pa, pb, Vec2D(1.0, 0), eps, ImpactType::Reflection);
+	std::cout << pa.velocity().x << ' ' << pa.velocity().y << '\n';
+	std::cout << pb.velocity().x << ' ' << pb.velocity().y << '\n';
+
+	BinaryTree<std::string> b("asd");
+	b.emplaceLeft(b.root(), "asdvz");
+	b.emplaceLeft(b.emplaceRight(b.root(), "123"), "321");
+	std::cout << b.root().value() << '\n';
+	std::cout << b.root().left().value() << '\n';
+	std::cout << b.root().right().value() << '\n';
+	std::cout << b.root().right().left().value() << '\n';
+	std::cout << '\n';
+	BinaryTree<std::string> bb(b);
+	std::cout << bb.root().value() << '\n';
+	std::cout << bb.root().left().value() << '\n';
+	std::cout << bb.root().right().value() << '\n';
+	std::cout << bb.root().right().left().value() << '\n';
+	std::cout << '\n';
+	BinaryTree<std::string> bbb("vvv");
+	bbb = bb;
+	std::cout << bbb.root().value() << '\n';
+	std::cout << bbb.root().left().value() << '\n';
+	std::cout << bbb.root().right().value() << '\n';
+	std::cout << bbb.root().right().left().value() << '\n';
+	std::cout << '\n';
+	bbb = std::move(b);
+	std::cout << bbb.root().value() << '\n';
+	std::cout << bbb.root().left().value() << '\n';
+	std::cout << bbb.root().right().value() << '\n';
+	std::cout << bbb.root().right().left().value() << '\n';
+	std::cout << bbb.root().right().left().parent().value() << '\n';
+
+	
+
+    for(;;)
+    {
+        sf::Event ev;
+        while(window.pollEvent(ev));
+    }
+}
+
