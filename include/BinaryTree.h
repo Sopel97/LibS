@@ -1,211 +1,240 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace ls
 {
 	template <class T>
-	class BinaryTree
+	class BinaryTree;
+
+	template <class T>
+	class BinaryTreeIterator
 	{
 	private:
-		struct Node
+		using NodeHandle = typename BinaryTree<T>::NodeHandle;
+
+		BinaryTree<T>* m_tree;
+		NodeHandle m_node;
+	public:
+		BinaryTreeIterator(BinaryTree<T>& tree, NodeHandle h) :
+			m_tree(&tree),
+			m_node(h)
 		{
-			friend class BinaryTree<T>;
-		public:
 
-			~Node() = default;
+		}
 
-			Node& left()
-			{
-				return *m_left;
-			}
-			Node& right()
-			{
-				return *m_right;
-			}
-			Node& parent()
-			{
-				return *m_parent;
-			}
-			const Node& left() const
-			{
-				return *m_left;
-			}
-			const Node& right() const
-			{
-				return *m_right;
-			}
-			const Node& parent() const
-			{
-				return *m_parent;
-			}
-			bool hasLeft()
-			{
-				return m_left != nullptr;
-			}
-			bool hasRight()
-			{
-				return m_right != nullptr;
-			}
-			bool hasParent()
-			{
-				return m_parent != nullptr;
-			}
-			bool isLeaf()
-			{
-				return !(hasLeft() || hasRight());
-			}
-			T& value()
-			{
-				return m_value;
-			}
-			const T& value() const
-			{
-				return m_value;
-			}
-		protected:
-			template <class U>
-			Node(U&& v, std::unique_ptr<Node>&& l, std::unique_ptr<Node>&& r, Node* p) :
-				m_value(std::forward<U>(v)),
-				m_left(std::move(l)),
-				m_right(std::move(r)),
-				m_parent(p)
-			{
+		BinaryTreeIterator<T> left()
+		{
+			return { *m_tree, m_tree->left(m_node) };
+		}
+		BinaryTreeIterator<T> right()
+		{
+			return { *m_tree, m_tree->right(m_node) };
+		}
+		BinaryTreeIterator<T> parent()
+		{
+			return { *m_tree, m_tree->parent(m_node) };
+		}
+		bool hasLeft()
+		{
+			return m_tree->hasLeft(m_node);
+		}
+		bool hasRight()
+		{
+			return m_tree->hasRight(m_node);
+		}
+		bool hasParent()
+		{
+			return m_tree->hasParent(m_node);
+		}
+		bool isLeaf()
+		{
+			return m_tree->isLeaf(m_node);
+		}
+		const T& data() const
+		{
+			return m_tree->node(m_node);
+		}
+		T& data()
+		{
+			return m_tree->node(m_node);
+		}
+	};
 
-			}
-			template <class... Args>
-			Node(std::unique_ptr<Node>&& l, std::unique_ptr<Node>&& r, Node* p, Args&&... args) :
-				m_value(std::forward<Args>(args)...),
-				m_left(std::move(l)),
-				m_right(std::move(r)),
-				m_parent(p)
+	template <class T>
+	class BinaryTree
+	{
+	public:
+		using NodeHandle = int;
+		constexpr static NodeHandle invalidHandle = -1;
+	private:
+		struct NodeConnections
+		{
+			NodeConnections(NodeHandle l, NodeHandle r, NodeHandle p) :
+				left(l),
+				right(r),
+				parent(p)
 			{
 
 			}
 
-			Node(Node&& other) = default;
-			Node& operator=(Node&& other) = default;
-
-			T m_value;
-			std::unique_ptr<Node> m_left;
-			std::unique_ptr<Node> m_right;
-			Node* m_parent;
+			NodeHandle left;
+			NodeHandle right;
+			NodeHandle parent;
 		};
 
+		std::vector<T> m_nodes;
+		std::vector<NodeConnections> m_nodesConnections;
 	public:
-		BinaryTree(const T& root) :
-			m_root(new Node(root, nullptr, nullptr, nullptr))
-		{
 
+		BinaryTree(const T& root) :
+			m_nodes{},
+			m_nodesConnections{}
+		{
+			m_nodes.push_back(root);
+			m_nodesConnections.emplace_back(invalidHandle, invalidHandle, invalidHandle);
 		}
 		BinaryTree(T&& root) :
-			m_root(new Node(std::move(root), nullptr, nullptr, nullptr))
+			m_nodes{},
+			m_nodesConnections{}
 		{
-
+			m_nodes.push_back(std::move(root));
+			m_nodesConnections.emplace_back(invalidHandle, invalidHandle, invalidHandle);
+		}
+		BinaryTree(const BinaryTree<T>& other) :
+			m_nodes(other.m_nodes),
+			m_nodesConnections(other.m_nodesConnections)
+		{
+		}
+		BinaryTree(BinaryTree<T>&& other) :
+			m_nodes(std::move(other.m_nodes)),
+			m_nodesConnections(std::move(other.m_nodesConnections))
+		{
 		}
 
-		BinaryTree(const BinaryTree& other) :
-			m_root(deepCopy(other.m_root))
+		BinaryTree<T>& operator=(const BinaryTree<T>& other)
 		{
-		}
-		BinaryTree(BinaryTree&& other) :
-			m_root(std::move(other.m_root))
-		{
-
-		}
-
-		BinaryTree<T>& operator=(const BinaryTree& other)
-		{
-			m_root = deepCopy(other.m_root);
+			m_nodes = other.m_nodes;
+			m_nodesConnections = other.m_nodesConnections;
 
 			return *this;
 		}
-		BinaryTree<T>& operator=(BinaryTree&& other)
+
+		BinaryTree<T>& operator=(BinaryTree<T>&& other)
 		{
-			m_root = std::move(other.m_root);
+			m_nodes = std::move(other.m_nodes);
+			m_nodesConnections = std::move(other.m_nodesConnections);
+
 			return *this;
 		}
-
-		~BinaryTree()
+				
+		NodeHandle rootHandle() const
 		{
-
+			return 0;
 		}
 
+		T& node(NodeHandle h)
+		{
+			return m_nodes[h];
+		}
+		const T& node(NodeHandle h) const
+		{
+			return m_nodes[h];
+		}
 
-		Node& insertLeft(Node& node, const T& newElement)
+		NodeHandle left(NodeHandle h) const
 		{
-			return insert(node, newElement, &Node::m_left);
+			return m_nodesConnections[h].left;
 		}
-		Node& insertLeft(Node& node, T&& newElement)
+		NodeHandle right(NodeHandle h) const
 		{
-			return insert(node, std::move(newElement), &Node::m_left);
+			return m_nodesConnections[h].right;
 		}
-		Node& insertRight(Node& node, const T& newElement)
+		NodeHandle parent(NodeHandle h) const
 		{
-			return insert(node, newElement, &Node::m_right);
+			return m_nodesConnections[h].parent;
 		}
-		Node& insertRight(Node& node, T&& newElement)
+		bool hasParent(NodeHandle h) const
 		{
-			return insert(node, std::move(newElement), &Node::m_right);
+			//only root does not have a parent
+			return h != 0;
+		}
+		bool hasLeft(NodeHandle h) const
+		{
+			return left() != invalidHandle;
+		}
+		bool hasRight(NodeHandle h) const
+		{
+			return right() != invalidHandle;
+		}
+		bool isLeaf(NodeHandle h) const
+		{
+			return !hasRight(h) && !hasLeft(h);
+		}
+		bool isValidHandle(NodeHandle h) const
+		{
+			return h >= 0 && h < m_nodes.size();
+		}
+
+		template <class U>
+		NodeHandle insertLeft(NodeHandle h, U&& newElement)
+		{
+			return insert(h, &NodeConnections::left, std::forward<U>(newElement));
+		}
+		template <class U>
+		NodeHandle insertRight(NodeHandle h, U&& newElement)
+		{
+			return insert(h, &NodeConnections::right, std::forward<U>(newElement));
 		}
 		template <class... Args>
-		Node& emplaceLeft(Node& node, Args&&... args)
+		NodeHandle emplaceLeft(NodeHandle h, Args&&... args)
 		{
-			return emplace(node, &Node::m_left, std::forward<Args>(args)...);
+			return emplace(h, &NodeConnections::left, std::forward<Args>(args)...);
 		}
 		template <class... Args>
-		Node& emplaceRight(Node& node, Args&&... args)
+		NodeHandle emplaceRight(NodeHandle h, Args&&... args)
 		{
-			return emplace(node, &Node::m_right, std::forward<Args>(args)...);
+			return emplace(h, &NodeConnections::right, std::forward<Args>(args)...);
 		}
 
-		Node& root()
+		BinaryTreeIterator<T> iterator(NodeHandle h)
 		{
-			return *m_root;
-		}
-		const Node& root() const
-		{
-			return *m_root;
+			return { *this, h };
 		}
 
 	private:
-		std::unique_ptr<Node> m_root;
 
 		template <class U>
-		Node& insert(Node& node, U&& newElement, std::unique_ptr<Node> Node::*child)
+		NodeHandle insert(NodeHandle h, NodeHandle NodeConnections::*child, U&& newElement)
 		{
-			// new is required because Node has a private constructor
-			std::unique_ptr<Node> newNode(new Node(std::forward<U>(newElement), nullptr, nullptr, &node));
-			(newNode.get())->*child = std::move(node.*child);
-			node.*child = std::move(newNode);
+			m_nodes.push_back(std::forward<U>(newElement));
+			m_nodesConnections.emplace_back(invalidHandle, invalidHandle, h);
+			NodeHandle newH = m_nodes.size() - 1;
 
-			return *(node.*child);
+			NodeConnections& connections = m_nodesConnections.back();
+			NodeConnections& parentConnections = m_nodesConnections[h];
+
+			connections.*child = parentConnections.*child;
+			parentConnections.*child = newH;
+
+			return newH;
 		}
 
 		template <class... Args>
-		Node& emplace(Node& node, std::unique_ptr<Node> Node::*child, Args&&... args)
+		NodeHandle emplace(NodeHandle h, NodeHandle NodeConnections::*child, Args&&... args)
 		{
-			// new is required because Node has a private constructor
-			std::unique_ptr<Node> newNode(new Node(nullptr, nullptr, &node, std::forward<Args>(args)...));
-			(newNode.get())->*child = std::move(node.*child);
-			node.*child = std::move(newNode);
+			m_nodes.emplace_back(std::forward<Args>(args)...);
+			m_nodesConnections.emplace_back(invalidHandle, invalidHandle, h);
+			NodeHandle newH = m_nodes.size() - 1;
 
-			return *(node.*child);
-		}
+			NodeConnections& connections = m_nodesConnections.back();
+			NodeConnections& parentConnections = m_nodesConnections[h];
 
-		std::unique_ptr<Node> deepCopy(const std::unique_ptr<Node>& node)
-		{
-			std::unique_ptr<Node> l = nullptr;
-			if (node->m_left != nullptr) l = deepCopy(node->m_left);
+			connections.*child = parentConnections.*child;
+			parentConnections.*child = newH;
 
-			std::unique_ptr<Node> r = nullptr;
-			if (node->m_right != nullptr) r = deepCopy(node->m_right);
-
-			std::unique_ptr<Node> nodeCopy(new Node(node->m_value, std::move(l), std::move(r), nullptr));
-			if (nodeCopy->m_left != nullptr) nodeCopy->m_left->m_parent = nodeCopy.get();
-			if (nodeCopy->m_right != nullptr) nodeCopy->m_right->m_parent = nodeCopy.get();
-
-			return nodeCopy;
+			return newH;
 		}
 	};
 }

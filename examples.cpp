@@ -763,33 +763,32 @@ int main()
 	std::cout << pb.velocity().x << ' ' << pb.velocity().y << '\n';
 
 	BinaryTree<std::string> b("asd");
-	b.emplaceLeft(b.root(), "asdvz");
-	b.emplaceLeft(b.emplaceRight(b.root(), "123"), "321");
-	std::cout << b.root().value() << '\n';
-	std::cout << b.root().left().value() << '\n';
-	std::cout << b.root().right().value() << '\n';
-	std::cout << b.root().right().left().value() << '\n';
+	b.emplaceLeft(b.rootHandle(), "asdvz");
+	b.emplaceLeft(b.emplaceRight(b.rootHandle(), "123"), "321");
+	std::cout << b.iterator(b.rootHandle()).data() << '\n';
+	std::cout << b.iterator(b.rootHandle()).left().data() << '\n';
+	std::cout << b.iterator(b.rootHandle()).left().data() << '\n';
+	std::cout << b.iterator(b.rootHandle()).right().left().data() << '\n';
 	std::cout << '\n';
 	BinaryTree<std::string> bb(b);
-	std::cout << bb.root().value() << '\n';
-	std::cout << bb.root().left().value() << '\n';
-	std::cout << bb.root().right().value() << '\n';
-	std::cout << bb.root().right().left().value() << '\n';
+	std::cout << bb.node(bb.rootHandle()) << '\n';
+	std::cout << bb.node(bb.left(bb.rootHandle())) << '\n';
+	std::cout << bb.node(bb.right(bb.rootHandle())) << '\n';
+	std::cout << bb.node(bb.left(bb.right(bb.rootHandle()))) << '\n';
 	std::cout << '\n';
 	BinaryTree<std::string> bbb("vvv");
 	bbb = bb;
-	std::cout << bbb.root().value() << '\n';
-	std::cout << bbb.root().left().value() << '\n';
-	std::cout << bbb.root().right().value() << '\n';
-	std::cout << bbb.root().right().left().value() << '\n';
+	std::cout << bbb.node(bbb.rootHandle()) << '\n';
+	std::cout << bbb.node(bbb.left(bbb.rootHandle())) << '\n';
+	std::cout << bbb.node(bbb.right(bbb.rootHandle())) << '\n';
+	std::cout << bbb.node(bbb.left(bbb.right(bbb.rootHandle()))) << '\n';
 	std::cout << '\n';
 	bbb = std::move(b);
-	std::cout << bbb.root().value() << '\n';
-	std::cout << bbb.root().left().value() << '\n';
-	std::cout << bbb.root().right().value() << '\n';
-	std::cout << bbb.root().right().left().value() << '\n';
-	std::cout << bbb.root().right().left().parent().value() << '\n';
-
+	std::cout << bbb.node(bbb.rootHandle()) << '\n';
+	std::cout << bbb.node(bbb.left(bbb.rootHandle())) << '\n';
+	std::cout << bbb.node(bbb.right(bbb.rootHandle())) << '\n';
+	std::cout << bbb.node(bbb.left(bbb.right(bbb.rootHandle()))) << '\n';
+	std::cout << bbb.node(bbb.parent(bbb.left(bbb.right(bbb.rootHandle())))) << '\n';
 	
 
     for(;;)
