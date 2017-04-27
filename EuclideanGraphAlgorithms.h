@@ -10,10 +10,10 @@
 namespace ls
 {
     //TODO: consider using unordered set for storing visited edges, right now it is O(n^2) due to searching for reversed edge
-    template <class T, class StorageTypeReference>
-    GraphPath closedEulerianPath(const Graph<T, NeighbourSetTag, false, StorageTypeReference>& graph)
+    template <class StorageTypeReference>
+    GraphPath closedEulerianPath(const Graph<NeighbourSetTag, false, StorageTypeReference>& graph)
     {
-        using GraphType = Graph<T, NeighbourSetTag, false, StorageTypeReference>;
+        using GraphType = Graph<NeighbourSetTag, false, StorageTypeReference>;
         using NeighbourSetStorageType = typename GraphType::NeighbourSetStorageType;
 
         using std::find;

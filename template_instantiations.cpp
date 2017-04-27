@@ -78,32 +78,29 @@ namespace ls
     template class EuclideanGraphNode<double, 2>;
     template class EuclideanGraphNode<float, 2>;
 
-    template class WeightedGraphEdge<double>;
-    template class WeightedGraphEdge<float>;
+    template class Graph<NeighbourSetTag, true, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<NeighbourSetTag, true, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, NeighbourSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, NeighbourSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<AdjacencyMatrixTag, true, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<AdjacencyMatrixTag, true, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, AdjacencyMatrixTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, AdjacencyMatrixTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<EdgeSetTag, true, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<EdgeSetTag, true, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, EdgeSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, EdgeSetTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<NeighbourEdgeSetWithEdgeListTag, true, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<NeighbourEdgeSetWithEdgeListTag, true, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, NeighbourEdgeSetWithEdgeListTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, NeighbourEdgeSetWithEdgeListTag, true, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<NeighbourSetTag, false, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<NeighbourSetTag, false, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, NeighbourSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, NeighbourSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<AdjacencyMatrixTag, false, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<AdjacencyMatrixTag, false, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, AdjacencyMatrixTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, AdjacencyMatrixTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<EdgeSetTag, false, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<EdgeSetTag, false, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
-    template class Graph<double, EdgeSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, EdgeSetTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
-
-    template class Graph<double, NeighbourEdgeSetWithEdgeListTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
-    template class Graph<float, NeighbourEdgeSetWithEdgeListTag, false, DefaultEuclideanGraphStorageTypeReference<2>>;
+    template class Graph<NeighbourEdgeSetWithEdgeListTag, false, DefaultEuclideanGraphStorageTypeReference<double, 2>>;
+    template class Graph<NeighbourEdgeSetWithEdgeListTag, false, DefaultEuclideanGraphStorageTypeReference<float, 2>>;
 
     template class Polygon2<double>;
     template class Polygon2<float>;

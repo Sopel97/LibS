@@ -13,11 +13,11 @@ namespace ls
     template <class T> class DelaunayTriangulation2;
 
     template <class T, int Dim> class EuclideanGraphNode;
-    template <class T> class WeightedGraphEdge;
+    template <class NodeHandle, class T> class WeightedGraphEdge;
 
-    template <int Dim>
+    template <class T, int Dim>
     class DefaultEuclideanGraphStorageTypeReference;
-    template <class T, class GraphRepresentationTag, bool isDirected, class StorageTypeReference> class Graph;
+    template <class GraphRepresentationTag, bool isDirected, class StorageTypeReference> class Graph;
 
     template <class T, int Dim, class Hasher = OriginalPerlinPermTable> class SimplexNoise;
 

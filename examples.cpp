@@ -463,8 +463,8 @@ void print(const Array2<int>& a)
     }
 }
 
-template <class T, class GraphRepresentationTag, bool IsDirected, class StorageTypeReference>
-void print(const Graph<T, GraphRepresentationTag, IsDirected, StorageTypeReference>& graph, std::ostream& out = std::cout)
+template <class GraphRepresentationTag, bool IsDirected, class StorageTypeReference>
+void print(const Graph<GraphRepresentationTag, IsDirected, StorageTypeReference>& graph, std::ostream& out = std::cout)
 {
     const int numberOfNodes = graph.numberOfNodes();
 
@@ -494,8 +494,8 @@ void print(const Graph<T, GraphRepresentationTag, IsDirected, StorageTypeReferen
     }
 }
 
-template <class T, bool IsDirected, class StorageTypeReference>
-void print(const Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>& graph, std::ostream& out = std::cout)
+template <bool IsDirected, class StorageTypeReference>
+void print(const Graph<EdgeSetTag, IsDirected, StorageTypeReference>& graph, std::ostream& out = std::cout)
 {
     const int numberOfVertices = graph.numberOfNodes();
     out << "Vertices:\n";
@@ -512,8 +512,8 @@ void print(const Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>& graph, 
     }
 }
 
-template <class T, class GraphRepresentationTag, bool IsDirected, class StorageTypeReference>
-void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const Graph<T, GraphRepresentationTag, IsDirected, StorageTypeReference>& graph)
+template <class GraphRepresentationTag, bool IsDirected, class StorageTypeReference>
+void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const Graph<GraphRepresentationTag, IsDirected, StorageTypeReference>& graph)
 {
     constexpr float radius = 4.0f;
     const int numberOfNodes = graph.numberOfNodes();
@@ -553,8 +553,8 @@ void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const 
     window.draw(vertexBuffer);
 }
 
-template <class T, bool IsDirected, class StorageTypeReference>
-void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>& graph)
+template <bool IsDirected, class StorageTypeReference>
+void draw(sf::RenderTarget& window, const sf::RenderStates& renderStates, const Graph<EdgeSetTag, IsDirected, StorageTypeReference>& graph)
 {
     constexpr float radius = 4.0f;
     const int numberOfNodes = graph.numberOfNodes();
@@ -750,7 +750,7 @@ int main()
 
     std::cout << '\n';
     std::cout << detail::HasMethod_weight<EuclideanGraphNode2D>::value << '\n';
-    std::cout << detail::HasMethod_weight<WeightedGraphEdge<float>>::value << '\n';
+    std::cout << detail::HasMethod_weight<WeightedGraphEdge<int, float>>::value << '\n';
 
 	std::cout << "\n\n\n\n\n\n";
 	PointMass2D pa(Vec2D(0, 0), 0.5);

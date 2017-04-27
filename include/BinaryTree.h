@@ -60,6 +60,10 @@ namespace ls
 		{
 			return m_tree->node(m_node);
 		}
+        NodeHandle handle() const
+        {
+            return m_node;
+        }
 	};
 
 	template <class T>
@@ -201,6 +205,28 @@ namespace ls
 		BinaryTreeIterator<T> iterator(NodeHandle h)
 		{
 			return { *this, h };
+		}
+
+		NodeHandle find(const T& el) const
+		{
+			const int size = m_nodes.size();
+			for (int i = 0; i < size; ++i)
+			{
+				if (m_nodes[i] == el) return i;
+			}
+
+			return invalidHandle;
+		}
+		template <class Func>
+		NodeHandle find_if(Func&& comparator)
+		{
+			const int size = m_nodes.size();
+			for (int i = 0; i < size; ++i)
+			{
+				if (std::forward<Func>(comparator)(m_nodes[i])) return i;
+			}
+
+			return invalidHandle;
 		}
 
 	private:

@@ -12,4 +12,5 @@
 #include "Util.h"
 #include "Printers.h"
 #include "Physics.h"
-#include "BinaryTree.h"
+#include "include/BinaryTree.h"
+#include "include/LogicalDisjointSet.h"

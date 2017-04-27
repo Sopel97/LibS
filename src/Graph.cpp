@@ -22,68 +22,72 @@ namespace ls
     }
     namespace
     {
-        GraphEdge::GraphEdge(int _u, int _v) :
+		template <class NodeHandle>
+        GraphEdge<NodeHandle>::GraphEdge(NodeHandle _u, NodeHandle _v) :
             u(_u),
             v(_v)
         {
 
         }
-        GraphEdge::GraphEdge(int _u, const GraphHalfEdge& halfEdge) :
+		template <class NodeHandle>
+        GraphEdge<NodeHandle>::GraphEdge(NodeHandle _u, const GraphHalfEdge<NodeHandle>& halfEdge) :
             u(_u),
             v(halfEdge.v)
         {
 
         }
-        GraphHalfEdge::GraphHalfEdge(int _v) :
+		template <class NodeHandle>
+        GraphHalfEdge<NodeHandle>::GraphHalfEdge(NodeHandle _v) :
             v(_v)
         {
 
         }
     }
-    template <class T>
-    WeightedGraphEdge<T>::WeightedGraphEdge(int _u, int _v, T w) :
+    template <class NodeHandle, class T>
+    WeightedGraphEdge<NodeHandle, T>::WeightedGraphEdge(NodeHandle _u, NodeHandle _v, T w) :
         GraphEdge(_u, _v),
         m_weight(w)
     {
 
     }
-    template <class T>
-    WeightedGraphEdge<T>::WeightedGraphEdge(int _u, const WeightedGraphHalfEdge<T>& halfEdge) :
+    template <class NodeHandle, class T>
+    WeightedGraphEdge<NodeHandle, T>::WeightedGraphEdge(NodeHandle _u, const WeightedGraphHalfEdge<NodeHandle, T>& halfEdge) :
         GraphEdge(_u, halfEdge.v),
         m_weight(halfEdge.weight())
     {
 
     }
-    template <class T>
-    T WeightedGraphEdge<T>::weight() const
+    template <class NodeHandle, class T>
+    T WeightedGraphEdge<NodeHandle, T>::weight() const
     {
         return m_weight;
     }
 
-    template <class T>
-    WeightedGraphHalfEdge<T>::WeightedGraphHalfEdge(int _v, T w) :
+    template <class NodeHandle, class T>
+    WeightedGraphHalfEdge<NodeHandle, T>::WeightedGraphHalfEdge(NodeHandle _v, T w) :
         GraphHalfEdge(_v),
         m_weight(w)
     {
 
     }
-    template <class T>
-    T WeightedGraphHalfEdge<T>::weight() const
+    template <class NodeHandle, class T>
+    T WeightedGraphHalfEdge<NodeHandle, T>::weight() const
     {
         return m_weight;
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    int Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+		-> NodeHandle
     {
         m_nodes.emplace_back(std::forward<Args>(args)...);
         m_edgesToNeighbours.emplace_back(NeighbourEdgeSetStorageType{});
         return m_nodes.size() - 1;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    void Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::emplaceEdge(int u, int v, Args&&... args)
+    void Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::emplaceEdge(NodeHandle u, NodeHandle v, Args&&... args)
     {
         m_edges.emplace_back(u, v, std::forward<Args>(args)...);
         const int newEdgePos = m_edges.size() - 1;
@@ -92,8 +96,8 @@ namespace ls
         if (!isDirected) m_edgesToNeighbours[v].emplace(newEdgePos);
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::removeNode(int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::removeNode(NodeHandle v)
     {
         using std::remove_if;
         using std::begin;
@@ -165,8 +169,8 @@ namespace ls
         }
 
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::removeEdge(int u, int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::removeEdge(NodeHandle u, NodeHandle v)
     {
         using std::find_if;
         using std::remove;
@@ -206,38 +210,38 @@ namespace ls
         }
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodes() const &
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodes() const &
         -> const NodeArrayStorageType&
     {
         return m_nodes;
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodes() &&
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodes() &&
         ->NodeArrayStorageType
     {
         return std::move(m_nodes);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edges() const &
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edges() const &
         -> const EdgeArrayStorageType&
     {
         return m_edges;
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edges() &&
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edges() &&
         ->EdgeArrayStorageType
     {
         return std::move(m_edges);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::node(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::node(NodeHandle v) const
         -> const NodeType&
     {
         return m_nodes[v];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edge(int u, int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edge(NodeHandle u, NodeHandle v) const
         -> const EdgeType&
     {
         using std::find_if;
@@ -248,14 +252,14 @@ namespace ls
         int pos = *(find_if(begin(connections), end(connections), [v, this](int e) {return this->m_edges[e].v == v || (!isDirected && this->m_edges[e].u == v); }));
         return m_edges[pos];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgesToNeighbours(int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgesToNeighbours(NodeHandle v) const
         -> const NeighbourEdgeSetStorageType&
     {
         return m_edgesToNeighbours[v];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    bool Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::existsEdge(int u, int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    bool Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::existsEdge(NodeHandle u, NodeHandle v) const
     {
         using std::find;
         using std::begin;
@@ -265,14 +269,14 @@ namespace ls
         auto pos = find_if(begin(connections), end(connections), [v, this](int e) {return this->m_edges[e].v == v || (!isDirected && this->m_edges[e].u == v); });
         return pos != end(connections);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::numberOfNodes() const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::numberOfNodes() const
     {
         return m_nodes.size();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodeDegree(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodeDegree(NodeHandle v) const
     {
         using std::count;
 
@@ -285,9 +289,9 @@ namespace ls
             return m_edgesToNeighbours[v].size();
         }
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodeIndegree(int v) const
+    int Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodeIndegree(NodeHandle v) const
     {
         using std::count_if;
 
@@ -298,22 +302,22 @@ namespace ls
         }
         return indegree;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodeOutdegree(int v) const
+    int Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::nodeOutdegree(NodeHandle v) const
     {
         return m_edgesToNeighbours[v].size();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool isEuclidean_, class Ret>
-    Ret Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgeVector(int u, int v) const
+    Ret Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgeVector(NodeHandle u, NodeHandle v) const
     {
         return m_nodes[v].position() - m_nodes[u].position();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgeWeight(int u, int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgeWeight(NodeHandle u, NodeHandle v) const
         -> ValueType
     {
         auto distance = detail::distance(m_nodes[u], m_nodes[v]);
@@ -325,32 +329,33 @@ namespace ls
         return distance * detail::weight(edge(u, v));
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgeWeight(const EdgeType& edge) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourEdgeSetWithEdgeListTag, IsDirected, StorageTypeReference>::edgeWeight(const EdgeType& edge) const
         -> ValueType
     {
         return detail::distance(m_nodes[edge.u], m_nodes[edge.v]) * detail::weight(edge);
     }
 
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    int Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+		-> NodeHandle
     {
         m_nodes.emplace_back(std::forward<Args>(args)...);
         m_neighbours.emplace_back(NeighbourSetStorageType{});
         return m_nodes.size() - 1;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    void Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::emplaceEdge(int u, int v, Args&&... args)
+    void Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::emplaceEdge(NodeHandle u, NodeHandle v, Args&&... args)
     {
         m_neighbours[u].emplace(v, std::forward<Args>(args)...);
         if (!isDirected) m_neighbours[v].emplace(u, std::forward<Args>(args)...);
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::removeNode(int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::removeNode(NodeHandle v)
     {
         using std::remove;
         using std::begin;
@@ -384,8 +389,8 @@ namespace ls
             }
         }
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::removeEdge(int u, int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::removeEdge(NodeHandle u, NodeHandle v)
     {
         using std::remove;
         using std::begin;
@@ -400,26 +405,26 @@ namespace ls
         }
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::nodes() const &
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::nodes() const &
         -> const NodeArrayStorageType&
     {
         return m_nodes;
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::nodes() &&
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::nodes() &&
         ->NodeArrayStorageType
     {
         return std::move(m_nodes);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::node(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::node(NodeHandle v) const
         -> const NodeType&
     {
         return m_nodes[v];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::edge(int u, int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::edge(NodeHandle u, NodeHandle v) const
         -> EdgeType
     {
         using std::find;
@@ -430,14 +435,14 @@ namespace ls
         const auto& halfEdge = *(connections.find(v));
         return EdgeType(u, halfEdge);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::neighbours(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::neighbours(NodeHandle v) const
         -> const NeighbourSetStorageType&
     {
         return m_neighbours[v];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    bool Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::existsEdge(int u, int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    bool Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::existsEdge(NodeHandle u, NodeHandle v) const
     {
         using std::find;
         using std::begin;
@@ -446,14 +451,14 @@ namespace ls
         const auto& connections = m_neighbours[u];
         return connections.find(v) != end(connections);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::numberOfNodes() const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::numberOfNodes() const
     {
         return m_nodes.size();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::nodeDegree(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::nodeDegree(NodeHandle v) const
     {
         using std::count;
 
@@ -467,9 +472,9 @@ namespace ls
             return m_neighbours[v].size();
         }
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::nodeIndegree(int v) const
+    int Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::nodeIndegree(NodeHandle v) const
     {
         using std::count;
 
@@ -480,22 +485,22 @@ namespace ls
         }
         return indegree;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::nodeOutdegree(int v) const
+    int Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::nodeOutdegree(NodeHandle v) const
     {
         return m_neighbours[v].size();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool isEuclidean_, class Ret>
-    Ret Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::edgeVector(int u, int v) const
+    Ret Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::edgeVector(NodeHandle u, NodeHandle v) const
     {
         return m_nodes[v].position() - m_nodes[u].position();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::edgeWeight(int u, int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::edgeWeight(NodeHandle u, NodeHandle v) const
         -> ValueType
     {
         auto distance = detail::distance(m_nodes[u], m_nodes[v]);
@@ -507,8 +512,8 @@ namespace ls
         return distance * detail::weight(edge(u, v));
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, NeighbourSetTag, IsDirected, StorageTypeReference>::edgeWeight(const EdgeType& edge) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<NeighbourSetTag, IsDirected, StorageTypeReference>::edgeWeight(const EdgeType& edge) const
         -> ValueType
     {
         return detail::distance(m_nodes[edge.u], m_nodes[edge.v]) * detail::weight(edge);
@@ -516,9 +521,10 @@ namespace ls
 
 
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    int Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+    auto Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+		-> NodeHandle
     {
         m_nodes.emplace_back(std::forward<Args>(args)...);
         if (m_nodes.size() > m_adjacencyMatrix.width())
@@ -530,15 +536,15 @@ namespace ls
 
         return m_nodes.size() - 1;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::emplaceEdge(int u, int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::emplaceEdge(NodeHandle u, NodeHandle v)
     {
         m_adjacencyMatrix(u, v) = true;
         if (!isDirected) m_adjacencyMatrix(v, u) = true;
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::removeNode(int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::removeNode(NodeHandle v)
     {
         const int newNumberOfNodes = m_nodes.size() - 1;
         const int lastElement = newNumberOfNodes;
@@ -562,33 +568,33 @@ namespace ls
         m_adjacencyMatrix(v, v) = m_adjacencyMatrix(lastElement, lastElement);
         m_adjacencyMatrix(lastElement, lastElement) = false;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::removeEdge(int u, int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::removeEdge(NodeHandle u, NodeHandle v)
     {
         m_adjacencyMatrix(u, v) = false;
         if (!isDirected) m_adjacencyMatrix(v, u) = false;
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodes() const &
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodes() const &
         -> const NodeArrayStorageType&
     {
         return m_nodes;
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodes() &&
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodes() &&
         ->NodeArrayStorageType
     {
         return std::move(m_nodes);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::node(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::node(NodeHandle v) const
         -> const NodeType&
     {
         return m_nodes[v];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::neighbours(int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::neighbours(NodeHandle v) const
         -> NeighbourSetStorageType
     {
         NeighbourSetStorageType result;
@@ -601,19 +607,19 @@ namespace ls
 
         return result;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    bool Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::existsEdge(int u, int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    bool Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::existsEdge(NodeHandle u, NodeHandle v) const
     {
         return m_adjacencyMatrix(u, v) || (!isDirected && m_adjacencyMatrix(v, u));
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::numberOfNodes() const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::numberOfNodes() const
     {
         return m_nodes.size();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodeDegree(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodeDegree(NodeHandle v) const
     {
         if (isDirected)
         {
@@ -633,9 +639,9 @@ namespace ls
             return degree;
         }
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodeIndegree(int v) const
+    int Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodeIndegree(NodeHandle v) const
     {
         const int numberOfNodes = m_nodes.size();
 
@@ -646,9 +652,9 @@ namespace ls
         }
         return degree;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodeOutdegree(int v) const
+    int Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::nodeOutdegree(NodeHandle v) const
     {
         const int numberOfNodes = m_nodes.size();
 
@@ -660,14 +666,14 @@ namespace ls
         return degree;
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool isEuclidean_, class Ret>
-    Ret Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::edgeVector(int u, int v) const
+    Ret Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::edgeVector(NodeHandle u, NodeHandle v) const
     {
         return m_nodes[v].position() - m_nodes[u].position();
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, AdjacencyMatrixTag, IsDirected, StorageTypeReference>::resizeAdjacencyMatrix(int newSize)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<AdjacencyMatrixTag, IsDirected, StorageTypeReference>::resizeAdjacencyMatrix(int newSize)
     {
         const int oldSize = m_adjacencyMatrix.width();
 
@@ -684,22 +690,23 @@ namespace ls
 
 
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    int Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::emplaceNode(Args&&... args)
+		-> NodeHandle
     {
         m_nodes.emplace_back(std::forward<Args>(args)...);
         return m_nodes.size() - 1;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <class... Args>
-    void Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::emplaceEdge(int u, int v, Args&&... args)
+    void Graph<EdgeSetTag, IsDirected, StorageTypeReference>::emplaceEdge(NodeHandle u, NodeHandle v, Args&&... args)
     {
         m_edges.emplace(u, v, std::forward<Args>(args)...);
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::removeNode(int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<EdgeSetTag, IsDirected, StorageTypeReference>::removeNode(NodeHandle v)
     {
         using std::begin;
         using std::end;
@@ -724,20 +731,20 @@ namespace ls
         }
         m_nodes.pop_back();
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    void Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::removeEdge(int u, int v)
+    template <bool IsDirected, class StorageTypeReference>
+    void Graph<EdgeSetTag, IsDirected, StorageTypeReference>::removeEdge(NodeHandle u, NodeHandle v)
     {
         using std::begin;
         using std::end;
 
-        auto uvIter = m_edges.find(GraphEdge(u, v));
+        auto uvIter = m_edges.find(GraphEdge<NodeHandle>(u, v));
         if (uvIter != end(m_edges))
         {
             m_edges.erase(uvIter);
         }
         else if (!isDirected) //only one instance of each edge is in the set, so if it was deleter already then vu won't be in the set
         {
-            auto vuIter = m_edges.find(GraphEdge(v, u));
+            auto vuIter = m_edges.find(GraphEdge<NodeHandle>(v, u));
             if (vuIter != end(m_edges))
             {
                 m_edges.erase(vuIter);
@@ -745,40 +752,40 @@ namespace ls
         }
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::nodes() const &
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::nodes() const &
         -> const NodeArrayStorageType&
     {
         return m_nodes;
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::nodes() &&
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::nodes() &&
         ->NodeArrayStorageType
     {
         return std::move(m_nodes);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::node(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::node(NodeHandle v) const
         -> const NodeType&
     {
         return m_nodes[v];
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::edge(int u, int v) const
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::edge(NodeHandle u, NodeHandle v) const
         -> const EdgeType&
     {
         using std::find;
         using std::begin;
         using std::end;
 
-        auto uvIter = m_edges.find(GraphEdge(u, v));
+        auto uvIter = m_edges.find(GraphEdge<NodeHandle>(u, v));
         if (uvIter != end(m_edges))
         {
             return *uvIter;
         }
         else if (!isDirected) //only one instance of each edge is in the set, so if it was deleted already then vu won't be in the set
         {
-            auto vuIter = m_edges.find(GraphEdge(v, u));
+            auto vuIter = m_edges.find(GraphEdge<NodeHandle>(v, u));
             if (vuIter != end(m_edges))
             {
                 return *vuIter;
@@ -788,33 +795,33 @@ namespace ls
         //TODO: do proper exceptions or something
         throw std::runtime_error("TODO");
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::edges() const &
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::edges() const &
         -> const EdgeSetStorageType&
     {
         return m_edges;
     }
-        template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::edges() &&
+        template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::edges() &&
         ->EdgeSetStorageType
     {
         return std::move(m_edges);
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    bool Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::existsEdge(int u, int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    bool Graph<EdgeSetTag, IsDirected, StorageTypeReference>::existsEdge(NodeHandle u, NodeHandle v) const
     {
         using std::find_if;
         using std::begin;
         using std::end;
 
-        auto uvIter = m_edges.find(GraphEdge(u, v));
+        auto uvIter = m_edges.find(GraphEdge<NodeHandle>(u, v));
         if (uvIter != end(m_edges))
         {
             return true;
         }
         else if (!isDirected) //only one instance of each edge is in the set, so if it was deleted already then vu won't be in the set
         {
-            auto vuIter = m_edges.find(GraphEdge(v, u));
+            auto vuIter = m_edges.find(GraphEdge<NodeHandle>(v, u));
             if (vuIter != end(m_edges))
             {
                 return true;
@@ -823,14 +830,14 @@ namespace ls
 
         return false;
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::numberOfNodes() const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<EdgeSetTag, IsDirected, StorageTypeReference>::numberOfNodes() const
     {
         return m_nodes.size();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    int Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::nodeDegree(int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    int Graph<EdgeSetTag, IsDirected, StorageTypeReference>::nodeDegree(NodeHandle v) const
     {
         using std::count_if;
 
@@ -842,9 +849,9 @@ namespace ls
         }
         );
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::nodeIndegree(int v) const
+    int Graph<EdgeSetTag, IsDirected, StorageTypeReference>::nodeIndegree(NodeHandle v) const
     {
         return count_if(
             begin(m_edges),
@@ -854,9 +861,9 @@ namespace ls
         }
         );
     }
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool D, class SFINAE>
-    int Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::nodeOutdegree(int v) const
+    int Graph<EdgeSetTag, IsDirected, StorageTypeReference>::nodeOutdegree(NodeHandle v) const
     {
         return count_if(
             begin(m_edges),
@@ -867,15 +874,15 @@ namespace ls
         );
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
+    template <bool IsDirected, class StorageTypeReference>
     template <bool isEuclidean_, class Ret>
-    Ret Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::edgeVector(int u, int v) const
+    Ret Graph<EdgeSetTag, IsDirected, StorageTypeReference>::edgeVector(NodeHandle u, NodeHandle v) const
     {
         return m_nodes[v].position() - m_nodes[u].position();
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::edgeWeight(int u, int v) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::edgeWeight(NodeHandle u, NodeHandle v) const
         -> ValueType
     {
         auto distance = detail::distance(m_nodes[u], m_nodes[v]);
@@ -887,8 +894,8 @@ namespace ls
         return distance * detail::weight(edge(u, v));
     }
 
-    template <class T, bool IsDirected, class StorageTypeReference>
-    auto Graph<T, EdgeSetTag, IsDirected, StorageTypeReference>::edgeWeight(const EdgeType& edge) const
+    template <bool IsDirected, class StorageTypeReference>
+    auto Graph<EdgeSetTag, IsDirected, StorageTypeReference>::edgeWeight(const EdgeType& edge) const
         -> ValueType
     {
         return detail::distance(m_nodes[edge.u], m_nodes[edge.v]) * detail::weight(edge);
