@@ -1,4 +1,3 @@
 #pragma once
 
-#include "include/ElementaryCellularAutomaton.h"
-#include "include/CellularAutomaton.h"
+#include "CellularAutomata/CellularAutomaton2.h"

@@ -1,5 +1,6 @@
 #pragma once
 
-#include "include/SimplexNoise.h"
-#include "include/PerlinNoise.h"
-#include "include/CellNoise.h"
+#include "Noise/NoiseUtil.h"
+#include "Noise/NoiseSampler.h"
+#include "Noise/PerlinNoise.h"
+#include "Noise/SimplexNoise.h"
