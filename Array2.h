@@ -10,28 +10,27 @@
 #include <iterator>
 #include <cstddef>
 
+#include "Common.h"
+
 namespace ls
 {
     namespace detail
     {
         struct Index2
         {
-            size_t x, y;
+            using SizeType = ::ls::detail::SizeType;
+
+            SizeType x, y;
         };
-    }
 
-    namespace detail
-    {
-        constexpr size_t array2DynamicDimension = std::numeric_limits<size_t>::max();
-        struct Array2DynamicStorageTag;
-        struct Array2AutomaticStorageTag;
-
-        template <typename T, size_t Width = array2DynamicDimension, size_t Height = array2DynamicDimension>
+        template <typename T, SizeType WidthV = dynamicExtent, SizeType HeightV = dynamicExtent>
         struct Array2Enumerate
         {
-            static_assert(Width > 0 && Height > 0);
+            static_assert(WidthV > 0 && HeightV > 0);
 
         public:
+            using SizeType = ::ls::detail::SizeType;
+
             Array2Enumerate(T* data) :
                 m_data(data)
             {
@@ -42,7 +41,7 @@ namespace ls
             {
             public:
                 using self_type = iterator;
-                using value_type = std::tuple<size_t, size_t, T&>;
+                using value_type = std::tuple<SizeType, SizeType, T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
@@ -66,7 +65,7 @@ namespace ls
                 {
                     ++m_ptr;
                     ++m_y;
-                    if (m_y >= Height)
+                    if (m_y >= HeightV)
                     {
                         ++m_x;
                         m_y = 0;
@@ -79,15 +78,15 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 T * m_ptr;
-                size_t m_x;
-                size_t m_y;
+                SizeType m_x;
+                SizeType m_y;
             };
 
             struct const_iterator
             {
             public:
                 using self_type = const_iterator;
-                using value_type = std::tuple<size_t, size_t, const T&>;
+                using value_type = std::tuple<SizeType, SizeType, const T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
@@ -111,7 +110,7 @@ namespace ls
                 {
                     ++m_ptr;
                     ++m_y;
-                    if (m_y >= Height)
+                    if (m_y >= HeightV)
                     {
                         ++m_x;
                         m_y = 0;
@@ -124,8 +123,8 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 const T* m_ptr;
-                size_t m_x;
-                size_t m_y;
+                SizeType m_x;
+                SizeType m_y;
             };
 
             iterator begin()
@@ -135,7 +134,7 @@ namespace ls
 
             iterator end()
             {
-                return iterator(m_data + Width*Height);
+                return iterator(m_data + WidthV*HeightV);
             }
 
             const_iterator begin() const
@@ -145,7 +144,7 @@ namespace ls
 
             const_iterator end() const
             {
-                return const_iterator(m_data + Width * Height);
+                return const_iterator(m_data + WidthV * HeightV);
             }
 
             const_iterator cbegin() const
@@ -155,17 +154,19 @@ namespace ls
 
             const_iterator cend() const
             {
-                return const_iterator(m_data + Width * Height);
+                return const_iterator(m_data + WidthV * HeightV);
             }
         private:
             T* m_data;
         };
 
         template <typename T>
-        struct Array2Enumerate<T, array2DynamicDimension, array2DynamicDimension>
+        struct Array2Enumerate<T, dynamicExtent, dynamicExtent>
         {
         public:
-            Array2Enumerate(T* data, size_t width, size_t height) :
+            using SizeType = ::ls::detail::SizeType;
+
+            Array2Enumerate(T* data, SizeType width, SizeType height) :
                 m_data(data),
                 m_width(width),
                 m_height(height)
@@ -177,13 +178,13 @@ namespace ls
             {
             public:
                 using self_type = iterator;
-                using value_type = std::tuple<size_t, size_t, T&>;
+                using value_type = std::tuple<SizeType, SizeType, T&>;
                 using reference = value_type&;
                 using pointer = value_type*;
                 using iterator_category = std::input_iterator_tag;
                 using difference_type = std::ptrdiff_t;
 
-                iterator(T* data, size_t height) : 
+                iterator(T* data, SizeType height) :
                     m_ptr(data), 
                     m_x(0), 
                     m_y(0), 
@@ -215,22 +216,22 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 T* m_ptr;
-                size_t m_x;
-                size_t m_y;
-                size_t m_height;
+                SizeType m_x;
+                SizeType m_y;
+                SizeType m_height;
             };
 
             struct const_iterator
             {
             public:
                 using self_type = const_iterator;
-                using value_type = std::tuple<size_t, size_t, const T&>;
+                using value_type = std::tuple<SizeType, SizeType, const T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
                 using difference_type = std::ptrdiff_t;
 
-                const_iterator(const T* data, size_t height) :
+                const_iterator(const T* data, SizeType height) :
                     m_ptr(data),
                     m_x(0),
                     m_y(0),
@@ -262,9 +263,9 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 const T* m_ptr;
-                size_t m_x;
-                size_t m_y;
-                size_t m_height;
+                SizeType m_x;
+                SizeType m_y;
+                SizeType m_height;
             };
 
             iterator begin()
@@ -299,18 +300,20 @@ namespace ls
 
         private:
             T * m_data;
-            size_t m_width;
-            size_t m_height;
+            SizeType m_width;
+            SizeType m_height;
         };
     }
 
-    template <typename, size_t = detail::array2DynamicDimension, size_t = detail::array2DynamicDimension, typename = detail::Array2DynamicStorageTag>
+    template <typename, detail::SizeType = detail::dynamicExtent, detail::SizeType = detail::dynamicExtent, detail::ArrayStorageType = detail::ArrayStorageType::Dynamic>
     struct Array2;
 
     template <typename T>
-    struct Array2<T, detail::array2DynamicDimension, detail::array2DynamicDimension, detail::Array2DynamicStorageTag>
+    struct Array2<T, detail::dynamicExtent, detail::dynamicExtent, detail::ArrayStorageType::Dynamic>
     {
         using ValueType = T;
+        using SizeType = detail::SizeType;
+
         using iterator = T * ;
         using const_iterator = const T*;
 
@@ -322,20 +325,20 @@ namespace ls
 
         }
 
-        Array2(size_t width, size_t height) :
+        Array2(SizeType width, SizeType height) :
             m_width(width),
             m_height(height)
         {
             m_data = std::make_unique<T[]>(size());
         }
 
-        Array2(size_t width, size_t height, const T& initValue) :
+        Array2(SizeType width, SizeType height, const T& initValue) :
             m_width(width),
             m_height(height)
         {
-            const size_t totalSize = size();
+            const SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = initValue;
             }
@@ -345,9 +348,9 @@ namespace ls
             m_width(other.m_width),
             m_height(other.m_height)
         {
-            const size_t totalSize = size();
+            const SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = other.m_data[i];
             }
@@ -377,19 +380,19 @@ namespace ls
             return operator=(Array2(other));
         }
 
-        const T& operator() (size_t x, size_t y) const
+        const T& operator() (SizeType x, SizeType y) const
         {
             return m_data[index(x, y)];
         }
-        T& operator() (size_t x, size_t y)
+        T& operator() (SizeType x, SizeType y)
         {
             return m_data[index(x, y)];
         }
-        const T& at(size_t x, size_t y) const
+        const T& at(SizeType x, SizeType y) const
         {
             return m_data[index(x, y)];
         }
-        T& at(size_t x, size_t y)
+        T& at(SizeType x, SizeType y)
         {
             return m_data[index(x, y)];
         }
@@ -447,17 +450,17 @@ namespace ls
             return { m_data.get(), m_width, m_height };
         }
 
-        size_t width() const
+        SizeType width() const
         {
             return m_width;
         }
 
-        size_t height() const
+        SizeType height() const
         {
             return m_height;
         }
 
-        size_t size() const
+        SizeType size() const
         {
             return m_width * m_height;
         }
@@ -475,10 +478,10 @@ namespace ls
         }
 
         template <typename Comp = std::equal_to<T>>
-        void floodFill(int x, int y, const T& value, Comp comp = Comp{})
+        void floodFill(SizeType x, SizeType y, const T& value, Comp comp = Comp{})
         {
-            int width = m_width;
-            int height = m_height;
+            SizeType width = m_width;
+            SizeType height = m_height;
 
             std::stack<detail::Index2> coordsStack;
             coordsStack.push(detail::Index2{ x, y });
@@ -502,22 +505,24 @@ namespace ls
 
     protected:
         std::unique_ptr<T[]> m_data;
-        size_t m_width;
-        size_t m_height;
+        SizeType m_width;
+        SizeType m_height;
 
-        size_t index(size_t x, size_t y) const
+        SizeType index(SizeType x, SizeType y) const
         {
             return x * m_height + y;
         }
     };
 
 
-    template <typename T, size_t Width, size_t Height>
-    struct Array2<T, Width, Height, detail::Array2DynamicStorageTag>
+    template <typename T, detail::SizeType WidthV, detail::SizeType HeightV>
+    struct Array2<T, WidthV, HeightV, detail::ArrayStorageType::Dynamic>
     {
-        static_assert(Width > 0 && Height > 0);
+        static_assert(WidthV > 0 && HeightV > 0);
 
         using ValueType = T;
+        using SizeType = detail::SizeType;
+
         using iterator = T * ;
         using const_iterator = const T*;
 
@@ -528,9 +533,9 @@ namespace ls
 
         Array2(const T& initValue)
         {
-            const size_t totalSize = size();
+            const SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = initValue;
             }
@@ -538,9 +543,9 @@ namespace ls
 
         Array2(const Array2& other)
         {
-            const size_t totalSize = size();
+            const SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = other.m_data[i];
             }
@@ -566,19 +571,19 @@ namespace ls
             return operator=(Array2(other));
         }
 
-        const T& operator() (size_t x, size_t y) const
+        const T& operator() (SizeType x, SizeType y) const
         {
             return m_data[index(x, y)];
         }
-        T& operator() (size_t x, size_t y)
+        T& operator() (SizeType x, SizeType y)
         {
             return m_data[index(x, y)];
         }
-        const T& at(size_t x, size_t y) const
+        const T& at(SizeType x, SizeType y) const
         {
             return m_data[index(x, y)];
         }
-        T& at(size_t x, size_t y)
+        T& at(SizeType x, SizeType y)
         {
             return m_data[index(x, y)];
         }
@@ -621,34 +626,34 @@ namespace ls
             return m_data.get() + size();
         }
 
-        detail::Array2Enumerate<T, Width, Height> enumerate()
+        detail::Array2Enumerate<T, WidthV, HeightV> enumerate()
         {
             return { m_data.get() };
         }
 
-        detail::Array2Enumerate<const T, Width, Height> cenumerate() const
+        detail::Array2Enumerate<const T, WidthV, HeightV> cenumerate() const
         {
             return { m_data.get() };
         }
 
-        detail::Array2Enumerate<const T, Width, Height> enumerate() const
+        detail::Array2Enumerate<const T, WidthV, HeightV> enumerate() const
         {
             return { m_data.get() };
         }
 
-        size_t width() const
+        SizeType width() const
         {
-            return Width;
+            return WidthV;
         }
 
-        size_t height() const
+        SizeType height() const
         {
-            return Height;
+            return HeightV;
         }
 
-        static constexpr size_t size()
+        static constexpr SizeType size()
         {
-            return Width * Height;
+            return WidthV * HeightV;
         }
 
         void fill(const T& value)
@@ -664,7 +669,7 @@ namespace ls
         }
 
         template <typename Comp = std::equal_to<T>>
-        void floodFill(int x, int y, const T& value, Comp comp = Comp{})
+        void floodFill(SizeType x, SizeType y, const T& value, Comp comp = Comp{})
         {
             std::stack<detail::Index2> coordsStack;
             coordsStack.push(detail::Index2{ x, y });
@@ -681,27 +686,28 @@ namespace ls
                 thisCell = value;
                 if (ind.x > 0 && comp(at(ind.x - 1, ind.y), initialCell)) coordsStack.push(detail::Index2{ ind.x - 1, ind.y });
                 if (ind.y > 0 && comp(at(ind.x, ind.y - 1), initialCell)) coordsStack.push(detail::Index2{ ind.x, ind.y - 1 });
-                if (ind.x < Width - 1 && comp(at(ind.x + 1, ind.y), initialCell)) coordsStack.push(detail::Index2{ ind.x + 1, ind.y });
-                if (ind.y < Height - 1 && comp(at(ind.x, ind.y + 1), initialCell)) coordsStack.push(detail::Index2{ ind.x, ind.y + 1 });
+                if (ind.x < WidthV - 1 && comp(at(ind.x + 1, ind.y), initialCell)) coordsStack.push(detail::Index2{ ind.x + 1, ind.y });
+                if (ind.y < HeightV - 1 && comp(at(ind.x, ind.y + 1), initialCell)) coordsStack.push(detail::Index2{ ind.x, ind.y + 1 });
             }
         }
 
     protected:
         std::unique_ptr<T[]> m_data;
 
-        size_t index(size_t x, size_t y) const
+        SizeType index(SizeType x, SizeType y) const
         {
-            return x * Height + y;
+            return x * HeightV + y;
         }
     };
 
 
-    template <typename T, size_t Width, size_t Height>
-    struct Array2<T, Width, Height, detail::Array2AutomaticStorageTag>
+    template <typename T, detail::SizeType WidthV, detail::SizeType HeightV>
+    struct Array2<T, WidthV, HeightV, detail::ArrayStorageType::Automatic>
     {
-        static_assert(Width > 0 && Height > 0);
+        static_assert(WidthV > 0 && HeightV > 0);
 
         using ValueType = T;
+        using SizeType = detail::SizeType;
         using iterator = T * ;
         using const_iterator = const T*;
 
@@ -713,8 +719,8 @@ namespace ls
         constexpr Array2(const T& initValue) :
             Array2()
         {
-            const size_t totalSize = size();
-            for (size_t i = 0; i < totalSize; ++i)
+            const SizeType totalSize = size();
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = initValue;
             }
@@ -725,19 +731,19 @@ namespace ls
         constexpr Array2& operator= (Array2&& other) noexcept = default;
         constexpr Array2& operator= (const Array2& other) = default;
 
-        constexpr const T& operator() (size_t x, size_t y) const
+        constexpr const T& operator() (SizeType x, SizeType y) const
         {
             return m_data[x][y];
         }
-        constexpr T& operator() (size_t x, size_t y)
+        constexpr T& operator() (SizeType x, SizeType y)
         {
             return m_data[x][y];
         }
-        constexpr const T& at(size_t x, size_t y) const
+        constexpr const T& at(SizeType x, SizeType y) const
         {
             return m_data[x][y];
         }
-        constexpr T& at(size_t x, size_t y)
+        constexpr T& at(SizeType x, SizeType y)
         {
             return m_data[x][y];
         }
@@ -780,34 +786,34 @@ namespace ls
             return data() + size();
         }
 
-        detail::Array2Enumerate<T, Width, Height> enumerate()
+        detail::Array2Enumerate<T, WidthV, HeightV> enumerate()
         {
             return { data() };
         }
 
-        detail::Array2Enumerate<const T, Width, Height> cenumerate() const
+        detail::Array2Enumerate<const T, WidthV, HeightV> cenumerate() const
         {
             return { data() };
         }
 
-        detail::Array2Enumerate<const T, Width, Height> enumerate() const
+        detail::Array2Enumerate<const T, WidthV, HeightV> enumerate() const
         {
             return { data() };
         }
 
-        constexpr size_t width() const
+        constexpr SizeType width() const
         {
-            return Width;
+            return WidthV;
         }
 
-        constexpr size_t height() const
+        constexpr SizeType height() const
         {
-            return Height;
+            return HeightV;
         }
 
-        static constexpr size_t size()
+        static constexpr SizeType size()
         {
-            return Width * Height;
+            return WidthV * HeightV;
         }
 
         constexpr void fill(const T& value)
@@ -823,7 +829,7 @@ namespace ls
         }
 
         template <typename Comp = std::equal_to<T>>
-        void floodFill(int x, int y, const T& value, Comp comp = Comp{})
+        void floodFill(SizeType x, SizeType y, const T& value, Comp comp = Comp{})
         {
             std::stack<detail::Index2> coordsStack;
             coordsStack.push(detail::Index2{ x, y });
@@ -840,13 +846,13 @@ namespace ls
                 thisCell = value;
                 if (ind.x > 0 && comp(at(ind.x - 1, ind.y), initialCell)) coordsStack.push(detail::Index2{ ind.x - 1, ind.y });
                 if (ind.y > 0 && comp(at(ind.x, ind.y - 1), initialCell)) coordsStack.push(detail::Index2{ ind.x, ind.y - 1 });
-                if (ind.x < Width - 1 && comp(at(ind.x + 1, ind.y), initialCell)) coordsStack.push(detail::Index2{ ind.x + 1, ind.y });
-                if (ind.y < Height - 1 && comp(at(ind.x, ind.y + 1), initialCell)) coordsStack.push(detail::Index2{ ind.x, ind.y + 1 });
+                if (ind.x < WidthV - 1 && comp(at(ind.x + 1, ind.y), initialCell)) coordsStack.push(detail::Index2{ ind.x + 1, ind.y });
+                if (ind.y < HeightV - 1 && comp(at(ind.x, ind.y + 1), initialCell)) coordsStack.push(detail::Index2{ ind.x, ind.y + 1 });
             }
         }
 
     protected:
-        T m_data[Width][Height];
+        T m_data[WidthV][HeightV];
 
         constexpr T* data()
         {
@@ -854,14 +860,14 @@ namespace ls
         }
     };
 
-    template <typename T, size_t W, size_t H, typename V>
-    void swap(Array2<T, W, H, V>& lhs, Array2<T, W, H, V>& rhs) noexcept
+    template <typename T, detail::SizeType W, detail::SizeType H, detail::ArrayStorageType S>
+    void swap(Array2<T, W, H, S>& lhs, Array2<T, W, H, S>& rhs) noexcept
     {
         lhs.swap(rhs);
     }
 
-    template <typename T, size_t Width, size_t Height>
-    using AutoArray2 = Array2<T, Width, Height, detail::Array2AutomaticStorageTag>;
+    template <typename T, detail::SizeType WidthV, detail::SizeType HeightV>
+    using AutoArray2 = Array2<T, WidthV, HeightV, detail::ArrayStorageType::Automatic>;
 
     /*
         template <class T>

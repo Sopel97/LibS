@@ -2,6 +2,7 @@
 
 #include "../Array2.h"
 #include "../Shapes/Box2.h"
+#include "../Common.h"
 
 #include <cstddef>
 
@@ -19,7 +20,7 @@ namespace ls
     public:
         using RuleType = RuleT;
         using StateType = typename RuleT::StateType;
-        using SizeType = std::ptrdiff_t;
+        using SizeType = detail::SizeType;
         static constexpr CellularAutomatonTopology topology = TopologyV;
 
         CellularAutomaton2(SizeType width, SizeType height) :
@@ -218,7 +219,7 @@ namespace ls
     {
     public:
         using StateType = StateT;
-        using SizeType = std::ptrdiff_t;
+        using SizeType = detail::SizeType;
 
         QuantityRule3x3(StateType countedState, const std::array<StateType, 10u>& outputs) :
             m_countedState(countedState),
@@ -248,7 +249,7 @@ namespace ls
     struct ConwaysGameOfLifeRule
     {
     public:
-        using SizeType = std::ptrdiff_t;
+        using SizeType = detail::SizeType;
 
         enum struct StateType
         {
@@ -281,7 +282,7 @@ namespace ls
     struct WireworldRule
     {
     public:
-        using SizeType = std::ptrdiff_t;
+        using SizeType = detail::SizeType;
 
         enum struct StateType
         {

@@ -529,5 +529,15 @@ int main()
             std::cout << std::dec << i++ << '\t' << sample << '\n';
         }
     }
+
+    {
+        const auto f = [](float f) {std::cout << "float!\n"; };
+        const auto c = f;
+        ls::overload(
+            [](double a) {std::cout << a << '\n'; },
+            [](int b) {std::cout << b << '\n'; },
+            std::move(c)
+        )(123.3f);
+    }
 }
 

@@ -8,20 +8,20 @@
 #include <tuple>
 #include <functional>
 
+#include "Common.h"
+
 namespace ls
 {
     namespace detail
     {
-        constexpr size_t array3DynamicDimension = std::numeric_limits<size_t>::max();
-        struct Array3DynamicStorageTag;
-        struct Array3AutomaticStorageTag;
-
-        template <typename T, size_t Width = array3DynamicDimension, size_t Height = array3DynamicDimension, size_t Depth = array3DynamicDimension>
+        template <typename T, SizeType WidthV = dynamicExtent, SizeType HeightV = dynamicExtent, SizeType DepthV = dynamicExtent>
         struct Array3Enumerate
         {
-            static_assert(Width > 0 && Height > 0 && Depth > 0);
+            static_assert(WidthV > 0 && HeightV > 0 && DepthV > 0);
 
         public:
+            using SizeType = ::ls::detail::SizeType;
+
             Array3Enumerate(T* data) :
                 m_data(data)
             {
@@ -32,7 +32,7 @@ namespace ls
             {
             public:
                 using self_type = iterator;
-                using value_type = std::tuple<size_t, size_t, size_t, T&>;
+                using value_type = std::tuple<SizeType, SizeType, SizeType, T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
@@ -57,11 +57,11 @@ namespace ls
                 {
                     ++m_ptr;
                     ++m_z;
-                    if (m_z >= Depth)
+                    if (m_z >= DepthV)
                     {
                         ++m_y;
                         m_z = 0;
-                        if (m_y >= Height)
+                        if (m_y >= HeightV)
                         {
                             ++m_x;
                             m_y = 0;
@@ -75,16 +75,16 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 T * m_ptr;
-                size_t m_x;
-                size_t m_y;
-                size_t m_z;
+                SizeType m_x;
+                SizeType m_y;
+                SizeType m_z;
             };
 
             struct const_iterator
             {
             public:
                 using self_type = const_iterator;
-                using value_type = std::tuple<size_t, size_t, size_t, const T&>;
+                using value_type = std::tuple<SizeType, SizeType, SizeType, const T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
@@ -109,11 +109,11 @@ namespace ls
                 {
                     ++m_ptr;
                     ++m_z;
-                    if (m_z >= Depth)
+                    if (m_z >= DepthV)
                     {
                         ++m_y;
                         m_z = 0;
-                        if (m_y >= Height)
+                        if (m_y >= HeightV)
                         {
                             ++m_x;
                             m_y = 0;
@@ -127,9 +127,9 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 const T * m_ptr;
-                size_t m_x;
-                size_t m_y;
-                size_t m_z;
+                SizeType m_x;
+                SizeType m_y;
+                SizeType m_z;
             };
 
             iterator begin()
@@ -139,7 +139,7 @@ namespace ls
 
             iterator end()
             {
-                return iterator(m_data + Width * Height * Depth);
+                return iterator(m_data + WidthV * HeightV * DepthV);
             }
 
             const_iterator begin() const
@@ -149,7 +149,7 @@ namespace ls
 
             const_iterator end() const
             {
-                return const_iterator(m_data + Width * Height * Depth);
+                return const_iterator(m_data + WidthV * HeightV * DepthV);
             }
 
             const_iterator cbegin() const
@@ -159,17 +159,19 @@ namespace ls
 
             const_iterator cend() const
             {
-                return const_iterator(m_data + Width * Height * Depth);
+                return const_iterator(m_data + WidthV * HeightV * DepthV);
             }
         private:
             T * m_data;
         };
 
         template <typename T>
-        struct Array3Enumerate<T, array3DynamicDimension, array3DynamicDimension, array3DynamicDimension>
+        struct Array3Enumerate<T, dynamicExtent, dynamicExtent, dynamicExtent>
         {
         public:
-            Array3Enumerate(T* data, size_t width, size_t height, size_t depth) :
+            using SizeType = ::ls::detail::SizeType;
+
+            Array3Enumerate(T* data, SizeType width, SizeType height, SizeType depth) :
                 m_data(data),
                 m_width(width),
                 m_height(height),
@@ -182,13 +184,13 @@ namespace ls
             {
             public:
                 using self_type = iterator;
-                using value_type = std::tuple<size_t, size_t, size_t, T&>;
+                using value_type = std::tuple<SizeType, SizeType, SizeType, T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
                 using difference_type = std::ptrdiff_t;
 
-                iterator(T* data, size_t height, size_t depth) :
+                iterator(T* data, SizeType height, SizeType depth) :
                     m_ptr(data),
                     m_x(0),
                     m_y(0),
@@ -227,24 +229,24 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 T * m_ptr;
-                size_t m_x;
-                size_t m_y;
-                size_t m_z;
-                size_t m_height;
-                size_t m_depth;
+                SizeType m_x;
+                SizeType m_y;
+                SizeType m_z;
+                SizeType m_height;
+                SizeType m_depth;
             };
 
             struct const_iterator
             {
             public:
                 using self_type = const_iterator;
-                using value_type = std::tuple<size_t, size_t, size_t, const T&>;
+                using value_type = std::tuple<SizeType, SizeType, SizeType, const T&>;
                 using reference = value_type & ;
                 using pointer = value_type * ;
                 using iterator_category = std::input_iterator_tag;
                 using difference_type = std::ptrdiff_t;
 
-                const_iterator(const T* data, size_t height, size_t depth) :
+                const_iterator(const T* data, SizeType height, SizeType depth) :
                     m_ptr(data),
                     m_x(0),
                     m_y(0),
@@ -283,11 +285,11 @@ namespace ls
                 bool operator!=(const self_type& rhs) { return m_ptr != rhs.m_ptr; }
             private:
                 T * m_ptr;
-                size_t m_x;
-                size_t m_y;
-                size_t m_z;
-                size_t m_height;
-                size_t m_depth;
+                SizeType m_x;
+                SizeType m_y;
+                SizeType m_z;
+                SizeType m_height;
+                SizeType m_depth;
             };
 
             iterator begin()
@@ -321,19 +323,26 @@ namespace ls
             }
         private:
             T * m_data;
-            size_t m_width;
-            size_t m_height;
-            size_t m_depth;
+            SizeType m_width;
+            SizeType m_height;
+            SizeType m_depth;
         };
     }
 
-    template <typename, size_t = detail::array3DynamicDimension, size_t = detail::array3DynamicDimension, size_t = detail::array3DynamicDimension, typename = detail::Array3DynamicStorageTag>
+    template <
+        typename, 
+        detail::SizeType = detail::dynamicExtent, 
+        detail::SizeType = detail::dynamicExtent, 
+        detail::SizeType = detail::dynamicExtent, 
+        detail::ArrayStorageType = detail::ArrayStorageType::Dynamic
+    >
     struct Array3;
 
     template <typename T>
-    struct Array3<T, detail::array3DynamicDimension, detail::array3DynamicDimension, detail::array3DynamicDimension, detail::Array3DynamicStorageTag>
+    struct Array3<T, detail::dynamicExtent, detail::dynamicExtent, detail::dynamicExtent, detail::ArrayStorageType::Dynamic>
     {
         using ValueType = T;
+        using SizeType = detail::SizeType;
         using iterator = T * ;
         using const_iterator = const T*;
 
@@ -346,7 +355,7 @@ namespace ls
 
         }
 
-        Array3(size_t width, size_t height, size_t depth) :
+        Array3(SizeType width, SizeType height, SizeType depth) :
             m_width(width),
             m_height(height),
             m_depth(depth)
@@ -354,14 +363,14 @@ namespace ls
             m_data = std::make_unique<T[]>(size());
         }
 
-        Array3(size_t width, size_t height, size_t depth, const T& initValue) :
+        Array3(SizeType width, SizeType height, SizeType depth, const T& initValue) :
             m_width(width),
             m_height(height),
             m_depth(depth)
         {
-            const size_t totalSize = size();
+            const SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = initValue;
             }
@@ -372,9 +381,9 @@ namespace ls
             m_height(other.m_height),
             m_depth(other.m_depth)
         {
-            const size_t totalSize = size();
+            const SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = other.m_data[i];
             }
@@ -406,19 +415,19 @@ namespace ls
             return operator=(Array3(other));
         }
 
-        const T& operator() (size_t x, size_t y, size_t z) const
+        const T& operator() (SizeType x, SizeType y, SizeType z) const
         {
             return m_data[index(x, y, z)];
         }
-        T& operator() (size_t x, size_t y, size_t z)
+        T& operator() (SizeType x, SizeType y, SizeType z)
         {
             return m_data[index(x, y, z)];
         }
-        const T& at(size_t x, size_t y, size_t z) const
+        const T& at(SizeType x, SizeType y, SizeType z) const
         {
             return m_data[index(x, y, z)];
         }
-        T& at(size_t x, size_t y, size_t z)
+        T& at(SizeType x, SizeType y, SizeType z)
         {
             return m_data[index(x, y, z)];
         }
@@ -476,22 +485,22 @@ namespace ls
             return { m_data.get(), m_width, m_height, m_depth };
         }
 
-        size_t width() const
+        SizeType width() const
         {
             return m_width;
         }
 
-        size_t height() const
+        SizeType height() const
         {
             return m_height;
         }
 
-        size_t depth() const
+        SizeType depth() const
         {
             return m_depth;
         }
 
-        size_t size() const
+        SizeType size() const
         {
             return m_width * m_height * m_depth;
         }
@@ -510,22 +519,23 @@ namespace ls
 
     protected:
         std::unique_ptr<T[]> m_data;
-        size_t m_width;
-        size_t m_height;
-        size_t m_depth;
+        SizeType m_width;
+        SizeType m_height;
+        SizeType m_depth;
 
-        size_t index(size_t x, size_t y, size_t z) const
+        SizeType index(SizeType x, SizeType y, SizeType z) const
         {
             return (x * m_height + y) * m_depth + z;
         }
     };
 
-    template <typename T, size_t Width, size_t Height, size_t Depth>
-    struct Array3<T, Width, Height, Depth, detail::Array3DynamicStorageTag>
+    template <typename T, detail::SizeType WidthV, detail::SizeType HeightV, detail::SizeType DepthV>
+    struct Array3<T, WidthV, HeightV, DepthV, detail::ArrayStorageType::Dynamic>
     {
-        static_assert(Width > 0 && Height > 0 && Depth > 0);
+        static_assert(WidthV > 0 && HeightV > 0 && DepthV > 0);
 
         using ValueType = T;
+        using SizeType = detail::SizeType;
         using iterator = T * ;
         using const_iterator = const T*;
 
@@ -537,7 +547,7 @@ namespace ls
         Array3(const T& initValue) :
             Array3()
         {
-            for (size_t i = 0; i < size(); ++i)
+            for (SizeType i = 0; i < size(); ++i)
             {
                 m_data[i] = initValue;
             }
@@ -545,9 +555,9 @@ namespace ls
 
         Array3(const Array3& other)
         {
-            constexpr size_t totalSize = size();
+            constexpr SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
-            for (size_t i = 0; i < totalSize; ++i)
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = other.m_data[i];
             }
@@ -573,41 +583,41 @@ namespace ls
             return operator=(Array3(other));
         }
 
-        const T& operator() (size_t x, size_t y, size_t z) const
+        const T& operator() (SizeType x, SizeType y, SizeType z) const
         {
             return m_data[index(x, y, z)];
         }
-        T& operator() (size_t x, size_t y, size_t z)
+        T& operator() (SizeType x, SizeType y, SizeType z)
         {
             return m_data[index(x, y, z)];
         }
-        const T& at(size_t x, size_t y, size_t z) const
+        const T& at(SizeType x, SizeType y, SizeType z) const
         {
             return m_data[index(x, y, z)];
         }
-        T& at(size_t x, size_t y, size_t z)
+        T& at(SizeType x, SizeType y, SizeType z)
         {
             return m_data[index(x, y, z)];
         }
 
-        size_t width() const
+        SizeType width() const
         {
-            return Width;
+            return WidthV;
         }
 
-        size_t height() const
+        SizeType height() const
         {
-            return Height;
+            return HeightV;
         }
 
-        size_t depth() const
+        SizeType depth() const
         {
-            return Depth;
+            return DepthV;
         }
 
-        static constexpr size_t size()
+        static constexpr SizeType size()
         {
-            return Width * Height * Depth;
+            return WidthV * HeightV * DepthV;
         }
 
         const T* data() const
@@ -643,17 +653,17 @@ namespace ls
             return m_data.get();
         }
 
-        detail::Array3Enumerate<T, Width, Height, Depth> enumerate()
+        detail::Array3Enumerate<T, WidthV, HeightV, DepthV> enumerate()
         {
             return { m_data.get() };
         }
 
-        detail::Array3Enumerate<const T, Width, Height, Depth> cenumerate() const
+        detail::Array3Enumerate<const T, WidthV, HeightV, DepthV> cenumerate() const
         {
             return { m_data.get() };
         }
 
-        detail::Array3Enumerate<const T, Width, Height, Depth> enumerate() const
+        detail::Array3Enumerate<const T, WidthV, HeightV, DepthV> enumerate() const
         {
             return { m_data.get() };
         }
@@ -678,18 +688,19 @@ namespace ls
     protected:
         std::unique_ptr<T[]> m_data;
 
-        size_t index(size_t x, size_t y, size_t z) const
+        SizeType index(SizeType x, SizeType y, SizeType z) const
         {
-            return (x * Height + y) * Depth + z;
+            return (x * HeightV + y) * DepthV + z;
         }
     };
 
-    template <typename T, size_t Width, size_t Height, size_t Depth>
-    struct Array3<T, Width, Height, Depth, detail::Array3AutomaticStorageTag>
+    template <typename T, detail::SizeType WidthV, detail::SizeType HeightV, detail::SizeType DepthV>
+    struct Array3<T, WidthV, HeightV, DepthV, detail::ArrayStorageType::Automatic>
     {
-        static_assert(Width > 0 && Height > 0 && Depth > 0);
+        static_assert(WidthV > 0 && HeightV > 0 && DepthV > 0);
 
         using ValueType = T;
+        using SizeType = detail::SizeType;
         using iterator = T * ;
         using const_iterator = const T*;
 
@@ -700,8 +711,8 @@ namespace ls
         constexpr Array3(const T& initValue) :
             Array3()
         {
-            constexpr size_t totalSize = size();
-            for (size_t i = 0; i < totalSize; ++i)
+            constexpr SizeType totalSize = size();
+            for (SizeType i = 0; i < totalSize; ++i)
             {
                 m_data[i] = initValue;
             }
@@ -711,41 +722,41 @@ namespace ls
         constexpr Array3& operator= (Array3&& other) noexcept = default;
         constexpr Array3& operator= (const Array3& other) = default;
 
-        constexpr const T& operator() (size_t x, size_t y, size_t z) const
+        constexpr const T& operator() (SizeType x, SizeType y, SizeType z) const
         {
             return m_data[x][y][z];
         }
-        constexpr T& operator() (size_t x, size_t y, size_t z)
+        constexpr T& operator() (SizeType x, SizeType y, SizeType z)
         {
             return m_data[x][y][z];
         }
-        constexpr const T& at(size_t x, size_t y, size_t z) const
+        constexpr const T& at(SizeType x, SizeType y, SizeType z) const
         {
             return m_data[x][y][z];
         }
-        constexpr T& at(size_t x, size_t y, size_t z)
+        constexpr T& at(SizeType x, SizeType y, SizeType z)
         {
             return m_data[x][y][z];
         }
 
-        constexpr size_t width() const
+        constexpr SizeType width() const
         {
-            return Width;
+            return WidthV;
         }
 
-        constexpr size_t height() const
+        constexpr SizeType height() const
         {
-            return Height;
+            return HeightV;
         }
 
-        constexpr size_t depth() const
+        constexpr SizeType depth() const
         {
-            return Depth;
+            return DepthV;
         }
 
-        static constexpr size_t size()
+        static constexpr SizeType size()
         {
-            return Width * Height * Depth;
+            return WidthV * HeightV * DepthV;
         }
 
         constexpr const T* data() const
@@ -786,17 +797,17 @@ namespace ls
             return data() + size();
         }
 
-        detail::Array3Enumerate<T, Width, Height, Depth> enumerate()
+        detail::Array3Enumerate<T, WidthV, HeightV, DepthV> enumerate()
         {
             return { data() };
         }
 
-        detail::Array3Enumerate<const T, Width, Height, Depth> cenumerate() const
+        detail::Array3Enumerate<const T, WidthV, HeightV, DepthV> cenumerate() const
         {
             return { data() };
         }
 
-        detail::Array3Enumerate<const T, Width, Height, Depth> enumerate() const
+        detail::Array3Enumerate<const T, WidthV, HeightV, DepthV> enumerate() const
         {
             return { data() };
         }
@@ -814,7 +825,7 @@ namespace ls
         }
 
     protected:
-        T m_data[Width][Height][Depth];
+        T m_data[WidthV][HeightV][DepthV];
 
         constexpr T* data()
         {
@@ -822,13 +833,13 @@ namespace ls
         }
     };
 
-    template <typename T, size_t W, size_t H, size_t D, typename V>
-    void swap(Array3<T, W, H, D, V>& lhs, Array3<T, W, H, D, V>& rhs) noexcept
+    template <typename T, detail::SizeType W, detail::SizeType H, detail::SizeType D, detail::ArrayStorageType S>
+    void swap(Array3<T, W, H, D, S>& lhs, Array3<T, W, H, D, S>& rhs) noexcept
     {
         lhs.swap(rhs);
     }
 
-    template <typename T, size_t Width, size_t Height, size_t Depth>
-    using AutoArray3 = Array3<T, Width, Height, Depth, detail::Array3AutomaticStorageTag>;
+    template <typename T, detail::SizeType WidthV, detail::SizeType HeightV, detail::SizeType DepthV>
+    using AutoArray3 = Array3<T, WidthV, HeightV, DepthV, detail::ArrayStorageType::Automatic>;
 }
 
