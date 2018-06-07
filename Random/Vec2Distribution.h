@@ -1,9 +1,9 @@
 #pragma once
 #pragma once
 
-#include "../Shapes.h"
+#include "LibS/Shapes.h"
 
-#include "../MathConstants.h"
+#include "LibS/MathConstants.h"
 
 #include "RandomUtil.h"
 

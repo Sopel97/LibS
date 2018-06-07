@@ -2,9 +2,9 @@
 
 #include "Readers.h"
 
-#include "../Shapes/Vec2.h"
-#include "../Shapes/Vec3.h"
-#include "../Shapes/Vec4.h"
+#include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Vec3.h"
+#include "LibS/Shapes/Vec4.h"
 
 namespace ls
 {

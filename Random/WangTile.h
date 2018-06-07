@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "LibS/Random/Fwd.h"
 
 #include <cstdint>
 #include <functional>
@@ -28,7 +28,7 @@ namespace ls
             return m_wildcard - 1;
         }
 
-        constexpr WangTile2() :
+        constexpr WangTile2() noexcept :
             m_north(m_wildcard),
             m_south(m_wildcard),
             m_east(m_wildcard),
@@ -144,7 +144,7 @@ namespace ls
             return m_wildcard - 1;
         }
 
-        constexpr WangTile3() :
+        constexpr WangTile3() noexcept :
             m_north(m_wildcard),
             m_south(m_wildcard),
             m_east(m_wildcard),

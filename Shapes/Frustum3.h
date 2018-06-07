@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Plane3.h"
-#include "../Matrix.h"
+#include "LibS/Matrix.h"
 
 #include <array>
 

@@ -5,7 +5,7 @@
 #include "Font.h"
 #include "VertexArrayObject.h"
 
-#include "../Shapes/Vec3.h"
+#include "LibS/Shapes/Vec3.h"
 
 namespace ls
 {

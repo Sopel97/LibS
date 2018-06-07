@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "LibS/Random/Fwd.h"
 
 #include <cstdint>
 #include <functional>
@@ -112,7 +112,7 @@ namespace ls
         template <typename RngT>
         T chooseFurthestPoint(int maxNumSamples, RngT&& rng, T minEarlyExitDistance) const
         {
-            if (maxNumSamples == 1 || m_samples.size() == 0)
+            if (maxNumSamples <= 1 || m_samples.size() == 0)
             {
                 return m_distribution(rng);
             }

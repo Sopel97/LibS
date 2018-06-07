@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Fwd.h"
+
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -9,8 +11,6 @@
 #include <functional>
 #include <iterator>
 #include <cstddef>
-
-#include "Common.h"
 
 namespace ls
 {
@@ -543,7 +543,7 @@ namespace ls
 
         Array2(const Array2& other)
         {
-            const SizeType totalSize = size();
+            constexpr SizeType totalSize = size();
             m_data = std::make_unique<T[]>(totalSize);
             for (SizeType i = 0; i < totalSize; ++i)
             {

@@ -5,13 +5,13 @@
 
 #include <string>
 
-#include "../Matrix.h"
-#include "../Shapes/Vec2.h"
-#include "../Shapes/Vec3.h"
-#include "../Shapes/Vec4.h"
+#include "LibS/Matrix.h"
+#include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Vec3.h"
+#include "LibS/Shapes/Vec4.h"
 
 #include "Bindable.h"
-#include "../FileUtil.h"
+#include "LibS/FileUtil.h"
 
 namespace ls
 {

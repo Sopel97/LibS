@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Fwd.h"
+#include "Shapes/Fwd.h"
+
 #include "Shapes/Vec2.h"
 #include "Shapes/Vec3.h"
 #include "Shapes/Vec4.h"

@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "Angle2.h"
-#include "../Macros.h"
+#include "LibS/Macros.h"
 
 namespace ls
 {

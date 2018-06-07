@@ -62,4 +62,10 @@ namespace ls
     {
         return detail::Overload<FuncTs...>(std::forward<FuncTs>(funcs)...);
     }
+
+    template<unsigned P>
+    struct Priority : Priority<P - 1> {};
+
+    template<>
+    struct Priority<0> {};
 }

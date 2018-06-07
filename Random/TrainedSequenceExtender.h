@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "LibS/Random/Fwd.h"
 
 #include <map>
 #include <random>

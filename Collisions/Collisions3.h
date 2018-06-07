@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Shapes3.h"
+#include "LibS/Shapes3.h"
 
 namespace ls
 {

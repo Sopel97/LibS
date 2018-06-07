@@ -19,7 +19,7 @@ namespace ls
             return instance().m_coefficients[n][k];
         }
     protected:
-        BinomialCoefficients()
+        BinomialCoefficients() noexcept
         {
             m_coefficients[0][0] = T(1);
             for (int y = 1; y < N; ++y)

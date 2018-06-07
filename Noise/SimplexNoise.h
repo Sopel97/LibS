@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "Fwd.h"
 
-#include "../Shapes/Vec2.h"
-#include "../Shapes/Vec3.h"
-#include "../Shapes/Vec4.h"
+#include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Vec3.h"
+#include "LibS/Shapes/Vec4.h"
+#include "LibS/Common.h"
 #include "NoiseUtil.h"
-#include "../Common.h"
 
 #include <cmath>
 #include <limits>
@@ -25,7 +25,7 @@ namespace ls
         using HashType = HashT;
 
     public:
-        SimplexNoise() :
+        SimplexNoise() noexcept :
             HashType{}
         {
         }

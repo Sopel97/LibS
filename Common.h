@@ -4,18 +4,6 @@
 
 namespace ls
 {
-    namespace detail
-    {
-        using SizeType = std::ptrdiff_t;
-        constexpr SizeType dynamicExtent = -1;
-
-        enum struct ArrayStorageType
-        {
-            Automatic,
-            Dynamic
-        };
-    }
-
     template <typename T>
     constexpr bool almostZero(const T& val, const T& tolerance)
     {
@@ -56,10 +44,4 @@ namespace ls
         const int i = static_cast<IntT>(value);
         return i - (value < FloatT(0.0));
     }
-
-    template<unsigned P>
-    struct Priority : Priority<P - 1> {};
-
-    template<>
-    struct Priority<0> {};
 }

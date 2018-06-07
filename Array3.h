@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Fwd.h"
+
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -7,8 +9,6 @@
 #include <stack>
 #include <tuple>
 #include <functional>
-
-#include "Common.h"
 
 namespace ls
 {

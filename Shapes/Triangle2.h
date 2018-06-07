@@ -2,7 +2,7 @@
 
 #include "Vec2.h"
 #include "Circle2.h"
-#include "../MathConstants.h"
+#include "LibS/MathConstants.h"
 
 #include <array>
 #include <type_traits>

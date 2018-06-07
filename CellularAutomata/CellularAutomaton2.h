@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Array2.h"
-#include "../Shapes/Box2.h"
-#include "../Common.h"
+#include "LibS/Array2.h"
+#include "LibS/Shapes/Box2.h"
+#include "LibS/Common.h"
 
 #include <cstddef>
 

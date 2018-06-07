@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "LibS/Collisions/Fwd.h"
 
-#include "../Shapes/Vec2.h"
+#include "LibS/Shapes/Vec2.h"
 
 namespace ls
 {

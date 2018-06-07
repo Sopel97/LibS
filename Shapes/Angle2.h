@@ -3,9 +3,9 @@
 #include <type_traits>
 #include <cmath>
 
-#include "../MathConstants.h"
+#include "LibS/MathConstants.h"
 
-#include "../Common.h"
+#include "LibS/Common.h"
 
 namespace ls
 {

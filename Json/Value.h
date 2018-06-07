@@ -19,7 +19,7 @@ namespace ls
             using Array = std::vector<Value>;
             using Object = typename std::conditional_t<useUnorderedMap, std::unordered_map<std::string, Value>, std::map<std::string, Value, std::less<>>>;
 
-            Value() : m_valueType(Type::Empty) {}
+            Value() noexcept : m_valueType(Type::Empty) {}
             Value(const Value& other) : m_valueType(other.m_valueType)
             {
                 if (other.m_value != nullptr)
@@ -307,7 +307,7 @@ namespace ls
                     }
                 }
 
-                ValueUnion(ValueUnion&& other) :
+                ValueUnion(ValueUnion&& other) noexcept :
                     m_valueType(Type::Empty)
                 {
                     switch (other.m_valueType)
@@ -422,7 +422,7 @@ namespace ls
                     Object obj;
                     Array arr;
 
-                    U() {}
+                    U() noexcept {}
                     ~U() {}
                 } m_value;
 

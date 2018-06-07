@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "LibS/Shapes/Fwd.h"
 
-#include "../Common.h"
+#include "LibS/Common.h"
 
 namespace ls
 {
@@ -26,7 +26,7 @@ namespace ls
         int m_octaves;
 
     public:
-        NoiseSampler() :
+        NoiseSampler() noexcept :
             m_scale(1),
             m_persistence(1),
             m_lowerBound(-1),
@@ -80,7 +80,7 @@ namespace ls
             }
 
             // do more octaves if needed
-            RetT total = RetType(0);
+            RetT total = RetT(0);
 
             ValueType amplitude = ValueType(1);
             // We have to keep track of the sum of the amplitudes,

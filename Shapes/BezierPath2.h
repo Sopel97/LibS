@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Vec2.h"
-#include "../BinomialCoefficients.h"
+#include "LibS/BinomialCoefficients.h"
 
 #include <vector>
 #include <type_traits>

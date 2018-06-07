@@ -6,8 +6,8 @@
 #include "Texture2.h"
 #include "Font.h"
 
-#include "../Shapes/Box2.h"
-#include "../Shapes/Vec2.h"
+#include "LibS/Shapes/Box2.h"
+#include "LibS/Shapes/Vec2.h"
 
 namespace ls
 {

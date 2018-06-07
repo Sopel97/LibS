@@ -1,13 +1,12 @@
 #pragma once
 
-#include "../Fwd.h"
+#include "Fwd.h"
 
-#include "../Fwd.h"
 #include "NoiseUtil.h"
-#include "../Common.h"
-#include "../Shapes/Vec2.h"
-#include "../Shapes/Vec3.h"
-#include "../Shapes/Vec4.h"
+#include "LibS/Common.h"
+#include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Vec3.h"
+#include "LibS/Shapes/Vec4.h"
 
 #include <numeric>
 #include <algorithm>
@@ -28,7 +27,7 @@ namespace ls
         using ValueType = T;
         using HashType = HashT;
 
-        PerlinNoise() :
+        PerlinNoise() noexcept :
             HashType{}
         {
         }
