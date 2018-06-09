@@ -1,6 +1,12 @@
 #pragma once
 
+#include "LibS/Common.h"
+
+#include "Angle2.h"
+
 #include <type_traits>
+#include <cmath>
+#include <tuple>
 
 namespace ls
 {
@@ -9,13 +15,13 @@ namespace ls
         template <typename T>
         struct vec4_align
         {
-            static constexpr size_t value = alignof(T);
+            static constexpr std::size_t value = alignof(T);
         };
 
         template <>
         struct vec4_align<float>
         {
-            static constexpr size_t value = 16;
+            static constexpr std::size_t value = 16;
         };
     }
 

@@ -2,6 +2,9 @@
 
 #include "Value.h"
 
+#include <string>
+#include <cstdint>
+
 namespace ls
 {
     namespace json
@@ -221,12 +224,12 @@ namespace ls
             }
             void writeObject(const Value::Object& obj)
             {
-                const size_t size = obj.size();
+                const std::size_t size = obj.size();
                 if (size == 0) emptyObject();
                 else
                 {
                     startObject();
-                    size_t i = 0;
+                    std::size_t i = 0;
                     for (const auto& p : obj)
                     {
                         key(p.first);
@@ -243,12 +246,12 @@ namespace ls
             }
             void writeArray(const Value::Array& arr)
             {
-                const size_t size = arr.size();
+                const std::size_t size = arr.size();
                 if (size == 0) emptyArray();
                 else
                 {
                     startArray();
-                    size_t i = 0;
+                    std::size_t i = 0;
                     for (const auto& e : arr)
                     {
                         write(e);

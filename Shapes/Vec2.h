@@ -1,10 +1,13 @@
 #pragma once
 
-#include <type_traits>
-#include <utility>
+#include "LibS/Common.h"
+#include "LibS/Macros.h"
 
 #include "Angle2.h"
-#include "LibS/Macros.h"
+
+#include <type_traits>
+#include <cmath>
+#include <tuple>
 
 namespace ls
 {

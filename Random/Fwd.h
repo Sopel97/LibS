@@ -4,11 +4,6 @@
 
 namespace ls
 {
-    namespace detail
-    {
-        struct DefaultKFunc;
-    }
-
     template <typename T, typename DistributionT = std::uniform_real_distribution<T>, typename KFuncT = detail::DefaultKFunc>
     struct ApproximatePoissonDiscSampler1;
 

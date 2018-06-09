@@ -1,16 +1,13 @@
 #pragma once
 
 #include "Fwd.h"
+#include "Detail.h"
 
-#include <iostream>
-#include <vector>
 #include <utility>
 #include <memory>
 #include <stack>
 #include <tuple>
-#include <functional>
 #include <iterator>
-#include <cstddef>
 
 namespace ls
 {
@@ -305,11 +302,11 @@ namespace ls
         };
     }
 
-    template <typename, detail::SizeType = detail::dynamicExtent, detail::SizeType = detail::dynamicExtent, detail::ArrayStorageType = detail::ArrayStorageType::Dynamic>
+    template <typename, detail::SizeType = detail::dynamicExtent, detail::SizeType = detail::dynamicExtent, ArrayStorageType = ArrayStorageType::Dynamic>
     struct Array2;
 
     template <typename T>
-    struct Array2<T, detail::dynamicExtent, detail::dynamicExtent, detail::ArrayStorageType::Dynamic>
+    struct Array2<T, detail::dynamicExtent, detail::dynamicExtent, ArrayStorageType::Dynamic>
     {
         using ValueType = T;
         using SizeType = detail::SizeType;
@@ -516,7 +513,7 @@ namespace ls
 
 
     template <typename T, detail::SizeType WidthV, detail::SizeType HeightV>
-    struct Array2<T, WidthV, HeightV, detail::ArrayStorageType::Dynamic>
+    struct Array2<T, WidthV, HeightV, ArrayStorageType::Dynamic>
     {
         static_assert(WidthV > 0 && HeightV > 0);
 
@@ -702,7 +699,7 @@ namespace ls
 
 
     template <typename T, detail::SizeType WidthV, detail::SizeType HeightV>
-    struct Array2<T, WidthV, HeightV, detail::ArrayStorageType::Automatic>
+    struct Array2<T, WidthV, HeightV, ArrayStorageType::Automatic>
     {
         static_assert(WidthV > 0 && HeightV > 0);
 
@@ -860,14 +857,14 @@ namespace ls
         }
     };
 
-    template <typename T, detail::SizeType W, detail::SizeType H, detail::ArrayStorageType S>
+    template <typename T, detail::SizeType W, detail::SizeType H, ArrayStorageType S>
     void swap(Array2<T, W, H, S>& lhs, Array2<T, W, H, S>& rhs) noexcept
     {
         lhs.swap(rhs);
     }
 
     template <typename T, detail::SizeType WidthV, detail::SizeType HeightV>
-    using AutoArray2 = Array2<T, WidthV, HeightV, detail::ArrayStorageType::Automatic>;
+    using AutoArray2 = Array2<T, WidthV, HeightV, ArrayStorageType::Automatic>;
 
     /*
         template <class T>

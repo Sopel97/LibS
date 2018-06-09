@@ -1,9 +1,12 @@
 #pragma once
 
+#include "LibS/Common.h"
+
+#include "Angle2.h"
+
 #include <type_traits>
 #include <cmath>
-
-#include "LibS/Common.h"
+#include <tuple>
 
 namespace ls
 {

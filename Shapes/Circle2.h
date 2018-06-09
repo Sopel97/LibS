@@ -4,6 +4,7 @@
 #include "Box2.h"
 
 #include <type_traits>
+#include <tuple>
 
 namespace ls
 {

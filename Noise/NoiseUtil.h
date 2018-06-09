@@ -2,12 +2,10 @@
 
 #include "LibS/Shapes/Fwd.h"
 
-#include "LibS/Shapes/Vec2.h"
-#include "LibS/Shapes/Vec3.h"
-#include "LibS/Shapes/Vec4.h"
-
 #include <memory>
 #include <algorithm>
+#include <numeric>
+#include <utility>
 
 namespace ls
 {

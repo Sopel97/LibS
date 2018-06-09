@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Readers.h"
-
 #include "LibS/Shapes/Vec2.h"
 #include "LibS/Shapes/Vec3.h"
 #include "LibS/Shapes/Vec4.h"
+
+#include "Readers.h"
 
 namespace ls
 {

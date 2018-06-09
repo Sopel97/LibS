@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Quat.h"
 #include "Shapes/Vec3.h"
+
+#include "Quat.h"
 
 namespace ls
 {

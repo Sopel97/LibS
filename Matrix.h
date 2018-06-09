@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Shapes/Fwd.h"
-
+#include "Shapes/Angle2.h"
 #include "Shapes/Vec2.h"
 #include "Shapes/Vec3.h"
 #include "Shapes/Vec4.h"
+
+#include "Fwd.h"
 #include "Quat.h"
 #include "Transform3.h"
-#include "Shapes/Angle2.h"
 
 #include <cstring>
+#include <type_traits>
 
 namespace ls
 {

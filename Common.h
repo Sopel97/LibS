@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include <cmath>
 
 namespace ls
 {
@@ -31,7 +31,7 @@ namespace ls
     }
     // evaluates v%p but converts negative results so that they are not symetric to positive ones
     template <typename IntType>
-    IntType periodic(IntType v, IntType p)
+    IntType periodicMod(IntType v, IntType p)
     {
         v %= p;
         IntType vp = (v >= 0) ? v : v + p;

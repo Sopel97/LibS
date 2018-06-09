@@ -1,11 +1,10 @@
 #pragma once
 
+#include "LibS/MathConstants.h"
+#include "LibS/Common.h"
+
 #include <type_traits>
 #include <cmath>
-
-#include "LibS/MathConstants.h"
-
-#include "LibS/Common.h"
 
 namespace ls
 {

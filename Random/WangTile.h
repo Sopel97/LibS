@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LibS/Random/Fwd.h"
+#include "Fwd.h"
 
 #include <cstdint>
 #include <functional>
@@ -8,6 +8,8 @@
 #include <random>
 #include <string>
 #include <bitset>
+#include <utility>
+#include <vector>
 
 namespace ls
 {

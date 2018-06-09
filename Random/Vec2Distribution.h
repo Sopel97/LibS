@@ -2,13 +2,14 @@
 #pragma once
 
 #include "LibS/Shapes.h"
-
 #include "LibS/MathConstants.h"
 
 #include "RandomUtil.h"
 
 #include <random>
-#include <functional>
+#include <utility>
+#include <array>
+#include <cmath>
 
 namespace ls
 {

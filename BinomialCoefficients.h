@@ -41,5 +41,5 @@ namespace ls
         T m_coefficients[N][N];
     };
 
-    using BinomialCoefficients64 = BinomialCoefficients<uint64_t, 64>; //the limit of 64 bits is at around 67 choose 33
+    using BinomialCoefficients64 = BinomialCoefficients<std::uint64_t, 64>; //the limit of 64 bits is at around 67 choose 33
 }

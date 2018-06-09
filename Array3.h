@@ -1,14 +1,12 @@
 #pragma once
 
 #include "Fwd.h"
+#include "Detail.h"
 
-#include <iostream>
-#include <vector>
 #include <utility>
 #include <memory>
-#include <stack>
 #include <tuple>
-#include <functional>
+#include <iterator>
 
 namespace ls
 {
@@ -334,12 +332,12 @@ namespace ls
         detail::SizeType = detail::dynamicExtent, 
         detail::SizeType = detail::dynamicExtent, 
         detail::SizeType = detail::dynamicExtent, 
-        detail::ArrayStorageType = detail::ArrayStorageType::Dynamic
+        ArrayStorageType = ArrayStorageType::Dynamic
     >
     struct Array3;
 
     template <typename T>
-    struct Array3<T, detail::dynamicExtent, detail::dynamicExtent, detail::dynamicExtent, detail::ArrayStorageType::Dynamic>
+    struct Array3<T, detail::dynamicExtent, detail::dynamicExtent, detail::dynamicExtent, ArrayStorageType::Dynamic>
     {
         using ValueType = T;
         using SizeType = detail::SizeType;
@@ -530,7 +528,7 @@ namespace ls
     };
 
     template <typename T, detail::SizeType WidthV, detail::SizeType HeightV, detail::SizeType DepthV>
-    struct Array3<T, WidthV, HeightV, DepthV, detail::ArrayStorageType::Dynamic>
+    struct Array3<T, WidthV, HeightV, DepthV, ArrayStorageType::Dynamic>
     {
         static_assert(WidthV > 0 && HeightV > 0 && DepthV > 0);
 
@@ -695,7 +693,7 @@ namespace ls
     };
 
     template <typename T, detail::SizeType WidthV, detail::SizeType HeightV, detail::SizeType DepthV>
-    struct Array3<T, WidthV, HeightV, DepthV, detail::ArrayStorageType::Automatic>
+    struct Array3<T, WidthV, HeightV, DepthV, ArrayStorageType::Automatic>
     {
         static_assert(WidthV > 0 && HeightV > 0 && DepthV > 0);
 
@@ -833,13 +831,13 @@ namespace ls
         }
     };
 
-    template <typename T, detail::SizeType W, detail::SizeType H, detail::SizeType D, detail::ArrayStorageType S>
+    template <typename T, detail::SizeType W, detail::SizeType H, detail::SizeType D, ArrayStorageType S>
     void swap(Array3<T, W, H, D, S>& lhs, Array3<T, W, H, D, S>& rhs) noexcept
     {
         lhs.swap(rhs);
     }
 
     template <typename T, detail::SizeType WidthV, detail::SizeType HeightV, detail::SizeType DepthV>
-    using AutoArray3 = Array3<T, WidthV, HeightV, DepthV, detail::ArrayStorageType::Automatic>;
+    using AutoArray3 = Array3<T, WidthV, HeightV, DepthV, ArrayStorageType::Automatic>;
 }
 

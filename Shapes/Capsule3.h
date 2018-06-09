@@ -5,6 +5,7 @@
 
 #include <array>
 #include <type_traits>
+#include <tuple>
 
 namespace ls
 {
@@ -47,7 +48,7 @@ namespace ls
         template <typename T2>
         explicit operator Capsule3<T2>() const
         {
-            return Capsule3<T2>(static_cast<Vec3<T2>>(vertices[0]), static_cast<Vec3<T2>>(vertices[1]));
+            return Capsule3<T2>(static_cast<Vec3<T2>>(extent[0]), static_cast<Vec3<T2>>(extent[1]));
         }
 
         constexpr Vec3<T> centerOfMass() const

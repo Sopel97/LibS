@@ -3,10 +3,10 @@
 #include "Vec2.h"
 
 #include <vector>
-#include <initializer_list>
-#include <utility>
-#include <algorithm>
+#include <cmath>
 #include <type_traits>
+#include <utility>
+#include <cstdint>
 
 namespace ls
 {
@@ -74,12 +74,12 @@ namespace ls
 
         Vec2<T> centerOfMass() const
         {
-            const size_t numVertices = vertices.size();
+            const std::size_t numVertices = vertices.size();
 
             T xsum{ 0 };
             T ysum{ 0 };
             T area{ 0 };
-            for (size_t i = 0; i < numVertices; ++i)
+            for (std::size_t i = 0; i < numVertices; ++i)
             {
                 const Vec2<T>& p0 = vertices[i];
                 const Vec2<T>& p1 = vertices[(i + 1) % numVertices];
@@ -100,10 +100,10 @@ namespace ls
 
         T signedArea() const
         {
-            const size_t numVertices = vertices.size();
+            const std::size_t numVertices = vertices.size();
 
             T area = 0;
-            for (size_t i = 0; i < numVertices; ++i)
+            for (std::size_t i = 0; i < numVertices; ++i)
             {
                 const Vec2<T>& p0 = vertices[i];
                 const Vec2<T>& p1 = vertices[(i + 1) % numVertices];

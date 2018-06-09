@@ -1,17 +1,16 @@
 #pragma once
 
-#include "Fwd.h"
-
-#include "NoiseUtil.h"
-#include "LibS/Common.h"
 #include "LibS/Shapes/Vec2.h"
 #include "LibS/Shapes/Vec3.h"
 #include "LibS/Shapes/Vec4.h"
 
-#include <numeric>
-#include <algorithm>
-#include <cmath>
-#include <limits>
+#include "LibS/Common.h"
+
+#include "Fwd.h"
+
+#include <utility>
+#include <cstdint>
+#include <type_traits>
 
 // Uses slightly modified implementation by Stefan Gustavson (stegu@itn.liu.se) (2003-2005)
 // Original code can be found on github.com/kev009/craftd/tree/master/plugins/survival/mapgen/noise
@@ -43,8 +42,8 @@ namespace ls
             T fx0 = x - ix0;       // Fractional part of x
             T fx1 = fx0 - T(1);
 
-            uint32_t ix0p0 = periodic(ix0, px);
-            uint32_t ix0p1 = periodic(ix0 + 1, px);
+            std::uint32_t ix0p0 = periodicMod(ix0, px);
+            std::uint32_t ix0p1 = periodicMod(ix0 + 1, px);
 
             T s = detail::fade(fx0);
 
@@ -68,10 +67,10 @@ namespace ls
             T fx1 = fx0 - T(1);
             T fy1 = fy0 - T(1);
 
-            uint32_t ix0p0 = periodic(ix0, px);
-            uint32_t iy0p0 = periodic(iy0, py);
-            uint32_t ix0p1 = periodic(ix0 + 1, px);
-            uint32_t iy0p1 = periodic(iy0 + 1, py);
+            std::uint32_t ix0p0 = periodicMod(ix0, px);
+            std::uint32_t iy0p0 = periodicMod(iy0, py);
+            std::uint32_t ix0p1 = periodicMod(ix0 + 1, px);
+            std::uint32_t iy0p1 = periodicMod(iy0 + 1, py);
 
             T t = detail::fade(fy0);
             T s = detail::fade(fx0);
@@ -107,12 +106,12 @@ namespace ls
             T fy1 = fy0 - T(1);
             T fz1 = fz0 - T(1);
 
-            uint32_t ix0p0 = periodic(ix0, px);
-            uint32_t iy0p0 = periodic(iy0, py);
-            uint32_t iz0p0 = periodic(iz0, pz);
-            uint32_t ix0p1 = periodic(ix0 + 1, px);
-            uint32_t iy0p1 = periodic(iy0 + 1, py);
-            uint32_t iz0p1 = periodic(iz0 + 1, pz);
+            std::uint32_t ix0p0 = periodicMod(ix0, px);
+            std::uint32_t iy0p0 = periodicMod(iy0, py);
+            std::uint32_t iz0p0 = periodicMod(iz0, pz);
+            std::uint32_t ix0p1 = periodicMod(ix0 + 1, px);
+            std::uint32_t iy0p1 = periodicMod(iy0 + 1, py);
+            std::uint32_t iz0p1 = periodicMod(iz0 + 1, pz);
 
             T r = detail::fade(fz0);
             T t = detail::fade(fy0);
@@ -165,14 +164,14 @@ namespace ls
             T fz1 = fz0 - T(1);
             T fw1 = fw0 - T(1);
 
-            uint32_t ix0p0 = periodic(ix0, px);
-            uint32_t iy0p0 = periodic(iy0, py);
-            uint32_t iz0p0 = periodic(iz0, pz);
-            uint32_t iw0p0 = periodic(iw0, pw);
-            uint32_t ix0p1 = periodic(ix0 + 1, px);
-            uint32_t iy0p1 = periodic(iy0 + 1, py);
-            uint32_t iz0p1 = periodic(iz0 + 1, pz);
-            uint32_t iw0p1 = periodic(iw0 + 1, pw);
+            std::uint32_t ix0p0 = periodicMod(ix0, px);
+            std::uint32_t iy0p0 = periodicMod(iy0, py);
+            std::uint32_t iz0p0 = periodicMod(iz0, pz);
+            std::uint32_t iw0p0 = periodicMod(iw0, pw);
+            std::uint32_t ix0p1 = periodicMod(ix0 + 1, px);
+            std::uint32_t iy0p1 = periodicMod(iy0 + 1, py);
+            std::uint32_t iz0p1 = periodicMod(iz0 + 1, pz);
+            std::uint32_t iw0p1 = periodicMod(iw0 + 1, pw);
 
             T q = detail::fade(fw0);
             T r = detail::fade(fz0);
@@ -227,36 +226,36 @@ namespace ls
         }
 
     private:
-        static T grad1(uint32_t hash, T x)
+        static T grad1(std::uint32_t hash, T x)
         {
-            uint32_t h = hash & 0b1111u;
+            std::uint32_t h = hash & 0b1111u;
             T grad = T(1) + (h & 0b111u);   // Gradient value 1.0, 2.0, ..., 8.0
             if (h & 0b1000u) grad = -grad;   // Set a random sign for the gradient
             return (grad * x);              // Multiply the gradient with the distance
         }
-        static T grad2(uint32_t hash, T x, T y)
+        static T grad2(std::uint32_t hash, T x, T y)
         {
-            uint32_t h = hash & 0b111u;      // Convert low 3 bits of hash code
+            std::uint32_t h = hash & 0b111u;      // Convert low 3 bits of hash code
             T u = h < 4 ? x : y;  // into 8 simple gradient directions,
             T v = h < 4 ? y : x;  // and compute the dot product with (x,y).
             return ((h & 0b1u) ? -u : u) + ((h & 0b10u) ? T(-2)*v : T(2)*v);
         }
-        static T grad3(uint32_t hash, T x, T y, T z)
+        static T grad3(std::uint32_t hash, T x, T y, T z)
         {
-            uint32_t h = hash & 0b1111u;     // Convert low 4 bits of hash code into 12 simple
+            std::uint32_t h = hash & 0b1111u;     // Convert low 4 bits of hash code into 12 simple
             T u = h < 8 ? x : y; // gradient directions, and compute dot product.
             T v = h < 4 ? y : h == 12 || h == 14 ? x : z; // Fix repeats at h = 12 to 15
             return ((h & 0b1u) ? -u : u) + ((h & 0b10u) ? -v : v);
         }
-        static T grad4(uint32_t hash, T x, T y, T z, T t)
+        static T grad4(std::uint32_t hash, T x, T y, T z, T t)
         {
-            uint32_t h = hash & 0b11111u;      // Convert low 5 bits of hash code into 32 simple
+            std::uint32_t h = hash & 0b11111u;      // Convert low 5 bits of hash code into 32 simple
             T u = h < 24 ? x : y; // gradient directions, and compute dot product.
             T v = h < 16 ? y : z;
             T w = h < 8 ? z : t;
             return ((h & 0b1u) ? -u : u) + ((h & 0b10u) ? -v : v) + ((h & 0b100u) ? -w : w);
         }
-        static constexpr uint8_t m_simplex[64][4] = {
+        static constexpr std::uint8_t m_simplex[64][4] = {
             { 0, 1, 2, 3 },{ 0, 1, 3, 2 },{ 0, 0, 0, 0 },{ 0, 2, 3, 1 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 1, 2, 3, 0 },
             { 0, 2, 1, 3 },{ 0, 0, 0, 0 },{ 0, 3, 1, 2 },{ 0, 3, 2, 1 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 1, 3, 2, 0 },
             { 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },

@@ -1,10 +1,13 @@
 #pragma once
 
-#include "LibS/Array2.h"
 #include "LibS/Shapes/Box2.h"
-#include "LibS/Common.h"
 
+#include "LibS/Array2.h"
+#include "LibS/Detail.h"
+
+#include <array>
 #include <cstddef>
+#include <utility>
 
 namespace ls
 {

@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Value.h"
+
 #include <cctype>
 #include <algorithm>
-
-#include "Value.h"
+#include <string>
+#include <utility>
 
 namespace ls
 {

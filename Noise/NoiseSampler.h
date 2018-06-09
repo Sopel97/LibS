@@ -4,6 +4,9 @@
 
 #include "LibS/Common.h"
 
+#include <type_traits>
+#include <limits>
+
 namespace ls
 {
     template <typename T, int DimV>

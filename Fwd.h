@@ -1,21 +1,12 @@
 #pragma once
 
-#include <cstdint>
-#include <cstddef>
-
 namespace ls
 {
-    namespace detail
+    enum struct ArrayStorageType
     {
-        using SizeType = std::ptrdiff_t;
-        constexpr SizeType dynamicExtent = -1;
-
-        enum struct ArrayStorageType
-        {
-            Automatic,
-            Dynamic
-        };
-    }
+        Automatic,
+        Dynamic
+    };
 
     template <typename T>
     struct AxisAngle;

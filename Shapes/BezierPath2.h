@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Vec2.h"
 #include "LibS/BinomialCoefficients.h"
+
+#include "Vec2.h"
 
 #include <vector>
 #include <type_traits>
+#include <utility>
 
 namespace ls
 {

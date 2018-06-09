@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Fwd.h"
-
 #include "LibS/Shapes/Vec2.h"
 #include "LibS/Shapes/Vec3.h"
 #include "LibS/Shapes/Vec4.h"
-#include "LibS/Common.h"
-#include "NoiseUtil.h"
 
-#include <cmath>
-#include <limits>
+#include "LibS/Common.h"
+
+#include "Fwd.h"
+
+#include <utility>
+#include <cstdint>
+#include <type_traits>
 
 // Uses slightly modified implementation by Stefan Gustavson (stegu@itn.liu.se) (2003-2005)
 // Original code can be found here github.com/kev009/craftd/tree/master/plugins/survival/mapgen/noise
@@ -42,8 +43,8 @@ namespace ls
             T x0 = x - i0;
             T x1 = x0 - T(1);
 
-            uint32_t i0p0 = periodic(i0, px);
-            uint32_t i0p1 = periodic(i0 + 1, px);
+            std::uint32_t i0p0 = periodicMod(i0, px);
+            std::uint32_t i0p1 = periodicMod(i0 + 1, px);
 
             T n0, n1;
 
@@ -68,8 +69,8 @@ namespace ls
             T x0 = x - i0;
             T x1 = x0 - T(1);
 
-            uint32_t i0p0 = periodic(i0, px);
-            uint32_t i0p1 = periodic(i0 + 1, px);
+            std::uint32_t i0p0 = periodicMod(i0, px);
+            std::uint32_t i0p1 = periodicMod(i0 + 1, px);
 
             T gx0, gx1;
             T n0, n1;
@@ -144,12 +145,12 @@ namespace ls
             T x2 = x0 - T(1) + T(2) * m_G2; // Offsets for last corner in (x,y) unskewed coords
             T y2 = y0 - T(1) + T(2) * m_G2;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t iip2 = periodic(i + 1, px);
-            uint32_t jjp2 = periodic(j + 1, py);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t iip2 = periodicMod(i + 1, px);
+            std::uint32_t jjp2 = periodicMod(j + 1, py);
 
             T n0, n1, n2; // Noise contributions from the three corners
 
@@ -219,12 +220,12 @@ namespace ls
 
             /* Wrap the integer indices at 256, to avoid indexing perm[] out of bounds */
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t iip2 = periodic(i + 1, px);
-            uint32_t jjp2 = periodic(j + 1, py);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t iip2 = periodicMod(i + 1, px);
+            std::uint32_t jjp2 = periodicMod(j + 1, py);
 
             /* Calculate the contribution from the three corners */
             T t0 = T(0.5) - x0 * x0 - y0 * y0;
@@ -338,12 +339,12 @@ namespace ls
             T x2 = x0 - T(1) + T(2) * m_G2; /* Offsets for last corner in (x,y) unskewed coords */
             T y2 = y0 - T(1) + T(2) * m_G2;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t iip2 = periodic(i + 1, px);
-            uint32_t jjp2 = periodic(j + 1, py);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t iip2 = periodicMod(i + 1, px);
+            std::uint32_t jjp2 = periodicMod(j + 1, py);
 
             /* Calculate the contribution from the three corners */
             T t0 = T(0.5) - x0 * x0 - y0 * y0;
@@ -483,18 +484,18 @@ namespace ls
             T y3 = y0 - T(1) + T(3)*m_G3;
             T z3 = z0 - T(1) + T(3)*m_G3;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t kkp0 = periodic(k, pz);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t kkp1 = periodic(k + k1, pz);
-            uint32_t iip2 = periodic(i + i2, px);
-            uint32_t jjp2 = periodic(j + j2, py);
-            uint32_t kkp2 = periodic(k + k2, pz);
-            uint32_t iip3 = periodic(i + 1, px);
-            uint32_t jjp3 = periodic(j + 1, py);
-            uint32_t kkp3 = periodic(k + 1, pz);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t kkp0 = periodicMod(k, pz);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t kkp1 = periodicMod(k + k1, pz);
+            std::uint32_t iip2 = periodicMod(i + i2, px);
+            std::uint32_t jjp2 = periodicMod(j + j2, py);
+            std::uint32_t kkp2 = periodicMod(k + k2, pz);
+            std::uint32_t iip3 = periodicMod(i + 1, px);
+            std::uint32_t jjp3 = periodicMod(j + 1, py);
+            std::uint32_t kkp3 = periodicMod(k + 1, pz);
 
             T n0, n1, n2, n3; // Noise contributions from the four corners
 
@@ -599,18 +600,18 @@ namespace ls
             T y3 = y0 - T(1) + T(3) * m_G3;
             T z3 = z0 - T(1) + T(3) * m_G3;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t kkp0 = periodic(k, pz);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t kkp1 = periodic(k + k1, pz);
-            uint32_t iip2 = periodic(i + i2, px);
-            uint32_t jjp2 = periodic(j + j2, py);
-            uint32_t kkp2 = periodic(k + k2, pz);
-            uint32_t iip3 = periodic(i + 1, px);
-            uint32_t jjp3 = periodic(j + 1, py);
-            uint32_t kkp3 = periodic(k + 1, pz);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t kkp0 = periodicMod(k, pz);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t kkp1 = periodicMod(k + k1, pz);
+            std::uint32_t iip2 = periodicMod(i + i2, px);
+            std::uint32_t jjp2 = periodicMod(j + j2, py);
+            std::uint32_t kkp2 = periodicMod(k + k2, pz);
+            std::uint32_t iip3 = periodicMod(i + 1, px);
+            std::uint32_t jjp3 = periodicMod(j + 1, py);
+            std::uint32_t kkp3 = periodicMod(k + 1, pz);
 
             /* Calculate the contribution from the four corners */
             T t0 = T(0.6) - x0 * x0 - y0 * y0 - z0 * z0;
@@ -783,18 +784,18 @@ namespace ls
             T y3 = y0 - 1.0f + 3.0f * m_G3;
             T z3 = z0 - 1.0f + 3.0f * m_G3;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t kkp0 = periodic(k, pz);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t kkp1 = periodic(k + k1, pz);
-            uint32_t iip2 = periodic(i + i2, px);
-            uint32_t jjp2 = periodic(j + j2, py);
-            uint32_t kkp2 = periodic(k + k2, pz);
-            uint32_t iip3 = periodic(i + 1, px);
-            uint32_t jjp3 = periodic(j + 1, py);
-            uint32_t kkp3 = periodic(k + 1, pz);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t kkp0 = periodicMod(k, pz);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t kkp1 = periodicMod(k + k1, pz);
+            std::uint32_t iip2 = periodicMod(i + i2, px);
+            std::uint32_t jjp2 = periodicMod(j + j2, py);
+            std::uint32_t kkp2 = periodicMod(k + k2, pz);
+            std::uint32_t iip3 = periodicMod(i + 1, px);
+            std::uint32_t jjp3 = periodicMod(j + 1, py);
+            std::uint32_t kkp3 = periodicMod(k + 1, pz);
 
             /* Calculate the contribution from the four corners */
             T t0 = T(0.6) - x0 * x0 - y0 * y0 - z0 * z0;
@@ -992,26 +993,26 @@ namespace ls
             T z4 = z0 - T(1) + T(4)*m_G4;
             T w4 = w0 - T(1) + T(4)*m_G4;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t kkp0 = periodic(k, pz);
-            uint32_t llp0 = periodic(l, pw);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t kkp1 = periodic(k + k1, pz);
-            uint32_t llp1 = periodic(l + l1, pw);
-            uint32_t iip2 = periodic(i + i2, px);
-            uint32_t jjp2 = periodic(j + j2, py);
-            uint32_t kkp2 = periodic(k + k2, pz);
-            uint32_t llp2 = periodic(l + l2, pw);
-            uint32_t iip3 = periodic(i + i3, px);
-            uint32_t jjp3 = periodic(j + j3, py);
-            uint32_t kkp3 = periodic(k + k3, pz);
-            uint32_t llp3 = periodic(l + l3, pw);
-            uint32_t iip4 = periodic(i + 1, px);
-            uint32_t jjp4 = periodic(j + 1, py);
-            uint32_t kkp4 = periodic(k + 1, pz);
-            uint32_t llp4 = periodic(l + 1, pw);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t kkp0 = periodicMod(k, pz);
+            std::uint32_t llp0 = periodicMod(l, pw);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t kkp1 = periodicMod(k + k1, pz);
+            std::uint32_t llp1 = periodicMod(l + l1, pw);
+            std::uint32_t iip2 = periodicMod(i + i2, px);
+            std::uint32_t jjp2 = periodicMod(j + j2, py);
+            std::uint32_t kkp2 = periodicMod(k + k2, pz);
+            std::uint32_t llp2 = periodicMod(l + l2, pw);
+            std::uint32_t iip3 = periodicMod(i + i3, px);
+            std::uint32_t jjp3 = periodicMod(j + j3, py);
+            std::uint32_t kkp3 = periodicMod(k + k3, pz);
+            std::uint32_t llp3 = periodicMod(l + l3, pw);
+            std::uint32_t iip4 = periodicMod(i + 1, px);
+            std::uint32_t jjp4 = periodicMod(j + 1, py);
+            std::uint32_t kkp4 = periodicMod(k + 1, pz);
+            std::uint32_t llp4 = periodicMod(l + 1, pw);
 
             T  n0, n1, n2, n3, n4; // Noise contributions from the five corners
 
@@ -1151,26 +1152,26 @@ namespace ls
             T z4 = z0 - T(1) + T(4) * m_G4;
             T w4 = w0 - T(1) + T(4) * m_G4;
 
-            uint32_t iip0 = periodic(i, px);
-            uint32_t jjp0 = periodic(j, py);
-            uint32_t kkp0 = periodic(k, pz);
-            uint32_t llp0 = periodic(l, pw);
-            uint32_t iip1 = periodic(i + i1, px);
-            uint32_t jjp1 = periodic(j + j1, py);
-            uint32_t kkp1 = periodic(k + k1, pz);
-            uint32_t llp1 = periodic(l + l1, pw);
-            uint32_t iip2 = periodic(i + i2, px);
-            uint32_t jjp2 = periodic(j + j2, py);
-            uint32_t kkp2 = periodic(k + k2, pz);
-            uint32_t llp2 = periodic(l + l2, pw);
-            uint32_t iip3 = periodic(i + i3, px);
-            uint32_t jjp3 = periodic(j + j3, py);
-            uint32_t kkp3 = periodic(k + k3, pz);
-            uint32_t llp3 = periodic(l + l3, pw);
-            uint32_t iip4 = periodic(i + 1, px);
-            uint32_t jjp4 = periodic(j + 1, py);
-            uint32_t kkp4 = periodic(k + 1, pz);
-            uint32_t llp4 = periodic(l + 1, pw);
+            std::uint32_t iip0 = periodicMod(i, px);
+            std::uint32_t jjp0 = periodicMod(j, py);
+            std::uint32_t kkp0 = periodicMod(k, pz);
+            std::uint32_t llp0 = periodicMod(l, pw);
+            std::uint32_t iip1 = periodicMod(i + i1, px);
+            std::uint32_t jjp1 = periodicMod(j + j1, py);
+            std::uint32_t kkp1 = periodicMod(k + k1, pz);
+            std::uint32_t llp1 = periodicMod(l + l1, pw);
+            std::uint32_t iip2 = periodicMod(i + i2, px);
+            std::uint32_t jjp2 = periodicMod(j + j2, py);
+            std::uint32_t kkp2 = periodicMod(k + k2, pz);
+            std::uint32_t llp2 = periodicMod(l + l2, pw);
+            std::uint32_t iip3 = periodicMod(i + i3, px);
+            std::uint32_t jjp3 = periodicMod(j + j3, py);
+            std::uint32_t kkp3 = periodicMod(k + k3, pz);
+            std::uint32_t llp3 = periodicMod(l + l3, pw);
+            std::uint32_t iip4 = periodicMod(i + 1, px);
+            std::uint32_t jjp4 = periodicMod(j + 1, py);
+            std::uint32_t kkp4 = periodicMod(k + 1, pz);
+            std::uint32_t llp4 = periodicMod(l + 1, pw);
 
             // Calculate the contribution from the five corners
             T t0 = T(0.6) - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
@@ -1308,28 +1309,28 @@ namespace ls
         }
 
     private:
-        static T grad1(uint32_t hash, T x)
+        static T grad1(std::uint32_t hash, T x)
         {
-            uint32_t h = hash & 0b1111u;
+            std::uint32_t h = hash & 0b1111u;
             T grad = T(1) + (h & 0b111u);   // Gradient value 1.0, 2.0, ..., 8.0
             if (h & 0b1000u) grad = -grad;   // Set a random sign for the gradient
             return (grad * x);              // Multiply the gradient with the distance
         }
-        static void grad1d(uint32_t hash, T& gx)
+        static void grad1d(std::uint32_t hash, T& gx)
         {
             gx = grad1(hash, T(1));
         }
 
-        static T grad2(uint32_t hash, T x, T y)
+        static T grad2(std::uint32_t hash, T x, T y)
         {
-            uint32_t h = hash & 0b111u;      // Convert low 3 bits of hash code
+            std::uint32_t h = hash & 0b111u;      // Convert low 3 bits of hash code
             T u = h < 4 ? x : y;  // into 8 simple gradient directions,
             T v = h < 4 ? y : x;  // and compute the dot product with (x,y).
             return ((h & 0b001u) ? -u : u) + ((h & 0b010u) ? T(-2)*v : T(2)*v);
         }
-        static void grad2d(uint32_t hash, T& gx, T& gy)
+        static void grad2d(std::uint32_t hash, T& gx, T& gy)
         {
-            uint32_t h = hash & 0b111u;
+            std::uint32_t h = hash & 0b111u;
             gx = m_grad2lut[h][0];
             gy = m_grad2lut[h][1];
         }
@@ -1337,9 +1338,9 @@ namespace ls
         {
             return gx * x + gy * y;
         }
-        static void gradrot2(uint32_t hash, T sin_t, T cos_t, T& gx, T& gy)
+        static void gradrot2(std::uint32_t hash, T sin_t, T cos_t, T& gx, T& gy)
         {
-            uint32_t h = hash & 0b111u;
+            std::uint32_t h = hash & 0b111u;
             T gx0 = m_grad2lut[h][0];
             T gy0 = m_grad2lut[h][1];
             gx = cos_t * gx0 - sin_t * gy0;
@@ -1358,16 +1359,16 @@ namespace ls
             { -1.0, 1.0 },{ 0.0, -1.0 },{ 0.0, 1.0 },{ 1.0, -1.0 }
         };
 
-        static T grad3(uint32_t hash, T x, T y, T z)
+        static T grad3(std::uint32_t hash, T x, T y, T z)
         {
-            uint32_t h = hash & 0b1111u;     // Convert low 4 bits of hash code into 12 simple
+            std::uint32_t h = hash & 0b1111u;     // Convert low 4 bits of hash code into 12 simple
             T u = h < 8 ? x : y; // gradient directions, and compute dot product.
             T v = h < 4 ? y : h == 12 || h == 14 ? x : z; // Fix repeats at h = 12 to 15
             return ((h & 0b1u) ? -u : u) + ((h & 0b10u) ? -v : v);
         }
-        static void grad3d(uint32_t hash, T& gx, T& gy, T& gz)
+        static void grad3d(std::uint32_t hash, T& gx, T& gy, T& gz)
         {
-            uint32_t h = hash & 0b1111u;
+            std::uint32_t h = hash & 0b1111u;
             gx = m_grad3lut[h][0];
             gy = m_grad3lut[h][1];
             gz = m_grad3lut[h][2];
@@ -1376,9 +1377,9 @@ namespace ls
         {
             return gx * x + gy * y + gz * z;
         }
-        static void gradrot3(uint32_t hash, T sin_t, T cos_t, T& gx, T& gy, T& gz)
+        static void gradrot3(std::uint32_t hash, T sin_t, T cos_t, T& gx, T& gy, T& gz)
         {
-            uint32_t h = hash & 0b1111;
+            std::uint32_t h = hash & 0b1111;
             T gux = m_grad3u[h][0];
             T guy = m_grad3u[h][1];
             T guz = m_grad3u[h][2];
@@ -1446,17 +1447,17 @@ namespace ls
             { 0.0f, 1.0f, -1.0f },{ 0.0f, -1.0f, -1.0f }
         };
 
-        static T grad4(uint32_t hash, T x, T y, T z, T t)
+        static T grad4(std::uint32_t hash, T x, T y, T z, T t)
         {
-            uint32_t h = hash & 0b11111u;      // Convert low 5 bits of hash code into 32 simple
+            std::uint32_t h = hash & 0b11111u;      // Convert low 5 bits of hash code into 32 simple
             T u = h < 24 ? x : y; // gradient directions, and compute dot product.
             T v = h < 16 ? y : z;
             T w = h < 8 ? z : t;
             return ((h & 0b1u) ? -u : u) + ((h & 0b10u) ? -v : v) + ((h & 0b100u) ? -w : w);
         }
-        static void grad4d(uint32_t hash, T& gx, T& gy, T& gz, T& gw)
+        static void grad4d(std::uint32_t hash, T& gx, T& gy, T& gz, T& gw)
         {
-            uint32_t h = hash & 0b11111u;
+            std::uint32_t h = hash & 0b11111u;
             gx = m_grad4lut[h][0];
             gy = m_grad4lut[h][1];
             gz = m_grad4lut[h][2];
@@ -1471,7 +1472,7 @@ namespace ls
         static constexpr T m_F4 = T(0.309016994); // F4 = (sqrt(5)-1)/4
         static constexpr T m_G4 = T(0.138196601); // G4 = (5-sqrt(5))/20
 
-        static constexpr uint8_t m_simplex[64][4] = {
+        static constexpr std::uint8_t m_simplex[64][4] = {
             { 0, 1, 2, 3 },{ 0, 1, 3, 2 },{ 0, 0, 0, 0 },{ 0, 2, 3, 1 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 1, 2, 3, 0 },
             { 0, 2, 1, 3 },{ 0, 0, 0, 0 },{ 0, 3, 1, 2 },{ 0, 3, 2, 1 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 1, 3, 2, 0 },
             { 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },{ 0, 0, 0, 0 },

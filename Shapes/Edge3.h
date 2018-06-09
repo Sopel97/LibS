@@ -4,6 +4,7 @@
 
 #include <array>
 #include <type_traits>
+#include <tuple>
 
 namespace ls
 {
