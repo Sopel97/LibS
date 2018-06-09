@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Shapes/Vec3.h"
+#include "LibS/Shapes/Vec3.h"
 
 #include "Quat.h"
 

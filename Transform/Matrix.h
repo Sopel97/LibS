@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Shapes/Fwd.h"
-#include "Shapes/Angle2.h"
-#include "Shapes/Vec2.h"
-#include "Shapes/Vec3.h"
-#include "Shapes/Vec4.h"
+#include "LibS/Shapes/Fwd.h"
+#include "LibS/Shapes/Angle2.h"
+#include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Vec3.h"
+#include "LibS/Shapes/Vec4.h"
 
 #include "Fwd.h"
 #include "Quat.h"

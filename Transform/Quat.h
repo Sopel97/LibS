@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Shapes/Angle2.h"
-#include "Shapes/Vec3.h"
+#include "LibS/Shapes/Angle2.h"
+#include "LibS/Shapes/Vec3.h"
 
 #include "EulerAngles.h"
 #include "AxisAngle.h"

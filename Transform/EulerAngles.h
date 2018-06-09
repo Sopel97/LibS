@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Shapes/Angle2.h"
+#include "LibS/Shapes/Angle2.h"
 
 namespace ls
 {
