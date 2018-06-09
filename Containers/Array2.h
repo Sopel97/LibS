@@ -1,7 +1,8 @@
 #pragma once
 
+#include "LibS/Detail.h"
+
 #include "Fwd.h"
-#include "Detail.h"
 
 #include <utility>
 #include <memory>

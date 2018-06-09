@@ -1,8 +1,9 @@
 #pragma once
 
+#include "LibS/Containers/Array2.h"
+
 #include "LibS/Shapes/Box2.h"
 
-#include "LibS/Array2.h"
 #include "LibS/Detail.h"
 
 #include <array>

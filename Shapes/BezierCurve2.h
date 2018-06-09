@@ -1,6 +1,7 @@
 #pragma once
 
-#include "LibS/Array2.h"
+#include "LibS/Containers/Array2.h"
+
 #include "LibS/BinomialCoefficients.h"
 
 #include "Vec2.h"
