@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CellularAutomata/Fwd.h"
-#include "Collisions/Fwd.h"
+#include "Algorithms/Fwd.h"
 #include "Json/Fwd.h"
 #include "Containers/Fwd.h"
 #include "Transform/Fwd.h"

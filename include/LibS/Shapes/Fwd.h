@@ -8,16 +8,6 @@ namespace ls
     using Angle2D = Angle2<double>;
 
     template <typename T>
-    struct BezierCurve2;
-    using BezierCurve2F = BezierCurve2<float>;
-    using BezierCurve2D = BezierCurve2<double>;
-
-    template <typename T>
-    struct BezierPath2;
-    using BezierPath2F = BezierPath2<float>;
-    using BezierPath2D = BezierPath2<double>;
-
-    template <typename T>
     struct Box2;
     using Box2F = Box2<float>;
     using Box2D = Box2<double>;

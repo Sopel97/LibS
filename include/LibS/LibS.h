@@ -12,7 +12,6 @@
 
 #include "Algorithms.h"
 #include "CellularAutomata.h"
-#include "Collisions.h"
 #include "Containers.h"
 #include "Json.h"
 #include "Noise.h"

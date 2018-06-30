@@ -9,5 +9,3 @@
 #include "Shapes/Polyline2.h"
 #include "Shapes/Ray2.h"
 #include "Shapes/Vec2.h"
-#include "Shapes/BezierCurve2.h"
-#include "Shapes/BezierPath2.h"
