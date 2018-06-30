@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LibS/Shapes.h"
+#include "ShapeIntersectionsCommon.h"
 
-#include "CollisionsUtil.h"
+#include "LibS/Shapes.h"
 
 #include <optional>
 #include <cmath>
@@ -940,19 +940,19 @@ namespace ls
     */
 
     template <typename T>
-    PointNormalPair2<T> collisionPointAndNormal(const Circle2<T>& circle, const Vec2<T>& point)
+    PointNormalPair2<T> intersectionPointAndNormal(const Circle2<T>& circle, const Vec2<T>& point)
     {
         return{ point, (point - circle.origin).normalized() };
     }
     template <typename T>
-    PointNormalPair2<T> collisionPointAndNormal(const Circle2<T>& c1, const Circle2<T>& c2)
+    PointNormalPair2<T> intersectionPointAndNormal(const Circle2<T>& c1, const Circle2<T>& c2)
     {
         const Vec2<T> normal = (c2.origin - c1.origin).normalized();
-        const Vec2<T> point = c1.origin + normal*c1.radius;
+        const Vec2<T> point = c1.origin + normal * c1.radius;
         return{ point, normal };
     }
     template <typename T>
-    PointNormalPair2<T> collisionPointAndNormal(const Circle2<T>& circle, const Box2<T>& rectangle)
+    PointNormalPair2<T> intersectionPointAndNormal(const Circle2<T>& circle, const Box2<T>& rectangle)
     {
         using std::clamp;
 
@@ -966,7 +966,7 @@ namespace ls
 
 
     template <typename T>
-    std::optional<T> timeToImpact(const Moving<Circle2<T>>& movingCircle1, const Moving<Circle2<T>>& movingCircle2)
+    std::optional<T> timeOfImpact(const WithVelocity<Circle2<T>>& movingCircle1, const WithVelocity<Circle2<T>>& movingCircle2)
     {
         using std::sqrt;
         using std::min;
@@ -1005,13 +1005,13 @@ namespace ls
     }
 
     template <typename T>
-    std::optional<T> timeToImpact(const Moving<Circle2<T>>& movingCircle, const Moving<Vec2<T>>& movingPoint)
+    std::optional<T> timeOfImpact(const WithVelocity<Circle2<T>>& movingCircle, const WithVelocity<Vec2<T>>& movingPoint)
     {
-        return timeToImpact(movingCircle, moving(Circle2<T>(movingPoint.shape(), T(0)), movingPoint.velocity()));
+        return timeOfImpact(movingCircle, moving(Circle2<T>(movingPoint.shape(), T(0)), movingPoint.velocity()));
     }
 
     template <typename T>
-    std::optional<T> timeToImpact(const Moving<Circle2<T>>& movingCircle, const Moving<Box2<T>>& movingBox)
+    std::optional<T> timeOfImpact(const WithVelocity<Circle2<T>>& movingCircle, const WithVelocity<Box2<T>>& movingBox)
     {
         using std::numeric_limits;
         using std::min;
@@ -1085,22 +1085,22 @@ namespace ls
 
         if (canHitCornerMinMin)
         {
-            const T t = timeToImpact(circle, v1, rectangle.min, v2).value_or(numeric_limits<T>::max());
+            const T t = timeOfImpact(circle, v1, rectangle.min, v2).value_or(numeric_limits<T>::max());
             minT = min(minT, t);
         }
         if (canHitCornerMinMax)
         {
-            const T t = timeToImpact(circle, v1, Vec2<T>(rectangle.min.x, rectangle.max.y), v2).value_or(numeric_limits<T>::max());
+            const T t = timeOfImpact(circle, v1, Vec2<T>(rectangle.min.x, rectangle.max.y), v2).value_or(numeric_limits<T>::max());
             minT = min(minT, t);
         }
         if (canHitCornerMaxMin)
         {
-            const T t = timeToImpact(circle, v1, Vec2<T>(rectangle.max.x, rectangle.min.y), v2).value_or(numeric_limits<T>::max());
+            const T t = timeOfImpact(circle, v1, Vec2<T>(rectangle.max.x, rectangle.min.y), v2).value_or(numeric_limits<T>::max());
             minT = min(minT, t);
         }
         if (canHitCornerMaxMax)
         {
-            const T t = timeToImpact(circle, v1, rectangle.max, v2).value_or(numeric_limits<T>::max());
+            const T t = timeOfImpact(circle, v1, rectangle.max, v2).value_or(numeric_limits<T>::max());
             minT = min(minT, t);
         }
 
@@ -1108,28 +1108,8 @@ namespace ls
         return std::experimental::nullopt;
     }
 
-    template <typename S1, typename S2, typename T = typename S1::ValueType>
-    std::optional<ContinuousCollision2<T>> continuousCollision(const Moving<S1, Vec2<T>>& movingShape1, const Moving<S2, Vec2<T>>& movingShape2)
-    {
-        const S1& shape1 = movingShape1.shape();
-        const S2& shape2 = movingShape2.shape();
-        const Vec2<T>& v1 = movingShape1.velocity();
-        const Vec2<T>& v2 = movingShape2.velocity();
-
-        auto ttiOpt = timeToImpact(movingShape1, movingShape2);
-        if (!ttiOpt) return std::nullopt;
-
-        const T tti = ttiOpt.value();
-
-        const Vec2<T> v = v1 - v2;
-        const S1 shape1Final = shape1.translated(v * tti);
-        const PointNormalPair2<T> pointNormal = collisionPointAndNormal(shape1Final, shape2);
-
-        return ContinuousCollision2<T>(pointNormal.point, pointNormal.normal, tti);
-    }
-
     template <typename T>
-    T estimatedMinTimeToImpact(const Moving<Circle2<T>>& movingCircle1, const Moving<Circle2<T>>& movingCircle2) //timeOfImpact is always none or greater than estimated
+    T timeOfImpactLowerBound(const WithVelocity<Circle2<T>>& movingCircle1, const WithVelocity<Circle2<T>>& movingCircle2) //timeOfImpact is always none or greater than estimated
     {
         const Circle2<T>& c1 = movingCircle1.shape();
         const Circle2<T>& c2 = movingCircle2.shape();
@@ -1143,19 +1123,17 @@ namespace ls
     }
 
     template <typename T>
-    Vec2<T> penetration(const Circle2<T>& c1, const Circle2<T>& c2)
+    Vec2<T> penetrationVector(const Circle2<T>& c1, const Circle2<T>& c2)
     {
         const T dist = distance(c1, c2);
         if (dist > c1.radius + c2.radius) return Vec2<T>(0, 0);
         return (c2.origin - c1.origin).normalized() * (dist - c1.radius - c2.radius);
     }
 
-    template <typename S1, typename S2, typename VectorType, typename ValueType>
-    void separate(S1& s1, S2& s2, const VectorType& pen, const ValueType& balance)
+    template <typename S1, typename S2>
+    void resolvePenetration(S1& s1, S2& s2, const typename S1::VectorType& pen, const typename S1::VectorType::ValueType& balance)
     {
-        const VectorType escapeVector1 = pen * -balance;
-        const VectorType escapeVector2 = pen * (1.0 - balance);
-        s1.translate(escapeVector1);
-        s2.translate(escapeVector2);
+        s1.translate(pen * -balance);
+        s2.translate(pen * (1.0 - balance));
     }
 }

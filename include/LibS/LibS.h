@@ -10,6 +10,7 @@
 #include "Common.h"
 #include "Utility.h"
 
+#include "Algorithms.h"
 #include "CellularAutomata.h"
 #include "Collisions.h"
 #include "Containers.h"

@@ -52,8 +52,8 @@ namespace ls
         const T dx = a.baseOrigin.x - b.baseOrigin.x;
         const T dy = a.baseOrigin.y - b.baseOrigin.y;
         const T radiusSum = a.radius + b.radius;
-        
-        return dx*dx + dy*dy <= radiusSum * radiusSum;
+
+        return dx * dx + dy * dy <= radiusSum * radiusSum;
     }
 
     template <typename T>
