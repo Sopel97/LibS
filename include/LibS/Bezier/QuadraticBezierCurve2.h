@@ -11,12 +11,12 @@
 namespace ls
 {
     template <typename T>
-    struct BezierCurve2<T, 3>
+    struct BezierCurve2<T, 2>
     {
         static_assert(std::is_floating_point<T>::value, "T must be a floating-point type");
 
         using VectorType = Vec2<T>;
-        static constexpr int order = 3;
+        static constexpr int order = 2;
         static constexpr int numControlPoints = order + 1;
 
         std::array<Vec2<T>, numControlPoints> controlPoints;
@@ -28,14 +28,13 @@ namespace ls
         BezierCurve2& operator=(BezierCurve2&&) = default;
         ~BezierCurve2() = default;
 
-        template <int OtherOrderV, typename Enable = std::enable_if_t<(OrderV > OtherOrderV)>>
-        BezierCurve2(const BezierCurve2<T, OtherOrderV>& linearCurve) :
+        BezierCurve2(const BezierCurve2<T, order - 1>& linearCurve) :
             BezierCurve2(linearCurve.elevate())
         {
         }
 
-        BezierCurve2(const Vec2<T>& p0, const Vec2<T>& p1, const Vec2<T>& p2, const Vec2<T>& p3) :
-            controlPoints({ p0, p1, p2, p3 })
+        BezierCurve2(const Vec2<T>& p0, const Vec2<T>& p1, const Vec2<T>& p2) :
+            controlPoints({ p0, p1, p2 })
         {
 
         }
@@ -58,24 +57,19 @@ namespace ls
         {
             const T u = static_cast<T>(1) - t;
             const T t2 = t * t;
-            const T t3 = t2 * t;
             const T u2 = u * u;
-            const T u3 = u2 * u;
 
             return
-                u3 * controlPoints[0]
-                + static_cast<T>(3) * u2 * t * controlPoints[1]
-                + static_cast<T>(3) * u * t2 * controlPoints[2]
-                + t3 * controlPoints[3];
+                u2 * controlPoints[0]
+                + static_cast<T>(2) * u * t * controlPoints[1]
+                + t2 * controlPoints[2];
         }
 
         std::pair<BezierCurve2<T, order>, BezierCurve2<T, order>> split(const T& z) const
         {
             const T z2 = z * z;
-            const T z3 = z2 * z;
             const T w = static_cast<T>(1) - z;
             const T w2 = w * w;
-            const T w3 = w2 * w;
 
             const Vec2<T> p0 = controlPoints[0];
 
@@ -89,49 +83,36 @@ namespace ls
                 + w2 * controlPoints[0];
 
             const Vec2<T> p3 =
-                z3 * controlPoints[3]
-                + static_cast<T>(3) * z2 * w * controlPoints[2]
-                + static_cast<T>(3) * z * w2 * controlPoints[1]
-                + w3 * controlPoints[0];
+                z * controlPoints[2]
+                + w * controlPoints[1];
 
-            const Vec2<T> p4 =
-                z2 * controlPoints[3]
-                + static_cast<T>(2) * z * w * controlPoints[2]
-                + w2 * controlPoints[1];
-
-            const Vec2<T> p5 =
-                z * controlPoints[3]
-                + w * controlPoints[2];
-
-            const Vec2<T> p6 = controlPoints[3];
+            const Vec2<T> p4 = controlPoints[2];
 
             return {
-                BezierCurve2<T, order>(p0, p1, p2, p3),
-                BezierCurve2<T, order>(p3, p4, p5, p6)
+                BezierCurve2<T, order>(p0, p1, p2),
+                BezierCurve2<T, order>(p2, p3, p4)
             };
         }
 
         BezierCurve2<T, order - 1> derivative() const
         {
             return BezierCurve2<T, order - 1>(
-                static_cast<T>(3) * (controlPoints[1] - controlPoints[0]),
-                static_cast<T>(3) * (controlPoints[2] - controlPoints[1]),
-                static_cast<T>(3) * (controlPoints[3] - controlPoints[2])
-                );
+                static_cast<T>(2) * (controlPoints[1] - controlPoints[0]),
+                static_cast<T>(2) * (controlPoints[2] - controlPoints[1])
+            );
         }
 
         BezierCurve2<T, order + 1> elevate() const
         {
             return BezierCurve2<T, order + 1>(
                 controlPoints[0],
-                static_cast<T>(1.0 / 4.0) * controlPoints[0] + static_cast<T>(3.0 / 4.0) * controlPoints[1],
-                static_cast<T>(2.0 / 4.0) * controlPoints[1] + static_cast<T>(2.0 / 4.0) * controlPoints[2],
-                static_cast<T>(3.0 / 4.0) * controlPoints[2] + static_cast<T>(1.0 / 4.0) * controlPoints[3],
-                controlPoints[3]
-                );
+                static_cast<T>(1.0 / 3.0) * controlPoints[0] + static_cast<T>(2.0 / 3.0) * controlPoints[1],
+                static_cast<T>(2.0 / 3.0) * controlPoints[1] + static_cast<T>(1.0 / 3.0) * controlPoints[2],
+                controlPoints[2]
+            );
         }
     };
 
-    using CubicBezierCurve2F = CubicBezierCurve2<float>;
-    using CubicBezierCurve2D = CubicBezierCurve2<double>;
+    using QuadraticBezierCurve2F = QuadraticBezierCurve2<float>;
+    using QuadraticBezierCurve2D = QuadraticBezierCurve2<double>;
 }
