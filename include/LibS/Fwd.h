@@ -2,6 +2,7 @@
 
 #include "CellularAutomata/Fwd.h"
 #include "Algorithms/Fwd.h"
+#include "Bezier/Fwd.h"
 #include "Json/Fwd.h"
 #include "Containers/Fwd.h"
 #include "Transform/Fwd.h"

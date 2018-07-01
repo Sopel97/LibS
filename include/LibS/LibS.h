@@ -5,12 +5,11 @@
 #include "MathConstants.h"
 #include "Macros.h"
 
-#include "BinomialCoefficients.h"
-
 #include "Common.h"
 #include "Utility.h"
 
 #include "Algorithms.h"
+#include "Bezier.h"
 #include "CellularAutomata.h"
 #include "Containers.h"
 #include "Json.h"
