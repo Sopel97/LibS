@@ -74,6 +74,61 @@ namespace ls
             return sum;
         }
 
+        BezierCurve2<T, order> left(const T& z) const
+        {
+            using std::pow;
+
+            const T w = static_cast<T>(1) - z;
+
+            std::array<Vec2<T>, numControlPoints> left;
+
+            left[0] = controlPoints[0];
+
+            for (int i = 1; i <= order; ++i)
+            {
+                Vec2<T> sum = Vec2<T>::zero();
+
+                for (int j = 0; j <= i; ++j)
+                {
+                    sum += static_cast<T>(detail::BinomialCoefficients::value(i, j)) * pow(w, i - j) * pow(z, j) * controlPoints[j];
+                }
+
+                left[i] = sum;
+            }
+
+            return BezierCurve2<T, order>(left);
+        }
+
+        BezierCurve2<T, order> right(const T& z) const
+        {
+            using std::pow;
+
+            const T w = static_cast<T>(1) - z;
+
+            std::array<Vec2<T>, numControlPoints> right;
+
+            for (int i = 1; i <= order; ++i)
+            {
+                Vec2<T> sum = Vec2<T>::zero();
+
+                for (int j = 0; j <= i; ++j)
+                {
+                    sum += static_cast<T>(detail::BinomialCoefficients::value(i, j)) * pow(w, j) * pow(z, i - j) * controlPoints[order - j];
+                }
+
+                right[order - i] = sum;
+            }
+
+            right[order] = controlPoints[order];
+
+            return BezierCurve2<T, order>(right);
+        }
+
+        BezierCurve2<T, order> subcurve(const T& min, const T& max) const
+        {
+            return right(min).left((max - min) / (static_cast<T>(1) - min));
+        }
+
         std::pair<BezierCurve2<T, order>, BezierCurve2<T, order>> split(const T& z) const
         {
             using std::pow;

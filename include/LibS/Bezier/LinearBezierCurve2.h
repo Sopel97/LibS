@@ -57,6 +57,37 @@ namespace ls
                 + t * controlPoints[1];
         }
 
+        BezierCurve2<T, order> left(const T& z) const
+        {
+            const T w = static_cast<T>(1) - z;
+
+            const Vec2<T> p0 = controlPoints[0];
+
+            const Vec2<T> p1 =
+                z * controlPoints[1]
+                + w * controlPoints[0];
+
+            return BezierCurve2<T, order>(p0, p1);
+        }
+
+        BezierCurve2<T, order> right(const T& z) const
+        {
+            const T w = static_cast<T>(1) - z;
+
+            const Vec2<T> p1 =
+                z * controlPoints[1]
+                + w * controlPoints[0];
+
+            const Vec2<T> p2 = controlPoints[1];
+
+            return BezierCurve2<T, order>(p1, p2);
+        }
+
+        BezierCurve2<T, order> subcurve(const T& min, const T& max) const
+        {
+            return right(min).left((max - min) / (static_cast<T>(1) - min));
+        }
+
         std::pair<BezierCurve2<T, order>, BezierCurve2<T, order>> split(const T& z) const
         {
             const T w = static_cast<T>(1) - z;

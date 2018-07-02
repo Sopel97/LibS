@@ -69,6 +69,67 @@ namespace ls
                 + t3 * controlPoints[3];
         }
 
+        BezierCurve2<T, order> left(const T& z) const
+        {
+            const T z2 = z * z;
+            const T z3 = z2 * z;
+            const T w = static_cast<T>(1) - z;
+            const T w2 = w * w;
+            const T w3 = w2 * w;
+
+            const Vec2<T> p0 = controlPoints[0];
+
+            const Vec2<T> p1 =
+                z * controlPoints[1]
+                + w * controlPoints[0];
+
+            const Vec2<T> p2 =
+                z2 * controlPoints[2]
+                + static_cast<T>(2) * z * w * controlPoints[1]
+                + w2 * controlPoints[0];
+
+            const Vec2<T> p3 =
+                z3 * controlPoints[3]
+                + static_cast<T>(3) * z2 * w * controlPoints[2]
+                + static_cast<T>(3) * z * w2 * controlPoints[1]
+                + w3 * controlPoints[0];
+
+            return BezierCurve2<T, order>(p0, p1, p2, p3);
+        }
+
+        BezierCurve2<T, order> right(const T& z) const
+        {
+            const T z2 = z * z;
+            const T z3 = z2 * z;
+            const T w = static_cast<T>(1) - z;
+            const T w2 = w * w;
+            const T w3 = w2 * w;
+
+            const Vec2<T> p3 =
+                z3 * controlPoints[3]
+                + static_cast<T>(3) * z2 * w * controlPoints[2]
+                + static_cast<T>(3) * z * w2 * controlPoints[1]
+                + w3 * controlPoints[0];
+
+            const Vec2<T> p4 =
+                z2 * controlPoints[3]
+                + static_cast<T>(2) * z * w * controlPoints[2]
+                + w2 * controlPoints[1];
+
+            const Vec2<T> p5 =
+                z * controlPoints[3]
+                + w * controlPoints[2];
+
+            const Vec2<T> p6 = controlPoints[3];
+
+            return BezierCurve2<T, order>(p3, p4, p5, p6);
+        }
+
+        BezierCurve2<T, order> subcurve(const T& min, const T& max) const
+        {
+            return right(min).left((max - min) / (static_cast<T>(1) - min));
+        }
+
         std::pair<BezierCurve2<T, order>, BezierCurve2<T, order>> split(const T& z) const
         {
             const T z2 = z * z;
