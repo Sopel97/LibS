@@ -106,6 +106,28 @@ namespace ls
             };
         }
 
+        BezierCurve2<T, order> aligned() const
+        {
+            const Vec2<T>& p0 = controlPoints[0];
+            const Vec2<T>& p1 = controlPoints[order];
+
+            const auto a = -((p1 - p0).angle());
+
+            const T s = a.sin();
+            const T c = a.cos();
+
+            BezierCurve2<T, order> alignedCurve(*this);
+
+            for (auto& p : alignedCurve.controlPoints)
+            {
+                const Vec2<T> p0p = p - p0;
+                p.x = p0p.x * c - p0p.y * s;
+                p.y = p0p.x * s + p0p.y * c;
+            }
+
+            return alignedCurve;
+        }
+
         BezierCurve2<T, order + 1> elevate() const
         {
             return BezierCurve2<T, order + 1>(

@@ -3,6 +3,7 @@
 #include "Fwd.h"
 
 #include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Angle2.h"
 
 #include <array>
 #include <type_traits>
@@ -170,6 +171,64 @@ namespace ls
                 BezierCurve2<T, order>(p0, p1, p2, p3),
                 BezierCurve2<T, order>(p3, p4, p5, p6)
             };
+        }
+
+        BezierCurve2<T, order> aligned() const
+        {
+            const Vec2<T> p0 = controlPoints[0];
+            const Vec2<T> p1 = controlPoints[order];
+
+            const auto n = (p1 - p0).normalized();
+
+            // -angle so mirrored by x axis
+            const T sin = -n.y;
+            const T cos = n.x;
+
+            BezierCurve2<T, order> alignedCurve(*this);
+
+            for (auto& p : alignedCurve.controlPoints)
+            {
+                const Vec2<T> p0p = p - p0;
+                // p.x = p0p.dot({ cos, -sin });
+                // p.y = p0p.dot({ sin, cos });
+                p.x = p0p.x * cos - p0p.y * sin;
+                p.y = p0p.x * sin + p0p.y * cos;
+            }
+
+            return alignedCurve;
+        }
+
+        Vec2<T> canonicalFormFreePoint(const T& unit = static_cast<T>(1)) const
+        {
+            const Vec2<T> p0 = controlPoints[0];
+            const Vec2<T> p1 = controlPoints[1];
+            const Vec2<T> p2 = controlPoints[2];
+            const Vec2<T> p3 = controlPoints[3];
+
+            const Vec2<T> p0p1 = p1 - p0;
+            const Vec2<T> p0p2 = p2 - p0;
+            const Vec2<T> p0p3 = p3 - p0;
+
+            const T p0p1r = p0p1.x / p0p1.y;
+
+            const T xnum = p0p3.x - (p0p1r * p0p3.y);
+            const T xden = p0p2.x - (p0p1r * p0p2.y);
+
+            const T x = xnum / xden;
+
+            const T y = (p0p3.y / p0p1.y) + x * (static_cast<T>(1) - (p0p2.y / p0p1.y));
+
+            return { unit * x, unit * y };
+        }
+
+        BezierCurve2<T, order> canonical(const T& unit = static_cast<T>(1)) const
+        {
+            return BezierCurve2<T, order>(
+                { 0, 0 },
+                { 0, unit },
+                { unit, unit },
+                canonicalFormFreePoint(unit)
+                );
         }
 
         BezierCurve2<T, order - 1> derivative() const
