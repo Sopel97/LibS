@@ -108,21 +108,24 @@ namespace ls
 
         BezierCurve2<T, order> aligned() const
         {
-            const Vec2<T>& p0 = controlPoints[0];
-            const Vec2<T>& p1 = controlPoints[order];
+            const Vec2<T> p0 = controlPoints[0];
+            const Vec2<T> p1 = controlPoints[order];
 
-            const auto a = -((p1 - p0).angle());
+            const auto n = (p1 - p0).normalized();
 
-            const T s = a.sin();
-            const T c = a.cos();
+            // -angle so mirrored by x axis
+            const T sin = -n.y;
+            const T cos = n.x;
 
             BezierCurve2<T, order> alignedCurve(*this);
 
             for (auto& p : alignedCurve.controlPoints)
             {
                 const Vec2<T> p0p = p - p0;
-                p.x = p0p.x * c - p0p.y * s;
-                p.y = p0p.x * s + p0p.y * c;
+                // p.x = p0p.dot({ cos, -sin });
+                // p.y = p0p.dot({ sin, cos });
+                p.x = p0p.x * cos - p0p.y * sin;
+                p.y = p0p.x * sin + p0p.y * cos;
             }
 
             return alignedCurve;

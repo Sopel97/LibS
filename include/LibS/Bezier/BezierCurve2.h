@@ -61,73 +61,116 @@ namespace ls
         Vec2<T> at(const T& t) const
         {
             using std::pow;
+            using std::abs;
 
             const T u = static_cast<T>(1) - t;
 
             Vec2<T> sum = Vec2<T>::zero();
 
-            auto bc = detail::PascalTriangleLine<T, order>{}.begin();
-            T tpow = static_cast<T>(1);
-            T upow = pow(u, order);
-            for (int k = 0; k < numControlPoints; ++k)
+            // since we iterate powers backwards we have to avoid division by 0
+            if (abs(u) < detail::bezierCurveArgEps<T>)
             {
-                sum += (*bc) * upow * tpow * controlPoints[k];
-                ++bc;
-                tpow *= t;
-                upow /= u;
+                sum = controlPoints[order];
             }
-
+            else
+            {
+                auto bc = detail::PascalTriangleLine<T, order>{}.begin();
+                //T tpow = static_cast<T>(1);
+                T upow = pow(u, order);
+                T tu = /* tpow * */ upow;
+                const T tu_ratio = t / u;
+                for (int k = 0; k < numControlPoints; ++k)
+                {
+                    // sum += (*bc) * pow(u, order - k) * pow(t, k) * controlPoints[k];
+                    sum += (*bc) * tu * controlPoints[k];
+                    ++bc;
+                    tu *= tu_ratio;
+                }
+            }
             return sum;
         }
 
         BezierCurve2<T, order> left(const T& z) const
         {
             using std::pow;
+            using std::abs;
 
             const T w = static_cast<T>(1) - z;
 
-            std::array<Vec2<T>, numControlPoints> left;
-
-            left[0] = controlPoints[0];
-
-            for (int i = 1; i <= order; ++i)
+            // since we iterate powers backwards by using division we have to avoid division by 0
+            if (abs(w) < detail::bezierCurveArgEps<T>)
             {
-                Vec2<T> sum = Vec2<T>::zero();
+                return *this;
+            }
+            else
+            {
+                std::array<Vec2<T>, numControlPoints> left;
 
-                for (int j = 0; j <= i; ++j)
+                left[0] = controlPoints[0];
+
+                for (int i = 1; i <= order; ++i)
                 {
-                    sum += static_cast<T>(detail::BinomialCoefficients::value(i, j)) * pow(w, i - j) * pow(z, j) * controlPoints[j];
+                    Vec2<T> sum = Vec2<T>::zero();
+
+                    auto bc = detail::PascalTriangleLine<T>{ i }.begin();
+                    //T zpow = static_cast<T>(1);
+                    T wpow = pow(w, i);
+                    T zw = /* zpow * */ wpow;
+                    const T zw_ratio = z / w;
+                    for (int j = 0; j <= i; ++j)
+                    {
+                        // sum += (*bc) * pow(w, i - j) * pow(z, j) * controlPoints[j];
+                        sum += (*bc) * zw * controlPoints[j];
+                        ++bc;
+                        zw *= zw_ratio;
+                    }
+
+                    left[i] = sum;
                 }
 
-                left[i] = sum;
+                return BezierCurve2<T, order>(left);
             }
-
-            return BezierCurve2<T, order>(left);
         }
 
         BezierCurve2<T, order> right(const T& z) const
         {
             using std::pow;
 
-            const T w = static_cast<T>(1) - z;
-
-            std::array<Vec2<T>, numControlPoints> right;
-
-            for (int i = 1; i <= order; ++i)
+            // since we iterate powers backwards by using division we have to avoid division by 0
+            if (abs(z) < detail::bezierCurveArgEps<T>)
             {
-                Vec2<T> sum = Vec2<T>::zero();
+                return *this;
+            }
+            else
+            {
+                const T w = static_cast<T>(1) - z;
 
-                for (int j = 0; j <= i; ++j)
+                std::array<Vec2<T>, numControlPoints> right;
+
+                for (int i = 1; i <= order; ++i)
                 {
-                    sum += static_cast<T>(detail::BinomialCoefficients::value(i, j)) * pow(w, j) * pow(z, i - j) * controlPoints[order - j];
+                    Vec2<T> sum = Vec2<T>::zero();
+
+                    auto bc = detail::PascalTriangleLine<T>{ i }.begin();
+                    //T wpow = static_cast<T>(1);
+                    T zpow = pow(z, i);
+                    T wz = /* wpow * */ zpow;
+                    const T wz_ratio = w / z;
+                    for (int j = 0; j <= i; ++j)
+                    {
+                        // sum += (*bc) * pow(z, i - j) * pow(w, j) * controlPoints[order - j];
+                        sum += (*bc) * wz * controlPoints[order - j];
+                        ++bc;
+                        wz *= wz_ratio;
+                    }
+
+                    right[order - i] = sum;
                 }
 
-                right[order - i] = sum;
+                right[order] = controlPoints[order];
+
+                return BezierCurve2<T, order>(right);
             }
-
-            right[order] = controlPoints[order];
-
-            return BezierCurve2<T, order>(right);
         }
 
         BezierCurve2<T, order> subcurve(const T& min, const T& max) const
@@ -141,62 +184,29 @@ namespace ls
 
             const T w = static_cast<T>(1) - z;
 
-            std::array<Vec2<T>, numControlPoints> left;
-            std::array<Vec2<T>, numControlPoints> right;
-
-            left[0] = controlPoints[0];
-
-            for (int i = 1; i <= order; ++i)
-            {
-                Vec2<T> sum = Vec2<T>::zero();
-
-                for (int j = 0; j <= i; ++j)
-                {
-                    sum += static_cast<T>(detail::BinomialCoefficients::value(i, j)) * pow(w, i - j) * pow(z, j) * controlPoints[j];
-                }
-
-                left[i] = sum;
-            }
-
-            right[0] = left[order];
-
-            for (int i = 1; i < order; ++i)
-            {
-                Vec2<T> sum = Vec2<T>::zero();
-
-                for (int j = 0; j <= i; ++j)
-                {
-                    sum += static_cast<T>(detail::BinomialCoefficients::value(i, j)) * pow(w, j) * pow(z, i - j) * controlPoints[order - j];
-                }
-
-                right[order - i] = sum;
-            }
-
-            right[order] = controlPoints[order];
-
-            return {
-                BezierCurve2<T, order>(left),
-                BezierCurve2<T, order>(right)
-            };
+            return std::make_pair(left(z), right(z)); //they calculate one point twice but the overhead is negligable
         }
 
         BezierCurve2<T, order> aligned() const
         {
-            const Vec2<T>& p0 = controlPoints[0];
-            const Vec2<T>& p1 = controlPoints[order];
+            const Vec2<T> p0 = controlPoints[0];
+            const Vec2<T> p1 = controlPoints[order];
 
-            const auto a = -((p1 - p0).angle());
+            const auto n = (p1 - p0).normalized();
 
-            const T s = a.sin();
-            const T c = a.cos();
+            // -angle so mirrored by x axis
+            const T sin = -n.y;
+            const T cos = n.x;
 
             BezierCurve2<T, order> alignedCurve(*this);
 
             for (auto& p : alignedCurve.controlPoints)
             {
                 const Vec2<T> p0p = p - p0;
-                p.x = p0p.x * c - p0p.y * s;
-                p.y = p0p.x * s + p0p.y * c;
+                // p.x = p0p.dot({ cos, -sin });
+                // p.y = p0p.dot({ sin, cos });
+                p.x = p0p.x * cos - p0p.y * sin;
+                p.y = p0p.x * sin + p0p.y * cos;
             }
 
             return alignedCurve;
