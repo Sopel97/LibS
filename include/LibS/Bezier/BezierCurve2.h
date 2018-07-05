@@ -66,9 +66,15 @@ namespace ls
 
             Vec2<T> sum = Vec2<T>::zero();
 
+            auto bc = detail::PascalTriangleLine<T, order>{}.begin();
+            T tpow = static_cast<T>(1);
+            T upow = pow(u, order);
             for (int k = 0; k < numControlPoints; ++k)
             {
-                sum += static_cast<T>(detail::BinomialCoefficients::value(order, k)) * pow(u, order - k) * pow(t, k) * controlPoints[k];
+                sum += (*bc) * upow * tpow * controlPoints[k];
+                ++bc;
+                tpow *= t;
+                upow /= u;
             }
 
             return sum;
@@ -214,14 +220,16 @@ namespace ls
 
             elevatedControlPoints[0] = controlPoints[0];
 
-            for (int i = 0; i < order; ++i)
+            for (int i = 1; i <= order; ++i)
             {
-                elevatedControlPoints[i + 1] = 
-                    (static_cast<T>(i) / static_cast<T>(order)) * controlPoints[i] 
-                    + (static_cast<T>(order - i) / static_cast<T>(order)) * controlPoints[i + 1];
+                elevatedControlPoints[i] = 
+                    (
+                        static_cast<T>(i) * controlPoints[i - 1] 
+                        + static_cast<T>(order + 1 - i) * controlPoints[i]
+                    ) / static_cast<T>(order + 1);
             }
 
-            elevatedControlPoints[numControlPoints] = controlPoints[order];
+            elevatedControlPoints[order + 1] = controlPoints[order];
 
 
             return BezierCurve2<T, order + 1>(elevatedControlPoints);
