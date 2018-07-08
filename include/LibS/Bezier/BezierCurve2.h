@@ -591,7 +591,7 @@ namespace ls
                         using std::sqrt;
 
                         const auto p = d.at(t);
-                        return std::sqrt(p.x*p.x + p.y*p.y);
+                        return sqrt(p.x*p.x + p.y*p.y);
                     }
                 );
             }
