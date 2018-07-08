@@ -575,7 +575,7 @@ namespace ls
         }
 
         template <typename IntegratorT>
-        T length(const T& min, const T& max, IntegratorT integrator) const
+        T length(const T& min, const T& max, IntegratorT&& integrator) const
         {
             if constexpr(order == 1)
             {
@@ -598,13 +598,13 @@ namespace ls
         }
 
         template <typename IntegratorT>
-        T lengthAt(const T& t, IntegratorT integrator) const
+        T lengthAt(const T& t, IntegratorT&& integrator) const
         {
             return length(static_cast<T>(0), t, std::forward<IntegratorT>(integrator));
         }
 
         template <typename IntegratorT>
-        T length(IntegratorT integrator) const
+        T length(IntegratorT&& integrator) const
         {
             return length(static_cast<T>(0), static_cast<T>(1), std::forward<IntegratorT>(integrator));
         }
