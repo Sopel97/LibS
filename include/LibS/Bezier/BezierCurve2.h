@@ -573,6 +573,41 @@ namespace ls
                 canonicalFormFreePoint(unit)
                 );
         }
+
+        template <typename IntegratorT>
+        T length(const T& min, const T& max, IntegratorT integrator) const
+        {
+            if constexpr(order == 1)
+            {
+                return (max - min) * controlPoints[0].distance(controlPoints[1]);
+            }
+            else
+            {
+                auto d = derivative();
+
+                return integrator(
+                    min, max,
+                    [&d](const T& t) {
+                        using std::sqrt;
+
+                        const auto p = d.at(t);
+                        return std::sqrt(p.x*p.x + p.y*p.y);
+                    }
+                );
+            }
+        }
+
+        template <typename IntegratorT>
+        T lengthAt(const T& t, IntegratorT integrator) const
+        {
+            return length(static_cast<T>(0), t, std::forward<IntegratorT>(integrator));
+        }
+
+        template <typename IntegratorT>
+        T length(IntegratorT integrator) const
+        {
+            return length(static_cast<T>(0), static_cast<T>(1), std::forward<IntegratorT>(integrator));
+        }
     };
 
     template <int OrderV>
