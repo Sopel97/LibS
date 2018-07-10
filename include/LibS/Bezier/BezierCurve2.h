@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Fwd.h"
-#include "Detail.h"
+#include "CommonDetail.h"
 
 #include "LibS/Shapes/Vec2.h"
 
@@ -18,6 +18,7 @@ namespace ls
         static_assert(std::is_floating_point<T>::value, "T must be a floating-point type");
         static_assert(OrderV > 0, "Order must be positive");
 
+        using ValueType = T;
         using VectorType = Vec2<T>;
         static constexpr int order = OrderV;
         static constexpr int numControlPoints = order + 1;
@@ -55,6 +56,13 @@ namespace ls
             {
                 cp += displacement;
             }
+        }
+
+        BezierCurve2<T, order> translated(const Vec2<T>& displacement)
+        {
+            auto cpy = BezierCurve2<T, order>(*this);
+            cpy.translate(displacement);
+            return cpy;
         }
 
         Vec2<T> at(const T& t) const

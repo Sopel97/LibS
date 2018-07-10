@@ -5,7 +5,7 @@ namespace ls
     namespace detail
     {
         template <typename T>
-        constexpr T bezierCurveArgEps = static_cast<T>(0.000001);
+        constexpr inline T bezierCurveArgEps = static_cast<T>(0.000001);
 
         template <typename T, int N = -1>
         struct PascalTriangleLine
