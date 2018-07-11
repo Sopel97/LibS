@@ -133,6 +133,55 @@ namespace ls
             }
         }
 
+        template <typename IntegratorT>
+        T lengthToParam(const T& wantedLength, int numMaxIters, IntegratorT&& integrator, const ValueType& eps = static_cast<ValueType>(0.0001)) const
+        {
+            // same algorithm as in EquidistnatBezierCurveParams
+
+            const auto curveDerivative = derivative();
+
+            ValueType tLeft = static_cast<T>(0);
+            ValueType tRight = static_cast<T>(1);
+            ValueType sLeft = static_cast<T>(0);
+            ValueType sRight = curveDerivative.antiderivativeLength(std::forward<IntegratorT>(integrator));
+
+            ValueType tCurrent = tLeft + (tRight - tLeft) * ((wantedLength - sLeft) / (sRight - sLeft)); // linearly interpolate t by length
+            ValueType sCurrent = curveDerivative.antiderivativeLengthAt(tCurrent, integrator);
+
+            for (int j = 0; j < numMaxIters && abs(wantedLength - sCurrent) > eps; ++j)
+            {
+                if (sCurrent < wantedLength)
+                {
+                    //left
+                    tLeft = std::move(tCurrent);
+                    sLeft = std::move(sCurrent);
+                }
+                else
+                {
+                    //right
+                    tRight = std::move(tCurrent);
+                    sRight = std::move(sCurrent);
+                }
+
+                tCurrent = tLeft + (tRight - tLeft) * ((wantedLength - sLeft) / (sRight - sLeft)); // linearly interpolate t by length
+                sCurrent = curveDerivative.antiderivativeLengthAt(tCurrent, integrator);
+            }
+
+            return tCurrent;
+        }
+
+        template <typename IntegratorT>
+        T paramToLength(const T& t, IntegratorT&& integrator) const
+        {
+            return lengthAt(t, std::forward<IntegratorT>(integrator));
+        }
+
+        template <typename IntegratorT>
+        Vec2<T> atLength(const T& s, int numMaxIters, IntegratorT&& integrator, const ValueType& eps = static_cast<ValueType>(0.0001)) const
+        {
+            return at(lengthToParam(s, numMaxIters, std::forward<IntegratorT>(integrator), eps));
+        }
+
         BezierCurve2<T, order> left(const T& z) const
         {
             if constexpr (order == 1)
