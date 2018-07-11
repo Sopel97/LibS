@@ -583,6 +583,33 @@ namespace ls
         }
 
         template <typename IntegratorT>
+        T antiderivativeLength(const T& min, const T& max, IntegratorT&& integrator) const
+        {
+            return integrator(
+                min, max,
+                [this](const T& t) {
+                    using std::sqrt;
+
+                    const auto p = this->at(t);
+
+                    return sqrt(p.x*p.x + p.y*p.y);
+                }
+            );
+        }
+
+        template <typename IntegratorT>
+        T antiderivativeLengthAt(const T& t, IntegratorT&& integrator) const
+        {
+            return antiderivativeLength(static_cast<T>(0), t, std::forward<IntegratorT>(integrator));
+        }
+
+        template <typename IntegratorT>
+        T antiderivativeLength(IntegratorT&& integrator) const
+        {
+            return antiderivativeLength(static_cast<T>(0), static_cast<T>(1), std::forward<IntegratorT>(integrator));
+        }
+
+        template <typename IntegratorT>
         T length(const T& min, const T& max, IntegratorT&& integrator) const
         {
             if constexpr(order == 1)
@@ -591,17 +618,7 @@ namespace ls
             }
             else
             {
-                auto d = derivative();
-
-                return integrator(
-                    min, max,
-                    [&d](const T& t) {
-                        using std::sqrt;
-
-                        const auto p = d.at(t);
-                        return sqrt(p.x*p.x + p.y*p.y);
-                    }
-                );
+                return derivative().antiderivativeLength(min, max, std::forward<IntegratorT>(integrator));
             }
         }
 

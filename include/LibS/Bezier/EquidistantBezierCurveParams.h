@@ -73,6 +73,8 @@ namespace ls
         {
             using std::abs;
 
+            const auto curveDerivative = m_curve.derivative();
+
             const ValueType segmentParamDiff = (m_tMax - m_tMin) / static_cast<ValueType>(m_numPoints - 1);
 
             std::vector<ValueType> lengths;
@@ -82,7 +84,7 @@ namespace ls
                 ValueType currentT = m_tMin + segmentParamDiff;
                 for (int i = 1; i < m_numPoints; ++i)
                 {
-                    lengths.emplace_back(m_curve.length(m_tMin, currentT, static_cast<const IntegratorT&>(*this)));
+                    lengths.emplace_back(curveDerivative.antiderivativeLength(m_tMin, currentT, static_cast<const IntegratorT&>(*this)));
                     currentT += segmentParamDiff;
                 }
             }
@@ -115,7 +117,7 @@ namespace ls
                 ValueType sRight = lengths[rightSampleNo];
 
                 ValueType tCurrent = tLeft + (tRight - tLeft) * ((wantedLength - sLeft) / (sRight - sLeft)); // linearly interpolate t by length
-                ValueType sCurrent = m_curve.length(m_tMin, tCurrent, static_cast<const IntegratorT&>(*this));
+                ValueType sCurrent = curveDerivative.antiderivativeLength(m_tMin, tCurrent, static_cast<const IntegratorT&>(*this));
 
                 for (int j = 0; j < m_iterMax && abs(wantedLength - sCurrent) > m_eps; ++j)
                 {
@@ -133,7 +135,7 @@ namespace ls
                     }
 
                     tCurrent = tLeft + (tRight - tLeft) * ((wantedLength - sLeft) / (sRight - sLeft)); // linearly interpolate t by length
-                    sCurrent = m_curve.length(m_tMin, tCurrent, static_cast<const IntegratorT&>(*this));
+                    sCurrent = curveDerivative.antiderivativeLength(m_tMin, tCurrent, static_cast<const IntegratorT&>(*this));
                 }
 
                 m_params[i] = tCurrent;
