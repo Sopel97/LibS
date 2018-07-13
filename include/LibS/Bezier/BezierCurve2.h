@@ -4,6 +4,7 @@
 #include "CommonDetail.h"
 
 #include "LibS/Shapes/Vec2.h"
+#include "LibS/Shapes/Edge2.h"
 
 #include <array>
 #include <type_traits>
@@ -490,10 +491,10 @@ namespace ls
             }
         }
 
-        BezierCurve2<T, order> aligned() const
+        BezierCurve2<T, order> aligned(const ls::Edge2<T>& line) const
         {
-            const Vec2<T> p0 = controlPoints[0];
-            const Vec2<T> p1 = controlPoints[order];
+            const Vec2<T> p0 = line.vertices[0];
+            const Vec2<T> p1 = line.vertices[1];
 
             const auto n = (p1 - p0).normalized();
 
@@ -513,6 +514,11 @@ namespace ls
             }
 
             return alignedCurve;
+        }
+
+        BezierCurve2<T, order> aligned() const
+        {
+            return aligned({ controlPoints[0], controlPoints[order] });
         }
 
         template <int OrdV = OrderV, typename EnableT = std::enable_if_t<(OrdV > 1)>>
