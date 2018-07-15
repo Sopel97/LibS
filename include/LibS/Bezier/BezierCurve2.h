@@ -6,6 +6,8 @@
 #include "LibS/Shapes/Vec2.h"
 #include "LibS/Shapes/Edge2.h"
 
+#include "LibS/Common.h"
+
 #include <array>
 #include <type_traits>
 #include <utility>
@@ -519,6 +521,91 @@ namespace ls
         BezierCurve2<T, order> aligned() const
         {
             return aligned({ controlPoints[0], controlPoints[order] });
+        }
+
+        template <T Vec2<T>::*axis>
+        std::vector<T> axisAlignedExtrema() const
+        {
+            if constexpr (order == 1)
+            {
+                return {};
+            }
+            else if constexpr (order == 2)
+            {
+                // derivative in the form of ax + b
+                const auto d = derivative();
+                // p0 * (1-t) + p1 * t
+                // p0 - t*p0 + t*p1
+                // t*(p1 - p0) + p0
+                // x = -b/a    <-- root
+                const T a = (d.controlPoints[1].*axis - d.controlPoints[0].*axis);
+                const T b = d.controlPoints[0].*axis;
+
+                const T t = -b / a;
+                if (t >= static_cast<T>(0) && t <= static_cast<T>(1))
+                {
+                    return { t };
+                }
+
+                return {};
+            }
+            else if constexpr (order == 3)
+            {
+                constexpr T deltaEps = static_cast<T>(0.000001);
+
+                // derivative in the form of ax + b
+                const auto d = derivative();
+                // p0 * (1-t)^2 + 2 * p1 * (1-t)t + p2 * t^2
+                // p0 * (1 - 2t + t^2) + 2 * p1 * (t - t^2) + p2 * t^2
+                // t^2 * (p0 - 2 * p1 + p2) + t * 2(p1 - p0) + p0
+                // a = p0 - 2 * p1 + p2
+                // b = 2(p1 - p0)
+                // c = p0
+                const T a = (d.controlPoints[0].*axis - static_cast<T>(2) * d.controlPoints[1].*axis + d.controlPoints[2].*axis);
+                const T b = static_cast<T>(2) * (d.controlPoints[1].*axis - d.controlPoints[0].*axis);
+                const T c = d.controlPoints[0].*axis;
+
+                const T delta = (b*b) - (static_cast<T>(4)*a*c);
+                
+                if (almostZero(delta, deltaEps))
+                {
+                    return { -b / (static_cast<T>(2) * a) };
+                }
+                else if (delta > static_cast<T>(0))
+                {
+                    using std::sqrt;
+                    const T sqrtDelta = sqrt(delta);
+
+                    const T t1 = (-b + sqrtDelta) / (static_cast<T>(2) * a);
+                    const T t2 = (-b - sqrtDelta) / (static_cast<T>(2) * a);
+
+                    return { t1, t2 };
+                }
+
+                return {};
+            }
+            else
+            {
+                static_assert(false);
+            }
+        }
+
+        std::vector<T> extremaX() const
+        {
+            return axisAlignedExtrema<&Vec2<T>::x>();
+        }
+
+        std::vector<T> extremaY() const
+        {
+            return axisAlignedExtrema<&Vec2<T>::y>();
+        }
+
+        std::pair<std::vector<T>, std::vector<T>> extrema() const
+        {
+            return std::make_pair(
+                axisAlignedExtrema<&Vec2<T>::x>(),
+                axisAlignedExtrema<&Vec2<T>::y>()
+            );
         }
 
         template <int OrdV = OrderV, typename EnableT = std::enable_if_t<(OrdV > 1)>>
