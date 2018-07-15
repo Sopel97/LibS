@@ -569,7 +569,12 @@ namespace ls
                 
                 if (almostZero(delta, deltaEps))
                 {
-                    return { -b / (static_cast<T>(2) * a) };
+                    const T t = -b / (static_cast<T>(2) * a);
+
+                    if (t >= static_cast<T>(0) && t <= static_cast<T>(1))
+                    {
+                        return { t };
+                    }
                 }
                 else if (delta > static_cast<T>(0))
                 {
@@ -579,7 +584,16 @@ namespace ls
                     const T t1 = (-b + sqrtDelta) / (static_cast<T>(2) * a);
                     const T t2 = (-b - sqrtDelta) / (static_cast<T>(2) * a);
 
-                    return { t1, t2 };
+                    std::vector<T> result;
+                    if (t1 >= static_cast<T>(0) && t1 <= static_cast<T>(1))
+                    {
+                        result.emplace_back(t1);
+                    }
+                    if (t2 >= static_cast<T>(0) && t2 <= static_cast<T>(1))
+                    {
+                        result.emplace_back(t2);
+                    }
+                    return result;
                 }
 
                 return {};
