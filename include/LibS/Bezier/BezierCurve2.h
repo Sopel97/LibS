@@ -551,7 +551,7 @@ namespace ls
             }
             else if constexpr (order == 3)
             {
-                constexpr T deltaEps = static_cast<T>(0.000001);
+                constexpr T discrEps = static_cast<T>(0.000001);
 
                 // derivative in the form of ax + b
                 const auto d = derivative();
@@ -565,9 +565,9 @@ namespace ls
                 const T b = static_cast<T>(2) * (d.controlPoints[1].*axis - d.controlPoints[0].*axis);
                 const T c = d.controlPoints[0].*axis;
 
-                const T delta = (b*b) - (static_cast<T>(4)*a*c);
+                const T discr = (b*b) - (static_cast<T>(4)*a*c);
                 
-                if (almostZero(delta, deltaEps))
+                if (almostZero(discr, discrEps))
                 {
                     const T t = -b / (static_cast<T>(2) * a);
 
@@ -576,13 +576,13 @@ namespace ls
                         return { t };
                     }
                 }
-                else if (delta > static_cast<T>(0))
+                else if (discr > static_cast<T>(0))
                 {
                     using std::sqrt;
-                    const T sqrtDelta = sqrt(delta);
+                    const T sqrtDiscr = sqrt(discr);
 
-                    const T t1 = (-b + sqrtDelta) / (static_cast<T>(2) * a);
-                    const T t2 = (-b - sqrtDelta) / (static_cast<T>(2) * a);
+                    const T t1 = (-b + sqrtDiscr) / (static_cast<T>(2) * a);
+                    const T t2 = (-b - sqrtDiscr) / (static_cast<T>(2) * a);
 
                     std::vector<T> result;
                     if (t1 >= static_cast<T>(0) && t1 <= static_cast<T>(1))
@@ -600,7 +600,7 @@ namespace ls
             }
             else
             {
-                static_assert(false);
+                static_assert(false, "Unimplemented");
             }
         }
 
@@ -620,6 +620,84 @@ namespace ls
                 axisAlignedExtrema<&Vec2<T>::x>(),
                 axisAlignedExtrema<&Vec2<T>::y>()
             );
+        }
+
+        std::vector<T> inflections() const
+        {
+            if constexpr (order < 3)
+            {
+                return {};
+            }
+            else if constexpr (order == 3)
+            {
+                using std::sqrt;
+                constexpr T discrEps = static_cast<T>(0.000001);
+
+                // C(t) - curvature
+                // C(t) = x'(t) * y''(t) - y'(t) * x''(t)
+                // (C(t) == 0) <=> inflection
+
+                const auto alignedSelf = aligned();
+                // p0 = (0, 0); p3 = (x, 0)
+                // => x0 == 0 and y0 == 0 and y3 == 0
+                // 
+                // x(t) = x0 * (1-t)^3 + 3*x1 * (1-t)^2 * t + 3*x2 * (1-t) * t^2 + x3 * t^3
+                // y(t) = y0 * (1-t)^3 + 3*y1 * (1-t)^2 * t + 3*y2 * (1-t) * t^2 + y3 * t^3
+                // ...
+                // C(t) = a * t^2 + b * t + c
+                // C(t) = t^2 * ( 54*(x1*y2) - 54*(x2*y1) + 36*(x3*y1) - 18*(x3*y2))
+                //      + t   * (-54*(x1*y2) + 54*(x2*y1) - 18*(x3*y1))
+                //      +       ( 18*(x1*y2) - 18*(x2*y1))
+
+                const T x1y2 = alignedSelf.controlPoints[1].x * alignedSelf.controlPoints[2].y;
+                const T x2y1 = alignedSelf.controlPoints[2].x * alignedSelf.controlPoints[1].y;
+                const T x3y1 = alignedSelf.controlPoints[3].x * alignedSelf.controlPoints[1].y;
+                const T x3y2 = alignedSelf.controlPoints[3].x * alignedSelf.controlPoints[2].y;
+
+                //const T a = static_cast<T>(54)  * x1y2 - static_cast<T>(54) * x2y1 + static_cast<T>(36) * x3y1 - static_cast<T>(18) * x3y2;
+                //const T b = static_cast<T>(-54) * x1y2 + static_cast<T>(54) * x2y1 - static_cast<T>(18) * x3y1;
+                //const T c = static_cast<T>(18)  * x1y2 - static_cast<T>(18) * x2y1;
+                const T m1 = x1y2 - x2y1;
+                const T m2 = static_cast<T>(54) * m1;
+                const T a = m2 + static_cast<T>(36) * x3y1 - static_cast<T>(18) * x3y2;
+                const T b = -m2 - static_cast<T>(18) * x3y1;
+                const T c = static_cast<T>(18) * m1;
+
+                const T discr = b * b - static_cast<T>(4) * a * c;
+
+                if (almostZero(discr, discrEps))
+                {
+                    const T t = -b / (static_cast<T>(2) * a);
+
+                    if (t >= static_cast<T>(0) && t <= static_cast<T>(1))
+                    {
+                        return { t };
+                    }
+                }
+                else if (discr > static_cast<T>(0))
+                {
+                    using std::sqrt;
+                    const T sqrtDiscr = sqrt(discr);
+
+                    const T t1 = (-b + sqrtDiscr) / (static_cast<T>(2) * a);
+                    const T t2 = (-b - sqrtDiscr) / (static_cast<T>(2) * a);
+
+                    std::vector<T> result;
+                    if (t1 >= static_cast<T>(0) && t1 <= static_cast<T>(1))
+                    {
+                        result.emplace_back(t1);
+                    }
+                    if (t2 >= static_cast<T>(0) && t2 <= static_cast<T>(1))
+                    {
+                        result.emplace_back(t2);
+                    }
+                    return result;
+                }
+            }
+            else
+            {
+                static_assert(false, "Unimplemented");
+            }
         }
 
         template <int OrdV = OrderV, typename EnableT = std::enable_if_t<(OrdV > 1)>>
