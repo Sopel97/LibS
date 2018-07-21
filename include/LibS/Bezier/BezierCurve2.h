@@ -673,6 +673,8 @@ namespace ls
                     {
                         return { t };
                     }
+
+                    return {};
                 }
                 else if (discr > static_cast<T>(0))
                 {
@@ -693,6 +695,8 @@ namespace ls
                     }
                     return result;
                 }
+
+                return {};
             }
             else
             {

@@ -33,9 +33,6 @@ template struct ls::AxisAngle<float>;
 
 template struct ls::CellularAutomaton2<ls::ConwaysGameOfLifeRule, ls::CellularAutomatonTopology::Finite>;
 
-template struct ls::BezierCurve2<float>;
-template struct ls::BezierPath2<float>;
-
 template struct ls::Matrix<float, 2, 2>;
 template struct ls::Matrix<float, 2, 4>;
 template struct ls::Matrix<float, 3, 3>;
@@ -73,7 +70,8 @@ void printRoundAlmostZero(const ls::Matrix<T, R, C, LayoutV>& m)
     }
     std::cout << '\n';
 }
-int main()
+
+void mainExamples()
 {
     ls::Angle2F angle;
     angle = ls::Angle2F::fullTurn();
@@ -417,9 +415,9 @@ int main()
         ls::Circle2D c(ls::Vec2D(1, 1), 2);
         ls::UniformVec2Distribution1<ls::Circle2D> d1(c);
         ls::UniformVec2Distribution2<ls::Circle2D> d2(c);
-        ls::UniformVec2Distribution1<ls::Edge2D> d3(ls::Edge2D({0, 0}, {1, 2}));
+        ls::UniformVec2Distribution1<ls::Edge2D> d3(ls::Edge2D({ 0, 0 }, { 1, 2 }));
         ls::UniformVec2Distribution2<ls::Box2D> d4(ls::Box2D({ 0, 0 }, { 1, 1 }));
-        ls::UniformVec2Distribution1<ls::Triangle2D> d5(ls::Triangle2D({ 0, 0 }, { 1, 1 }, {2, 0}));
+        ls::UniformVec2Distribution1<ls::Triangle2D> d5(ls::Triangle2D({ 0, 0 }, { 1, 1 }, { 2, 0 }));
         ls::UniformVec2Distribution2<ls::Triangle2D> d6(ls::Triangle2D({ 0, 0 }, { 1, 1 }, { 2, 0 }));
         const auto v1 = d1(rng);
         const auto v2 = d2(rng);
@@ -433,7 +431,7 @@ int main()
         std::cout << v4.x << ' ' << v4.y << '\n';
         std::cout << v5.x << ' ' << v5.y << '\n';
         std::cout << v6.x << ' ' << v6.y << '\n';
-        
+
     }
 
     {
@@ -535,6 +533,18 @@ int main()
             [](int b) {std::cout << b << '\n'; },
             std::move(c)
         )(123.3f);
+    }
+
+    {
+        ls::Circle2D c({ 100.0, 200.0 }, 50.0);
+        ls::Circle2D c2({ 400.0, 200.0 }, 50.0);
+        std::cout << ls::closestPoints(c, c2).distance() << '\n';
+        std::cout << ls::distance(c, c2) << '\n';
+        auto b = ls::bounding<ls::Box2>(c);
+        std::cout << b.min.x << ' ' << b.min.y << ' ' << b.max.x << ' ' << b.max.y << '\n';
+        
+        auto cp = ls::closestPoints(c, c);
+        std::cout << cp.distance() << '\n';
     }
 }
 
